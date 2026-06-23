@@ -30,7 +30,7 @@ include __DIR__ . '/includes/head.php';
 <!-- HERO -->
 <section id="beranda" class="relative z-10 max-w-6xl mx-auto px-5 pt-12 sm:pt-16 pb-10">
   <div class="grid lg:grid-cols-12 gap-10 items-center">
-    <div class="lg:col-span-7 reveal show">
+    <div class="lg:col-span-6 reveal show">
       <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-5"><span class="h-px w-8 bg-brass"></span> Sekolah Menengah Atas</p>
       <h1 class="font-serif font-semibold text-pine dark:text-cream leading-[1.05] text-[40px] sm:text-6xl lg:text-[68px]"><span class="blur-fade">Menumbuhkan</span><br><span class="blur-fade" style="transition-delay:.12s"><span class="italic text-leaf dark:text-brass-light">ilmu</span> & <span class="italic text-leaf dark:text-brass-light">akhlak</span></span><br><span class="blur-fade" style="transition-delay:.24s">yang berbuah.</span></h1>
       <p class="mt-6 text-pine/70 dark:text-cream/70 max-w-md text-[15px] leading-relaxed"><?php echo esc($namaSekolah); ?> — ruang tumbuh bagi generasi cerdas dan berkarakter islami, siap melangkah ke perguruan tinggi terbaik.</p>
@@ -39,8 +39,8 @@ include __DIR__ . '/includes/head.php';
         <a href="tentang.php" class="elink font-semibold text-pine dark:text-cream">Pelajari lebih lanjut →</a>
       </div>
     </div>
-    <div class="lg:col-span-5 reveal show">
-      <div class="relative mx-auto max-w-sm">
+    <div class="lg:col-span-6 reveal show">
+      <div class="relative mx-auto max-w-lg lg:scale-110">
         <div class="absolute -top-6 -left-6 w-24 h-24 rounded-full bg-brass/30 blur-2xl"></div>
         <div class="absolute -bottom-8 -right-4 w-32 h-32 rounded-full bg-leaf/30 blur-2xl"></div>
         <div class="aspect-square flex items-center justify-center">
