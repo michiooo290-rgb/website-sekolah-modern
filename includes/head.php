@@ -16,7 +16,8 @@ $fullTitle   = $pageTitle === $namaSekolah ? "$namaSekolah — $tagline" : "$pag
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0/dist/index.global.js" integrity="sha384-nWTzRTCY/9V4Bo352ehygr1c4cnst4XN6lMR3fipakEQrhVpc0hEM5Dii3Amz0sT" crossorigin="anonymous"></script>
+  <!-- Tailwind di-bundel lokal agar tetap jalan tanpa internet/CDN -->
+  <script src="assets/js/tailwind.js"></script>
   <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
     @theme {
