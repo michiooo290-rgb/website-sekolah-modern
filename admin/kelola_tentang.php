@@ -71,7 +71,7 @@ include 'admin_head.php';
   <!-- Sejarah -->
   <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
     <h3 class="font-serif text-lg font-bold mb-5 flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-brass"></span> Sejarah
+      <span class="w-1 h-5 rounded-full bg-brass"></span> Sejarah
     </h3>
     <form method="POST">
       <?php echo csrf_field(); ?>
@@ -96,7 +96,7 @@ include 'admin_head.php';
   <!-- Sambutan -->
   <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
     <h3 class="font-serif text-lg font-bold mb-5 flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-leaf"></span> Sambutan Kepala Sekolah
+      <span class="w-1 h-5 rounded-full bg-leaf"></span> Sambutan Kepala Sekolah
     </h3>
     <form method="POST">
       <?php echo csrf_field(); ?>
@@ -121,7 +121,7 @@ include 'admin_head.php';
   <!-- Fasilitas -->
   <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
     <h3 class="font-serif text-lg font-bold mb-5 flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-brass"></span> Fasilitas
+      <span class="w-1 h-5 rounded-full bg-brass"></span> Fasilitas
     </h3>
 
     <?php if (!empty($fasilitas)): ?>

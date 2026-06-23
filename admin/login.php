@@ -72,10 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
   </style>
-  <script>
-    document.documentElement.classList.toggle('dark',
-      window.matchMedia('(prefers-color-scheme: dark)').matches);
-  </script>
   <style>
     .fade-up{opacity:0;transform:translateY(16px);animation:fadeUp .6s cubic-bezier(.2,.7,.3,1) forwards}
     .fade-up.d1{animation-delay:.08s}
@@ -167,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Heading -->
         <div class="mb-8 fade-up d1">
-          <h2 class="font-serif text-3xl font-bold mb-2">Selamat datang 👋</h2>
+          <h2 class="font-serif text-3xl font-bold mb-2">Selamat datang</h2>
           <p class="text-sm text-pine/60 dark:text-cream/60">Masuk ke panel admin dengan akun Anda.</p>
         </div>
 

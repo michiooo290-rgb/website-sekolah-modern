@@ -72,7 +72,7 @@ include 'admin_head.php';
   <!-- Visi -->
   <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
     <h3 class="font-serif text-lg font-bold mb-5 flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-brass"></span> Visi
+      <span class="w-1 h-5 rounded-full bg-brass"></span> Visi
     </h3>
     <form method="POST">
       <?php echo csrf_field(); ?>
@@ -95,7 +95,7 @@ include 'admin_head.php';
   ?>
   <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
     <h3 class="font-serif text-lg font-bold mb-5 flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-leaf"></span> <?php echo $sec['label']; ?>
+      <span class="w-1 h-5 rounded-full bg-leaf"></span> <?php echo $sec['label']; ?>
     </h3>
 
     <!-- Existing items -->

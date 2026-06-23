@@ -31,7 +31,10 @@ include 'admin_head.php';
   <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
     <div>
       <p class="text-brass-light text-sm font-semibold tracking-wide mb-1"><?php echo $greet; ?>,</p>
-      <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-2"><?php echo esc(admin_name()); ?> 👋</h2>
+      <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2.5">
+        <?php echo esc(admin_name()); ?>
+        <svg class="w-6 h-6 text-brass-light shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.456-2.456L14.25 6l1.035-.259a3.375 3.375 0 002.456-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
+      </h2>
       <p class="text-cream/65 text-sm max-w-lg">Berikut ringkasan aktivitas website sekolah hari ini. Kelola konten dengan mudah dari satu tempat.</p>
     </div>
     <div class="shrink-0 flex items-center gap-3">
