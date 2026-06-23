@@ -6,7 +6,7 @@
 require_once __DIR__ . '/config/koneksi.php';
 $pdo = db();
 
-$beritaList = $pdo->query('SELECT judul, slug, kategori, isi, tanggal, dilihat FROM berita ORDER BY tanggal DESC')->fetchAll();
+$beritaList = $pdo->query('SELECT judul, slug, kategori, isi, gambar, tanggal, dilihat FROM berita ORDER BY tanggal DESC')->fetchAll();
 
 $kategoriWarna = [
   'Prestasi'   => 'bg-brass',
@@ -35,12 +35,19 @@ include __DIR__ . '/includes/head.php';
     <?php foreach ($beritaList as $b):
       $warna = $kategoriWarna[$b['kategori']] ?? 'bg-brass';
     ?>
-    <a href="berita-detail.php?slug=<?php echo rawurlencode($b['slug']); ?>" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition">
+    <a href="berita-detail.php?slug=<?php echo rawurlencode($b['slug']); ?>" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition overflow-hidden">
+      <?php if ($b['gambar']): ?>
+      <div class="aspect-[16/9] overflow-hidden">
+        <img src="admin/uploads/berita/<?php echo esc($b['gambar']); ?>" alt="<?php echo esc($b['judul']); ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+      </div>
+      <?php endif; ?>
+      <div class="p-7">
       <span class="inline-block <?php echo $warna; ?> text-cream text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4"><?php echo esc($b['kategori']); ?></span>
       <p class="text-xs text-pine/50 dark:text-cream/50 mb-2"><?php echo tglPendek($b['tanggal']); ?></p>
       <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition"><?php echo esc($b['judul']); ?></h3>
       <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5"><?php echo esc(mb_strimwidth(strip_tags($b['isi']), 0, 160, '...')); ?></p>
       <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      </div>
     </a>
     <?php endforeach; ?>
   </div>
