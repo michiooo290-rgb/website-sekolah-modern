@@ -1,0 +1,10 @@
+# Prevent PHP execution in uploads — Apache 2.4+
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+
+# Block script execution via handler
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule .*\.php$ - [F,L]
+</IfModule>

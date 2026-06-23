@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kontak — SMA Putra Persada Batam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0/dist/index.global.js" integrity="sha384-nWTzRTCY/9V4Bo352ehygr1c4cnst4XN6lMR3fipakEQrhVpc0hEM5Dii3Amz0sT" crossorigin="anonymous"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+    @theme {
+      --color-pine: #0E3B2E;
+      --color-pine-deep: #08291F;
+      --color-leaf: #2F7D52;
+      --color-cream: #F7F3E9;
+      --color-cream-deep: #EFE8D6;
+      --color-brass: #C9A227;
+      --color-brass-light: #E0BC45;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+  </style>
+  <script>
+    document.documentElement.classList.toggle(
+      'dark',
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    );
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
+  <div id="site-header"></div>
+
+  <!-- Banner -->
+  <section class="relative z-10 bg-gradient-to-br from-pine to-pine-deep text-cream overflow-hidden">
+    <div class="absolute -top-10 -right-10 w-52 h-52 rounded-full bg-brass/15 blur-3xl"></div>
+    <div class="max-w-6xl mx-auto px-5 py-16 sm:py-24 relative z-10">
+      <nav class="text-xs text-cream/60 mb-5"><a href="index.html" class="hover:text-brass-light">Beranda</a> <span class="mx-1">/</span> <span class="text-brass-light">Kontak</span></nav>
+      <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-brass-light uppercase mb-4"><span class="h-px w-8 bg-brass"></span> Hubungi Kami</p>
+      <h1 class="font-serif text-4xl sm:text-6xl leading-tight max-w-3xl">Kontak & Lokasi</h1>
+      <p class="text-cream/80 mt-5 max-w-xl">Kami siap membantu Anda. Jangan ragu untuk menghubungi kami melalui informasi di bawah ini.</p>
+    </div>
+  </section>
+
+  <!-- Info Kontak + Form -->
+  <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="grid lg:grid-cols-2 gap-14">
+      <!-- Info -->
+      <div class="reveal">
+        <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Informasi</p>
+        <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream leading-tight mb-8">Data kontak sekolah.</h2>
+        <ul class="space-y-5">
+          <li class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-leaf to-pine flex items-center justify-center text-lg shrink-0">📍</div>
+            <div><p class="font-semibold text-pine dark:text-cream mb-0.5">Alamat</p><p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Jl. Raya Persada No. 123, Batam Center, Kota Batam, Kepulauan Riau 29461</p></div>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-pine flex items-center justify-center text-lg shrink-0">📞</div>
+            <div><p class="font-semibold text-pine dark:text-cream mb-0.5">Telepon</p><p class="text-sm text-pine/70 dark:text-cream/70">(0778) XXX-XXXX</p></div>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-600 to-pine flex items-center justify-center text-lg shrink-0">✉️</div>
+            <div><p class="font-semibold text-pine dark:text-cream mb-0.5">Email</p><p class="text-sm text-pine/70 dark:text-cream/70">info@smaputrapersada.sch.id</p></div>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-brass flex items-center justify-center text-lg shrink-0">🕐</div>
+            <div><p class="font-semibold text-pine dark:text-cream mb-0.5">Jam Operasional</p><p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Senin–Jumat: 07.00–15.00 WIB<br>Sabtu: 07.00–12.00 WIB (khusus PPDB)</p></div>
+          </li>
+        </ul>
+
+        <!-- Sosial Media -->
+        <div class="mt-10">
+          <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Sosial Media</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="#" class="inline-flex items-center gap-2 bg-cream-deep dark:bg-pine text-pine dark:text-cream border border-pine/10 dark:border-cream/10 text-sm font-medium px-5 py-2.5 rounded-full hover:border-brass hover:text-brass transition">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              Instagram
+            </a>
+            <a href="#" class="inline-flex items-center gap-2 bg-cream-deep dark:bg-pine text-pine dark:text-cream border border-pine/10 dark:border-cream/10 text-sm font-medium px-5 py-2.5 rounded-full hover:border-brass hover:text-brass transition">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              YouTube
+            </a>
+            <a href="#" class="inline-flex items-center gap-2 bg-cream-deep dark:bg-pine text-pine dark:text-cream border border-pine/10 dark:border-cream/10 text-sm font-medium px-5 py-2.5 rounded-full hover:border-brass hover:text-brass transition">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+              TikTok
+            </a>
+            <a href="#" class="inline-flex items-center gap-2 bg-cream-deep dark:bg-pine text-pine dark:text-cream border border-pine/10 dark:border-cream/10 text-sm font-medium px-5 py-2.5 rounded-full hover:border-brass hover:text-brass transition">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Facebook
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulir Pesan -->
+      <div class="reveal">
+        <div class="bg-cream-deep dark:bg-pine rounded-[1.5rem] p-8 ring-1 ring-pine/10 dark:ring-cream/10">
+          <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Kirim Pesan</p>
+          <h3 class="font-serif text-2xl text-pine dark:text-cream mb-6">Ada yang ingin ditanyakan?</h3>
+          <form id="contactForm" class="space-y-5">
+            <div>
+              <label class="block text-xs font-semibold text-pine/60 dark:text-cream/60 uppercase tracking-wide mb-1.5">Nama Lengkap</label>
+              <input type="text" required placeholder="Masukkan nama Anda" class="w-full bg-cream dark:bg-pine-deep border border-pine/15 dark:border-cream/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-brass transition placeholder:text-pine/30 dark:placeholder:text-cream/30">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-pine/60 dark:text-cream/60 uppercase tracking-wide mb-1.5">Email</label>
+              <input type="email" required placeholder="email@contoh.com" class="w-full bg-cream dark:bg-pine-deep border border-pine/15 dark:border-cream/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-brass transition placeholder:text-pine/30 dark:placeholder:text-cream/30">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-pine/60 dark:text-cream/60 uppercase tracking-wide mb-1.5">Telepon</label>
+              <input type="tel" placeholder="08xxxxxxxxxx" class="w-full bg-cream dark:bg-pine-deep border border-pine/15 dark:border-cream/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-brass transition placeholder:text-pine/30 dark:placeholder:text-cream/30">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-pine/60 dark:text-cream/60 uppercase tracking-wide mb-1.5">Subjek</label>
+              <select class="w-full bg-cream dark:bg-pine-deep border border-pine/15 dark:border-cream/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-brass transition text-pine/70 dark:text-cream/70">
+                <option>Pilih subjek...</option>
+                <option>Informasi PPDB</option>
+                <option>Informasi Umum</option>
+                <option>Kerja Sama</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-pine/60 dark:text-cream/60 uppercase tracking-wide mb-1.5">Pesan</label>
+              <textarea required rows="4" placeholder="Tulis pesan Anda..." class="w-full bg-cream dark:bg-pine-deep border border-pine/15 dark:border-cream/15 rounded-xl px-4 py-3 text-sm outline-none focus:border-brass transition placeholder:text-pine/30 dark:placeholder:text-cream/30 resize-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-brass text-pine-deep font-semibold px-6 py-3.5 rounded-full hover:bg-brass-light transition text-sm">Kirim Pesan</button>
+            <p class="text-xs text-pine/40 dark:text-cream/40 text-center">Formulir ini hanya tampilan. Fungsionalitas akan ditambahkan di fase backend.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Peta -->
+  <section class="relative z-10 bg-cream-deep dark:bg-pine">
+    <div class="max-w-6xl mx-auto px-5 py-20 sm:py-28">
+      <div class="reveal text-center max-w-2xl mx-auto mb-12">
+        <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Lokasi</p>
+        <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream">Temukan kami di peta.</h2>
+      </div>
+      <div class="reveal rounded-2xl overflow-hidden ring-1 ring-pine/10 dark:ring-cream/10 aspect-video">
+        <iframe src="https://maps.google.com/maps?q=1.1707668,104.1001968&z=16&output=embed" width="100%" height="100%" style="border:0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="rounded-[2rem] bg-gradient-to-br from-leaf to-pine text-cream px-8 sm:px-14 py-14 text-center relative overflow-hidden reveal">
+      <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brass/20 blur-3xl"></div>
+      <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto">Kunjungi kami langsung.</h2>
+      <p class="text-cream/80 mt-5 max-w-lg mx-auto">Kami tunggu kunjungan Anda di SMA Putra Persada Batam. Pendaftaran dibuka setiap hari kerja.</p>
+      <a href="ppdb.html" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">Info PPDB</a>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="shared.js"></script>
+  <script>
+    wireHeaderFooter('kontak.html');
+    /* Form handler (demo only) */
+    document.getElementById('contactForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      alert('Terima kasih! Pesan Anda telah diterima. (Demo — fungsionalitas backend menyusul)');
+      this.reset();
+    });
+  </script>
+</body>
+</html>

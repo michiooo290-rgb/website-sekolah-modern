@@ -1,0 +1,43 @@
+# ─── Environment & Secrets ──────────────────────
+.env
+.env.local
+.env.production
+
+# ─── IDE / Editor ──────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Claude Code ───────────────────────────────
+.claude/
+
+# ─── OS generated ──────────────────────────────
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# ─── Uploads (user content) ────────────────────
+admin/uploads/berita/*
+admin/uploads/guru/*
+admin/uploads/ppdb/*
+!admin/uploads/berita/.htaccess
+!admin/uploads/berita/index.html
+!admin/uploads/guru/.htaccess
+!admin/uploads/guru/index.html
+!admin/uploads/ppdb/.htaccess
+!admin/uploads/ppdb/index.html
+
+# ─── Logs ──────────────────────────────────────
+*.log
+
+# ─── Temporary ─────────────────────────────────
+*.tmp
+*.bak
+*.cache

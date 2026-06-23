@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Berita — SMA Putra Persada Batam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0/dist/index.global.js" integrity="sha384-nWTzRTCY/9V4Bo352ehygr1c4cnst4XN6lMR3fipakEQrhVpc0hEM5Dii3Amz0sT" crossorigin="anonymous"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+    @theme {
+      --color-pine: #0E3B2E;
+      --color-pine-deep: #08291F;
+      --color-leaf: #2F7D52;
+      --color-cream: #F7F3E9;
+      --color-cream-deep: #EFE8D6;
+      --color-brass: #C9A227;
+      --color-brass-light: #E0BC45;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+  </style>
+  <script>
+    document.documentElement.classList.toggle(
+      'dark',
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    );
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
+  <div id="site-header"></div>
+
+  <!-- Banner -->
+  <section class="relative z-10 bg-gradient-to-br from-pine to-pine-deep text-cream overflow-hidden">
+    <div class="absolute -top-10 -right-10 w-52 h-52 rounded-full bg-brass/15 blur-3xl"></div>
+    <div class="max-w-6xl mx-auto px-5 py-16 sm:py-24 relative z-10">
+      <nav class="text-xs text-cream/60 mb-5"><a href="index.html" class="hover:text-brass-light">Beranda</a> <span class="mx-1">/</span> <span class="text-brass-light">Berita</span></nav>
+      <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-brass-light uppercase mb-4"><span class="h-px w-8 bg-brass"></span> Informasi Terkini</p>
+      <h1 class="font-serif text-4xl sm:text-6xl leading-tight max-w-3xl">Berita & Kegiatan</h1>
+      <p class="text-cream/80 mt-5 max-w-xl">Ikuti kabar terbaru seputar prestasi, kegiatan, dan perkembangan SMA Putra Persada Batam.</p>
+    </div>
+  </section>
+
+  <!-- Grid Berita -->
+  <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <a href="berita-detail.html?id=osn-emas" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition">
+        <span class="inline-block bg-brass text-pine-deep text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">Prestasi</span>
+        <p class="text-xs text-pine/50 dark:text-cream/50 mb-2">12 Juni 2026</p>
+        <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition">Siswa Raih Emas Olimpiade Sains Provinsi Kepri</h3>
+        <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5">Perwakilan sekolah kembali mengharumkan nama di ajang OSN tingkat provinsi tahun ini.</p>
+        <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      </a>
+
+      <a href="berita-detail.html?id=pentas-seni" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition">
+        <span class="inline-block bg-leaf text-cream text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">Kegiatan</span>
+        <p class="text-xs text-pine/50 dark:text-cream/50 mb-2">08 Juni 2026</p>
+        <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition">Pentas Seni & Perpisahan Kelas XII Berlangsung Meriah</h3>
+        <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5">Acara perpisahan yang meriah dengan pertunjukan seni dari siswa-siswi kelas XII.</p>
+        <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      </a>
+
+      <a href="berita-detail.html?id=shalat-dhuha" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition">
+        <span class="inline-block bg-emerald-600 text-cream text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">Keagamaan</span>
+        <p class="text-xs text-pine/50 dark:text-cream/50 mb-2">03 Juni 2026</p>
+        <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition">Shalat Dhuha & Tahfiz Rutin Setiap Pagi</h3>
+        <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5">Kegiatan keagamaan pagi yang menjadi rutinitas siswa dalam membentuk karakter.</p>
+        <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      </a>
+
+      <a href="berita-detail.html?id=beasiswa" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition">
+        <span class="inline-block bg-amber-500 text-pine-deep text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">Beasiswa</span>
+        <p class="text-xs text-pine/50 dark:text-cream/50 mb-2">20 April 2026</p>
+        <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition">Siswa Berprestasi Raih Beasiswa Penuh Bina Lingkungan</h3>
+        <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5">Penghargaan bagi siswa berprestasi dari lingkungan sekolah yang membanggakan.</p>
+        <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      </a>
+
+      <a href="berita-detail.html?id=study-tour" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition">
+        <span class="inline-block bg-leaf text-cream text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">Kegiatan</span>
+        <p class="text-xs text-pine/50 dark:text-cream/50 mb-2">15 Maret 2026</p>
+        <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition">Study Tour ke Museum Nasional dan Taman Mini</h3>
+        <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5">Kunjungan edukasi siswa kelas X dan XI ke destinasi budaya dan sejarah di Jakarta.</p>
+        <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      </a>
+
+      <a href="berita-detail.html?id=penanaman-pohon" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition">
+        <span class="inline-block bg-teal-600 text-cream text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4">Lingkungan</span>
+        <p class="text-xs text-pine/50 dark:text-cream/50 mb-2">10 Februari 2026</p>
+        <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition">Aksi Penanaman 100 Pohon di Lingkungan Sekolah</h3>
+        <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5">Kegiatan peduli lingkungan oleh siswa dan guru dalam rangka Hari Lingkungan Hidup.</p>
+        <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative z-10 max-w-6xl mx-auto px-5 pb-20 sm:pb-28">
+    <div class="rounded-[2rem] bg-gradient-to-br from-leaf to-pine text-cream px-8 sm:px-14 py-14 text-center relative overflow-hidden reveal">
+      <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brass/20 blur-3xl"></div>
+      <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto">Ingin tahu lebih banyak?</h2>
+      <p class="text-cream/80 mt-5 max-w-lg mx-auto">Kunjungi sekolah kami atau hubungi langsung untuk informasi lebih lanjut.</p>
+      <a href="kontak.html" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">Hubungi Kami</a>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="shared.js"></script>
+  <script>wireHeaderFooter('berita.html');</script>
+</body>
+</html>

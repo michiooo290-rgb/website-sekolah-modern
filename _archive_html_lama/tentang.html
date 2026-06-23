@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tentang Kami — SMA Putra Persada Batam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0/dist/index.global.js" integrity="sha384-nWTzRTCY/9V4Bo352ehygr1c4cnst4XN6lMR3fipakEQrhVpc0hEM5Dii3Amz0sT" crossorigin="anonymous"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+    @theme {
+      --color-pine: #0E3B2E;
+      --color-pine-deep: #08291F;
+      --color-leaf: #2F7D52;
+      --color-cream: #F7F3E9;
+      --color-cream-deep: #EFE8D6;
+      --color-brass: #C9A227;
+      --color-brass-light: #E0BC45;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+  </style>
+  <script>
+    document.documentElement.classList.toggle(
+      'dark',
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    );
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
+  <div id="site-header"></div>
+
+  <!-- Banner -->
+  <section class="relative z-10 bg-gradient-to-br from-pine to-pine-deep text-cream overflow-hidden">
+    <div class="absolute -top-10 -right-10 w-52 h-52 rounded-full bg-brass/15 blur-3xl"></div>
+    <div class="max-w-6xl mx-auto px-5 py-16 sm:py-24 relative z-10">
+      <nav class="text-xs text-cream/60 mb-5"><a href="index.html" class="hover:text-brass-light">Beranda</a> <span class="mx-1">/</span> <span class="text-brass-light">Tentang</span></nav>
+      <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-brass-light uppercase mb-4"><span class="h-px w-8 bg-brass"></span> Mengenal Kami</p>
+      <h1 class="font-serif text-4xl sm:text-6xl leading-tight max-w-3xl">Tentang SMA Putra Persada</h1>
+      <p class="text-cream/80 mt-5 max-w-xl">Mengenal lebih dekat sejarah, visi, dan dedikasi kami dalam membentuk generasi unggul.</p>
+    </div>
+  </section>
+
+  <!-- Sejarah -->
+  <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="grid lg:grid-cols-2 gap-14 items-center">
+      <div class="reveal">
+        <div class="rounded-[2rem] overflow-hidden bg-gradient-to-br from-pine to-pine-deep aspect-[4/3] flex items-center justify-center shadow-xl">
+          <img src="logo.jpeg" alt="Logo SMA Putra Persada" class="w-40 h-40 object-contain opacity-80">
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Sejarah</p>
+        <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream leading-tight mb-5">Dari mimpi sederhana hingga sekolah terpercaya.</h2>
+        <p class="text-pine/70 dark:text-cream/70 leading-relaxed mb-4">SMA Putra Persada Batam didirikan pada tahun 2001 dengan visi menjadi lembaga pendidikan menengah yang mengintegrasikan keunggulan akademik dan pembentukan karakter islami. Bermula dari sebuah gedung sederhana dengan 60 siswa, sekolah ini terus tumbuh menjadi salah satu SMA swasta terbaik di Kota Batam.</p>
+        <p class="text-pine/70 dark:text-cream/70 leading-relaxed mb-4">Selama lebih dari dua dekade, kami telah meluluskan ribuan siswa yang tersebar di perguruan tinggi negeri dan swasta ternama di seluruh Indonesia. Dedikasi para pendidik serta dukungan orang tua menjadi kunci keberhasilan kami.</p>
+        <p class="text-pine/70 dark:text-cream/70 leading-relaxed">Kini, dengan fasilitas modern dan Kurikulum Merdeka, SMA Putra Persada Batam siap menghadapi tantangan pendidikan abad 21 dan mempersiapkan siswa untuk masa depan global.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sambutan Kepala Sekolah -->
+  <section class="relative z-10 bg-pine text-cream">
+    <div class="max-w-6xl mx-auto px-5 py-20 sm:py-28">
+      <div class="reveal max-w-xl mb-14">
+        <p class="text-xs font-semibold tracking-widest text-brass-light uppercase mb-4">Sambutan</p>
+        <h2 class="font-serif text-3xl sm:text-4xl leading-tight">Kata Kepala Sekolah.</h2>
+      </div>
+      <div class="grid lg:grid-cols-12 gap-10 items-start reveal">
+        <div class="lg:col-span-4">
+          <div class="relative overflow-hidden rounded-2xl aspect-[3/4] ring-1 ring-cream/10 bg-pine-deep">
+            <img src="guru1.jpeg" alt="Budi Santoso, M.Pd." class="w-full h-full object-cover object-top">
+            <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-pine-deep/70 to-transparent"></div>
+          </div>
+          <div class="mt-4">
+            <p class="font-serif text-lg text-cream">Budi Santoso, M.Pd.</p>
+            <p class="text-xs text-brass-light tracking-wide">Kepala Sekolah</p>
+          </div>
+        </div>
+        <div class="lg:col-span-8">
+          <p class="font-serif text-6xl text-brass-light leading-none mb-2">"</p>
+          <blockquote class="font-serif text-xl sm:text-2xl leading-snug mb-6">Assalamu'alaikum Warahmatullahi Wabarakatuh.</blockquote>
+          <p class="text-cream/80 leading-relaxed mb-4">Puji syukur kami panjatkan ke hadirat Allah SWT atas segala rahmat dan karunia-Nya. SMA Putra Persada Batam hadir sebagai wadah pendidikan yang tidak hanya mengutamakan kecerdasan akademik, tetapi juga pembentukan karakter dan akhlak mulia.</p>
+          <p class="text-cream/80 leading-relaxed mb-4">Kami percaya bahwa setiap siswa memiliki potensi yang ungal. Dengan pendampingan yang tepat, lingkungan belajar yang kondusif, serta kerja sama antara sekolah dan orang tua, kami berkomitmen untuk mengembangkan potensi tersebut secara optimal.</p>
+          <p class="text-cream/80 leading-relaxed mb-4">Mari bersama-sama membangun generasi yang cerdas, berkarakter, dan siap menghadapi tantangan masa depan. Kami mengundang Anda untuk menjadi bagian dari keluarga besar SMA Putra Persada Batam.</p>
+          <p class="text-cream/80 leading-relaxed">Wassalamu'alaikum Warahmatullahi Wabarakatuh.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profil Sekolah -->
+  <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
+      <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Profil</p>
+      <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream">Sekolah dalam angka.</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+      <div class="rounded-2xl border border-pine/10 dark:border-cream/10 p-7 text-center bg-cream-deep/40 dark:bg-pine/40"><p class="font-serif text-4xl text-brass dark:text-brass-light">25+</p><p class="text-xs text-pine/60 dark:text-cream/60 mt-2 uppercase tracking-wide">Tahun Berdiri</p></div>
+      <div class="rounded-2xl border border-pine/10 dark:border-cream/10 p-7 text-center bg-cream-deep/40 dark:bg-pine/40"><p class="font-serif text-4xl text-brass dark:text-brass-light">750+</p><p class="text-xs text-pine/60 dark:text-cream/60 mt-2 uppercase tracking-wide">Peserta Didik</p></div>
+      <div class="rounded-2xl border border-pine/10 dark:border-cream/10 p-7 text-center bg-cream-deep/40 dark:bg-pine/40"><p class="font-serif text-4xl text-brass dark:text-brass-light">45+</p><p class="text-xs text-pine/60 dark:text-cream/60 mt-2 uppercase tracking-wide">Guru & Staf</p></div>
+      <div class="rounded-2xl border border-pine/10 dark:border-cream/10 p-7 text-center bg-cream-deep/40 dark:bg-pine/40"><p class="font-serif text-4xl text-brass dark:text-brass-light">25+</p><p class="text-xs text-pine/60 dark:text-cream/60 mt-2 uppercase tracking-wide">Ekstrakurikuler</p></div>
+    </div>
+  </section>
+
+  <!-- Fasilitas -->
+  <section class="relative z-10 bg-cream-deep dark:bg-pine">
+    <div class="max-w-6xl mx-auto px-5 py-20 sm:py-28">
+      <div class="reveal max-w-xl mb-14">
+        <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Fasilitas</p>
+        <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream leading-tight">Lingkungan belajar yang mendukung.</h2>
+        <p class="text-pine/70 dark:text-cream/70 mt-4 text-sm">Fasilitas modern untuk mendukung proses pembelajaran yang optimal.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
+        <div class="bg-cream dark:bg-pine-deep rounded-2xl p-6 ring-1 ring-pine/10 dark:ring-cream/10">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-leaf to-pine flex items-center justify-center text-xl mb-4">🏫</div>
+          <h3 class="font-serif text-lg text-pine dark:text-cream mb-2">Ruang Kelas Modern</h3>
+          <p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Ruang kelas ber-AC dengan proyektor dan papan interaktif untuk pembelajaran yang nyaman.</p>
+        </div>
+        <div class="bg-cream dark:bg-pine-deep rounded-2xl p-6 ring-1 ring-pine/10 dark:ring-cream/10">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-pine flex items-center justify-center text-xl mb-4">🔬</div>
+          <h3 class="font-serif text-lg text-pine dark:text-cream mb-2">Laboratorium IPA</h3>
+          <p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Lab Fisika, Kimia, dan Biologi dengan peralatan lengkap untuk praktikum siswa.</p>
+        </div>
+        <div class="bg-cream dark:bg-pine-deep rounded-2xl p-6 ring-1 ring-pine/10 dark:ring-cream/10">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-600 to-pine flex items-center justify-center text-xl mb-4">💻</div>
+          <h3 class="font-serif text-lg text-pine dark:text-cream mb-2">Laboratorium Komputer</h3>
+          <p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Lab komputer dengan spesifikasi terkini dan akses internet cepat untuk pembelajaran digital.</p>
+        </div>
+        <div class="bg-cream dark:bg-pine-deep rounded-2xl p-6 ring-1 ring-pine/10 dark:ring-cream/10">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-brass flex items-center justify-center text-xl mb-4">📚</div>
+          <h3 class="font-serif text-lg text-pine dark:text-cream mb-2">Perpustakaan</h3>
+          <p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Koleksi buku lengkap, ruang baca nyaman, dan akses e-book untuk literasi siswa.</p>
+        </div>
+        <div class="bg-cream dark:bg-pine-deep rounded-2xl p-6 ring-1 ring-pine/10 dark:ring-cream/10">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-leaf to-pine flex items-center justify-center text-xl mb-4">🕌</div>
+          <h3 class="font-serif text-lg text-pine dark:text-cream mb-2">Musholla</h3>
+          <p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Musholla luas untuk shalat berjamaah, tahfiz, dan kegiatan keagamaan siswa.</p>
+        </div>
+        <div class="bg-cream dark:bg-pine-deep rounded-2xl p-6 ring-1 ring-pine/10 dark:ring-cream/10">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pine to-pine-deep flex items-center justify-center text-xl mb-4">⚽</div>
+          <h3 class="font-serif text-lg text-pine dark:text-cream mb-2">Lapangan & Fasilitas Olahraga</h3>
+          <p class="text-sm text-pine/70 dark:text-cream/70 leading-relaxed">Lapangan futsal, basket, dan area olahraga untuk pembinaan fisik dan mental siswa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="rounded-[2rem] bg-gradient-to-br from-leaf to-pine text-cream px-8 sm:px-14 py-14 text-center relative overflow-hidden reveal">
+      <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brass/20 blur-3xl"></div>
+      <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto">Bergabunglah bersama kami.</h2>
+      <p class="text-cream/80 mt-5 max-w-lg mx-auto">SMA Putra Persada Batam — tempat terbaik untuk memulai perjalanan pendidikan putra-putri Anda.</p>
+      <a href="ppdb.html" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">Daftar PPDB</a>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="shared.js"></script>
+  <script>wireHeaderFooter('tentang.html');</script>
+</body>
+</html>
