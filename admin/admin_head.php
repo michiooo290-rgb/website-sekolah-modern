@@ -114,6 +114,9 @@ $iconPaths = [
     .admin-card{box-shadow:0 1px 2px rgba(14,59,46,.04),0 6px 16px -10px rgba(14,59,46,.12)}
     /* Table header band */
     table thead tr{background:rgba(14,59,46,.03)}
+    /* Hide sidebar scrollbar (still scrollable on short screens) */
+    #sidebar nav{scrollbar-width:none;-ms-overflow-style:none}
+    #sidebar nav::-webkit-scrollbar{display:none}
   </style>
 </head>
 <body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
@@ -136,12 +139,12 @@ $iconPaths = [
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-5">
+    <nav class="flex-1 overflow-y-auto py-3 px-3 space-y-3.5">
       <?php
       $unread = db()->query('SELECT COUNT(*) FROM pesan_kontak WHERE dibaca = 0')->fetchColumn();
       foreach ($navGroups as $groupLabel => $items): ?>
         <div>
-          <p class="px-3 mb-1.5 text-[10px] font-bold tracking-[0.18em] text-cream/35 uppercase"><?php echo $groupLabel; ?></p>
+          <p class="px-3 mb-1 text-[10px] font-bold tracking-[0.18em] text-cream/35 uppercase"><?php echo $groupLabel; ?></p>
           <div class="space-y-0.5">
             <?php foreach ($items as $item):
               $isActive = $currentPage === $item['file']; ?>
