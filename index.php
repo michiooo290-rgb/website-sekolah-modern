@@ -43,8 +43,8 @@ include __DIR__ . '/includes/head.php';
       <div class="relative mx-auto max-w-sm">
         <div class="absolute -top-6 -left-6 w-24 h-24 rounded-full bg-brass/30 blur-2xl"></div>
         <div class="absolute -bottom-8 -right-4 w-32 h-32 rounded-full bg-leaf/30 blur-2xl"></div>
-        <div class="rounded-[2.5rem] overflow-hidden aspect-square shadow-2xl ring-1 ring-pine/10">
-          <img src="assets/img/hero-ilustrasi.jpeg" alt="Ilustrasi siswa <?php echo esc($namaSekolah); ?> belajar bersama" class="w-full h-full object-cover">
+        <div class="aspect-square flex items-center justify-center">
+          <img src="assets/img/hero-ilustrasi.png" alt="Ilustrasi siswa <?php echo esc($namaSekolah); ?> belajar bersama" class="w-full h-full object-contain drop-shadow-xl">
         </div>
       </div>
     </div>
