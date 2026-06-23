@@ -36,16 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($honeypot !== '') {
         $formMsg = '<div class="bg-leaf/20 border border-leaf/40 text-leaf dark:text-brass-light rounded-xl px-5 py-4 mb-6 text-sm font-semibold">✓ Pesan berhasil dikirim. Terima kasih!</div>';
     } else {
-        // Rate limiting: max 3 submissions per IP per 10 minutes
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM pesan_kontak WHERE tanggal > DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND telepon = ?");
-        // Use a simple rate limit check via session
-        $_SESSION['contact_attempts'] = ($_SESSION['contact_attempts'] ?? 0);
-        $_SESSION['contact_last_time'] = $_SESSION['contact_last_time'] ?? 0;
-        $timeSince = time() - $_SESSION['contact_last_time'];
-        if ($timeSince > 600) { // Reset after 10 minutes
-            $_SESSION['contact_attempts'] = 0;
-        }
+        // Rate limiting: max 3 submissions per IP+email per 10 minutes
+        $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM pesan_kontak WHERE tanggal > DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND email = ?");
+        $stmt->execute([$emailIn]);
+        $emailAttempts = $stmt->fetchColumn();
 
         // Validate
         $errors = [];
@@ -55,13 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (mb_strlen($nama) > 100) $errors[] = 'Nama maksimal 100 karakter.';
         if (mb_strlen($emailIn) > 150) $errors[] = 'Email maksimal 150 karakter.';
         if (mb_strlen($pesan) > 5000) $errors[] = 'Pesan maksimal 5000 karakter.';
-        if ($_SESSION['contact_attempts'] >= 3) $errors[] = 'Terlalu banyak pesan. Coba lagi dalam 10 menit.';
+        if ($emailAttempts >= 3) $errors[] = 'Terlalu banyak pesan dari email ini. Coba lagi dalam 10 menit.';
 
         if (empty($errors)) {
             $stmt = $pdo->prepare('INSERT INTO pesan_kontak (nama, email, telepon, subjek, pesan) VALUES (?, ?, ?, ?, ?)');
             $stmt->execute([$nama, $emailIn, $teleponIn ?: null, $subjek ?: null, $pesan]);
-            $_SESSION['contact_attempts']++;
-            $_SESSION['contact_last_time'] = time();
             $formMsg = '<div class="bg-leaf/20 border border-leaf/40 text-leaf dark:text-brass-light rounded-xl px-5 py-4 mb-6 text-sm font-semibold">✓ Pesan berhasil dikirim. Terima kasih!</div>';
         } else {
             $formMsg = '<div class="bg-red-100 border border-red-300 text-red-800 rounded-xl px-5 py-4 mb-6 text-sm">' . implode('<br>', array_map('esc', $errors)) . '</div>';

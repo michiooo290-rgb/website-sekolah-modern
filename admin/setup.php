@@ -6,6 +6,14 @@
  * HAPUS FILE INI setelah selesai!
  */
 
+// ── Security: Block if not local environment ──────────
+$allowedEnvs = ['local', 'development'];
+$currentEnv  = getenv('APP_ENV') ?: 'local';
+if (!in_array($currentEnv, $allowedEnvs)) {
+    http_response_code(403);
+    exit('403 Forbidden');
+}
+
 require_once __DIR__ . '/../config/koneksi.php';
 
 session_start();
@@ -32,8 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password  = $_POST['password']  ?? '';
     $password2 = $_POST['password2'] ?? '';
 
-    if (strlen($password) < 6) {
-        $error = 'Password minimal 6 karakter.';
+    if (strlen($password) < 8) {
+        $error = 'Password minimal 8 karakter.';
+    } elseif (!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password)) {
+        $error = 'Password harus mengandung huruf besar, huruf kecil, dan angka.';
     } elseif ($password !== $password2) {
         $error = 'Konfirmasi password tidak cocok.';
     } else {
@@ -41,6 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = db()->prepare('UPDATE admin SET password = ? WHERE username = ?');
         $stmt->execute([$hash, 'admin']);
         $success = 'Password admin berhasil diatur! Anda sekarang bisa login.';
+
+        // Auto-delete this setup file for security
+        $selfPath = __FILE__;
+        if (is_writable($selfPath)) {
+            unlink($selfPath);
+            $success .= ' File setup.php telah dihapus otomatis untuk keamanan.';
+        }
     }
 }
 ?>
@@ -53,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0/dist/index.global.js" integrity="sha384-nWTzRTCY/9V4Bo352ehygr1c4cnst4XN6lMR3fipakEQrhVpc0hEM5Dii3Amz0sT" crossorigin="anonymous"></script>
+  <script nonce="<?php echo $cspNonce ?? ''; ?>" src="../assets/js/tailwind.js"></script>
   <style type="text/tailwindcss">
     @theme {
       --color-pine: #0E3B2E;

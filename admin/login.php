@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $ip = get_client_ip();
 
         if ($username === '' || $password === '') {
             $error = 'Username dan password wajib diisi.';
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0/dist/index.global.js" integrity="sha384-nWTzRTCY/9V4Bo352ehygr1c4cnst4XN6lMR3fipakEQrhVpc0hEM5Dii3Amz0sT" crossorigin="anonymous"></script>
+  <script nonce="<?php echo $cspNonce ?? ''; ?>" src="../assets/js/tailwind.js"></script>
   <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
     @theme {
@@ -237,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
   </div>
 
-  <script>
+  <script nonce="<?php echo $cspNonce ?? ''; ?>">
     const pw = document.getElementById('password');
     const btn = document.getElementById('togglePw');
     const eyeOpen = document.getElementById('eyeOpen');

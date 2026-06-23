@@ -1,0 +1,26 @@
+# ── Security: Block sensitive files ──────────────────
+<FilesMatch "\.(env|sql|log|bak|tmp|ini|conf|cfg|yml|yaml|xml|md|json|gitignore)$">
+    Require all denied
+</FilesMatch>
+
+# Block setup.php explicitly
+<Files "setup.php">
+    Require all denied
+</Files>
+
+# Block .git directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule (^|/)\.git - [F,L]
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
+
+# ── Security Headers ────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

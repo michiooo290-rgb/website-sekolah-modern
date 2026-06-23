@@ -19,13 +19,13 @@ $table = $_POST['t'] ?? '';
 $id    = (int)($_POST['id'] ?? 0);
 
 $allowed = [
-    'berita'    => ['table' => 'berita',           'page' => 'kelola_berita.php'],
-    'guru'      => ['table' => 'guru',             'page' => 'kelola_guru.php'],
-    'ekskul'    => ['table' => 'ekstrakurikuler',  'page' => 'kelola_ekskul.php'],
-    'visi_misi' => ['table' => 'visi_misi',        'page' => 'kelola_visimisi.php'],
-    'tentang'   => ['table' => 'tentang',          'page' => 'kelola_tentang.php'],
-    'ppdb'      => ['table' => 'ppdb_info',        'page' => 'kelola_ppdb.php'],
-    'pesan'     => ['table' => 'pesan_kontak',     'page' => 'pesan_masuk.php'],
+    'berita'    => ['table' => 'berita',           'page' => 'kelola_berita.php',    'roles' => ['editor','superadmin']],
+    'guru'      => ['table' => 'guru',             'page' => 'kelola_guru.php',      'roles' => ['superadmin']],
+    'ekskul'    => ['table' => 'ekstrakurikuler',  'page' => 'kelola_ekskul.php',    'roles' => ['editor','superadmin']],
+    'visi_misi' => ['table' => 'visi_misi',        'page' => 'kelola_visimisi.php',  'roles' => ['superadmin']],
+    'tentang'   => ['table' => 'tentang',          'page' => 'kelola_tentang.php',   'roles' => ['superadmin']],
+    'ppdb'      => ['table' => 'ppdb_info',        'page' => 'kelola_ppdb.php',      'roles' => ['superadmin']],
+    'pesan'     => ['table' => 'pesan_kontak',     'page' => 'pesan_masuk.php',      'roles' => ['editor','superadmin']],
 ];
 
 if (!isset($allowed[$table]) || $id <= 0) {
@@ -35,6 +35,14 @@ if (!isset($allowed[$table]) || $id <= 0) {
 }
 
 $target = $allowed[$table];
+
+// Role-based access control
+$userRole = $_SESSION['admin_role'] ?? 'editor';
+if (!in_array($userRole, $target['roles'])) {
+    flash('error', 'Anda tidak memiliki akses untuk menghapus data ini.');
+    header('Location: ' . $target['page']);
+    exit;
+}
 $pdo = db();
 $stmt = $pdo->prepare("DELETE FROM {$target['table']} WHERE id=?");
 $stmt->execute([$id]);

@@ -17,7 +17,7 @@ $fullTitle   = $pageTitle === $namaSekolah ? "$namaSekolah — $tagline" : "$pag
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Tailwind di-bundel lokal agar tetap jalan tanpa internet/CDN -->
-  <script src="assets/js/tailwind.js"></script>
+  <script nonce="<?php echo $cspNonce ?? ''; ?>" src="assets/js/tailwind.js"></script>
   <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
     @theme {
@@ -32,7 +32,7 @@ $fullTitle   = $pageTitle === $namaSekolah ? "$namaSekolah — $tagline" : "$pag
       --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
   </style>
-  <script>
+  <script nonce="<?php echo $cspNonce ?? ''; ?>">
     /* Tema: pakai pilihan tersimpan; jika belum ada, ikuti OS */
     (function(){
       var saved = localStorage.getItem('theme');
@@ -43,7 +43,7 @@ $fullTitle   = $pageTitle === $namaSekolah ? "$namaSekolah — $tagline" : "$pag
   <link rel="stylesheet" href="assets/css/styles.css">
 
   <!-- Lenis smooth scroll -->
-  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script nonce="<?php echo $cspNonce ?? ''; ?>" src="assets/js/lenis.min.js"></script>
 </head>
 <body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
   <div id="site-header"></div>

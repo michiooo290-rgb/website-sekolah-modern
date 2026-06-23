@@ -3,11 +3,11 @@
     <!-- Admin footer -->
     <footer class="border-t border-pine/8 dark:border-cream/8 px-5 lg:px-8 py-4 text-xs text-pine/40 dark:text-cream/40 flex items-center justify-between">
       <span>&copy; <?php echo date('Y'); ?> SMA Putra Persada Batam</span>
-      <span>Panel Admin v1.0</span>
+      <span>Panel Admin</span>
     </footer>
   </div>
 
-  <script>
+  <script nonce="<?php echo $cspNonce ?? ''; ?>">
     /* Sidebar toggle */
     function toggleSidebar() {
       const sb = document.getElementById('sidebar');

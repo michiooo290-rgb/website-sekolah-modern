@@ -26,11 +26,23 @@ function require_role(string ...$roles): void {
     }
 }
 
-/* ── Brute force protection ───────────────────────── */
-function check_login_attempts(string $username, string $ip): bool {
-    $pdo = db();
+/* ── Get real client IP (behind proxy) ─────────────── */
+function get_client_ip(): string {
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        return trim($ips[0]);
+    }
+    if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+        return $_SERVER['HTTP_X_REAL_IP'];
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+}
 
-    // Create table if not exists
+/* ── Brute force protection ───────────────────────── */
+function ensure_login_attempts_table(): void {
+    static $ensured = false;
+    if ($ensured) return;
+    $pdo = db();
     $pdo->prepare("CREATE TABLE IF NOT EXISTS login_attempts (
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(50) NOT NULL,
@@ -39,13 +51,19 @@ function check_login_attempts(string $username, string $ip): bool {
         INDEX idx_username_ip (username, ip_address),
         INDEX idx_attempted (attempted_at)
     ) ENGINE=InnoDB")->execute();
+    $ensured = true;
+}
+
+function check_login_attempts(string $username, string $ip): bool {
+    $pdo = db();
+    ensure_login_attempts_table();
 
     // Clean old attempts (older than 15 minutes)
     $pdo->prepare("DELETE FROM login_attempts WHERE attempted_at < DATE_SUB(NOW(), INTERVAL 15 MINUTE)")->execute();
 
-    // Count recent attempts for this IP
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip_address = ? AND attempted_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)");
-    $stmt->execute([$ip]);
+    // Count recent attempts for this IP and username (combined protection)
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM login_attempts WHERE (ip_address = ? OR username = ?) AND attempted_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)");
+    $stmt->execute([$ip, $username]);
     $attempts = $stmt->fetchColumn();
 
     return $attempts < 5; // Allow if less than 5 attempts
@@ -106,6 +124,15 @@ function upload_gambar(array $file, string $dir, array $allowed = ['jpg','jpeg',
     if ($imageInfo === false) return null;
     $validMimes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!in_array($imageInfo['mime'], $validMimes)) return null;
+
+    // Verify extension matches actual MIME type
+    $mimeToExt = [
+        'image/jpeg' => ['jpg', 'jpeg'],
+        'image/png'  => ['png'],
+        'image/webp' => ['webp'],
+    ];
+    $validExts = $mimeToExt[$imageInfo['mime']] ?? [];
+    if (!in_array($ext, $validExts)) return null;
 
     $name = uniqid() . '_' . time() . '.' . $ext;
     $dest = $dir . '/' . $name;

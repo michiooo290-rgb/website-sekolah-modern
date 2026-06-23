@@ -272,3 +272,19 @@ CREATE TABLE pesan_kontak (
   tanggal DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   dibaca  TINYINT(1)   NOT NULL DEFAULT 0
 ) ENGINE=InnoDB;
+
+-- ─────────────────────────────────────────────
+-- 10. audit_log
+-- ─────────────────────────────────────────────
+CREATE TABLE audit_log (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT          DEFAULT NULL,
+  action     VARCHAR(50)  NOT NULL,
+  table_name VARCHAR(50)  DEFAULT NULL,
+  record_id  INT          DEFAULT NULL,
+  ip_address VARCHAR(45)  DEFAULT NULL,
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_user (user_id),
+  INDEX idx_action (action),
+  INDEX idx_created (created_at)
+) ENGINE=InnoDB;
