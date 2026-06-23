@@ -6,7 +6,7 @@
 require_once __DIR__ . '/config/koneksi.php';
 $pdo = db();
 
-$visi    = $pdo->query("SELECT * FROM visi_misi WHERE tipe='visi' ORDER BY urutan ASC LIMIT 1")->fetch();
+$visi    = $pdo->query("SELECT * FROM visi_misi WHERE tipe='visi' ORDER BY urutan ASC")->fetchAll();
 $misi    = $pdo->query("SELECT * FROM visi_misi WHERE tipe='misi' ORDER BY urutan ASC")->fetchAll();
 $tujuan  = $pdo->query("SELECT * FROM visi_misi WHERE tipe='tujuan' ORDER BY urutan ASC")->fetchAll();
 $nilai   = $pdo->query("SELECT * FROM visi_misi WHERE tipe='nilai' ORDER BY urutan ASC")->fetchAll();
@@ -25,11 +25,14 @@ include __DIR__ . '/includes/head.php';
   </div>
 </section>
 
-<section class="relative z-10 max-w-5xl mx-auto px-5 py-20 sm:py-28">
-  <div class="reveal text-center">
-    <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-5">Visi</p>
-    <blockquote class="font-serif text-2xl sm:text-4xl leading-snug text-pine dark:text-cream max-w-3xl mx-auto"><span class="text-brass">"</span><?php echo esc($visi['isi']); ?><span class="text-brass">"</span></blockquote>
-    <div class="w-16 h-1 bg-brass rounded-full mx-auto mt-8"></div>
+<section class="relative z-10">
+  <div class="max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="reveal max-w-xl mb-12"><p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Visi</p><h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream leading-tight">Landasan utama arah sekolah.</h2></div>
+    <div class="grid sm:grid-cols-2 gap-x-10 gap-y-8 reveal">
+      <?php foreach ($visi as $i => $v): ?>
+      <div class="flex gap-5"><span class="numdot text-brass text-3xl leading-none shrink-0">0<?php echo $i + 1; ?></span><p class="text-pine/85 dark:text-cream/85 leading-relaxed pt-1"><?php echo esc($v['isi']); ?></p></div>
+      <?php endforeach; ?>
+    </div>
   </div>
 </section>
 

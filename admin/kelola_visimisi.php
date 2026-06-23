@@ -8,25 +8,11 @@ $pdo = db();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
-    // Save visi
-    if ($action === 'save_visi') {
-        $isi = trim($_POST['isi'] ?? '');
-        $existing = $pdo->query("SELECT id FROM visi_misi WHERE tipe='visi' LIMIT 1")->fetch();
-        if ($existing) {
-            $pdo->prepare("UPDATE visi_misi SET isi=? WHERE tipe='visi'")->execute([$isi]);
-        } else {
-            $pdo->prepare("INSERT INTO visi_misi (tipe, isi, urutan) VALUES ('visi',?,0)")->execute([$isi]);
-        }
-        flash('success', 'Visi berhasil disimpan.');
-        header('Location: kelola_visimisi.php');
-        exit;
-    }
-
-    // Add item (misi/tujuan/nilai)
+    // Add item (visi/misi/tujuan/nilai)
     if ($action === 'add_item') {
         $tipe = $_POST['tipe'] ?? '';
         $isi  = trim($_POST['isi'] ?? '');
-        if (in_array($tipe, ['misi','tujuan','nilai']) && $isi !== '') {
+        if (in_array($tipe, ['visi','misi','tujuan','nilai']) && $isi !== '') {
             $max = $pdo->prepare("SELECT COALESCE(MAX(urutan),0) FROM visi_misi WHERE tipe=?");
             $max->execute([$tipe]);
             $urutan = $max->fetchColumn() + 1;
@@ -58,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
 }
 
 // Load data
-$visi   = $pdo->query("SELECT * FROM visi_misi WHERE tipe='visi' LIMIT 1")->fetch();
+$visi   = $pdo->query("SELECT * FROM visi_misi WHERE tipe='visi' ORDER BY urutan")->fetchAll();
 $misi   = $pdo->query("SELECT * FROM visi_misi WHERE tipe='misi' ORDER BY urutan")->fetchAll();
 $tujuan = $pdo->query("SELECT * FROM visi_misi WHERE tipe='tujuan' ORDER BY urutan")->fetchAll();
 $nilai  = $pdo->query("SELECT * FROM visi_misi WHERE tipe='nilai' ORDER BY urutan")->fetchAll();
@@ -69,24 +55,9 @@ include 'admin_head.php';
 
 <div class="max-w-3xl space-y-8">
 
-  <!-- Visi -->
-  <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
-    <h3 class="font-serif text-lg font-bold mb-5 flex items-center gap-2">
-      <span class="w-1 h-5 rounded-full bg-brass"></span> Visi
-    </h3>
-    <form method="POST">
-      <?php echo csrf_field(); ?>
-      <input type="hidden" name="action" value="save_visi">
-      <textarea name="isi" rows="3" required
-                class="w-full px-4 py-2.5 rounded-xl bg-cream dark:bg-pine-deep border border-pine/15 dark:border-cream/15 focus:border-brass focus:ring-2 focus:ring-brass/20 outline-none transition text-sm mb-4"><?php echo esc($visi['isi'] ?? ''); ?></textarea>
-      <div class="flex justify-end">
-        <button type="submit" class="btn-action px-6 py-2.5 rounded-xl bg-brass hover:bg-brass-light text-pine-deep font-semibold text-sm shadow-md shadow-brass/20 hover:shadow-lg transition">Simpan Visi</button>
-      </div>
-    </form>
-  </div>
-
   <?php
   $sections = [
+    ['key'=>'visi',   'label'=>'Visi',   'data'=>$visi],
     ['key'=>'misi',   'label'=>'Misi',   'data'=>$misi],
     ['key'=>'tujuan', 'label'=>'Tujuan', 'data'=>$tujuan],
     ['key'=>'nilai',  'label'=>'Nilai',  'data'=>$nilai],
