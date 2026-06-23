@@ -1,4 +1,9 @@
 html { scroll-padding-top: 80px; }
+/* PENTING: wrapper #site-header dibuat "display:contents" agar
+   navbar (position:sticky) menempel relatif ke seluruh halaman,
+   bukan terkurung di dalam wrapper yang pendek. Tanpa ini, navbar
+   ikut hilang saat di-scroll ke bawah. */
+#site-header { display: contents; }
 .font-serif { font-family: var(--font-serif); }
 
 /* Grain / paper texture overlay on cream */
