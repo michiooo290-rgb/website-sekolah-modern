@@ -33,10 +33,12 @@ $fullTitle   = $pageTitle === $namaSekolah ? "$namaSekolah — $tagline" : "$pag
     }
   </style>
   <script>
-    document.documentElement.classList.toggle(
-      'dark',
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    );
+    /* Tema: pakai pilihan tersimpan; jika belum ada, ikuti OS */
+    (function(){
+      var saved = localStorage.getItem('theme');
+      var isDark = saved ? (saved === 'dark') : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', isDark);
+    })();
   </script>
   <link rel="stylesheet" href="assets/css/styles.css">
 
