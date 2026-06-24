@@ -43,11 +43,11 @@ include __DIR__ . '/includes/head.php';
     <a href="berita-detail.php?slug=<?php echo rawurlencode($b['slug']); ?>"
        class="group reveal lift flex flex-col bg-cream-deep dark:bg-pine rounded-[1.5rem] overflow-hidden ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass/60"
        data-delay="<?php echo $delay; ?>">
-      <div class="zoomimg relative aspect-[16/10] overflow-hidden">
+      <div class="zoomimg relative w-full pt-[62.5%]">
         <?php if ($gambarUrl): ?>
-          <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($b['judul']); ?>" class="w-full h-full object-cover">
+          <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($b['judul']); ?>" class="absolute inset-0 w-full h-full object-cover">
         <?php else: ?>
-          <div class="w-full h-full bg-gradient-to-br from-leaf to-pine flex items-center justify-center">
+          <div class="absolute inset-0 bg-gradient-to-br from-leaf to-pine flex items-center justify-center">
             <span class="font-serif text-cream/90 text-2xl tracking-wide"><?php echo esc($b['kategori']); ?></span>
           </div>
         <?php endif; ?>
