@@ -44,15 +44,18 @@ include __DIR__ . '/includes/head.php';
   </div>
 </section>
 
-<section class="relative z-10 max-w-3xl mx-auto px-5 py-20 sm:py-28">
-  <article class="reveal">
-    <?php if ($berita['gambar']): ?>
-    <div class="rounded-2xl overflow-hidden mb-8">
-      <img src="admin/uploads/berita/<?php echo esc($berita['gambar']); ?>" alt="<?php echo esc($berita['judul']); ?>" class="w-full object-cover">
-    </div>
-    <?php endif; ?>
-    <h2 class="font-serif text-2xl sm:text-3xl text-pine dark:text-cream leading-snug mb-6"><?php echo esc($berita['judul']); ?></h2>
-    <p class="text-xs text-pine/50 dark:text-cream/50 mb-8 uppercase tracking-wide"><?php echo esc($berita['kategori']); ?> · <?php echo tglIndo($berita['tanggal']); ?></p>
+<?php $gambarUrl = !empty($berita['gambar']) ? 'admin/uploads/berita/' . $berita['gambar'] : null; ?>
+
+<?php if ($gambarUrl): ?>
+<section class="relative z-10 max-w-4xl mx-auto px-5 -mt-10 sm:-mt-16">
+  <figure class="reveal rounded-[1.75rem] overflow-hidden shadow-2xl ring-1 ring-pine/10 dark:ring-cream/10">
+    <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($berita['judul']); ?>" class="w-full h-auto object-cover">
+  </figure>
+</section>
+<?php endif; ?>
+
+<section class="relative z-10 max-w-3xl mx-auto px-5 <?php echo $gambarUrl ? 'pt-12 sm:pt-16' : 'pt-16 sm:pt-20'; ?> pb-12 sm:pb-16">
+  <article class="reveal artikel text-pine/80 dark:text-cream/75">
     <?php echo sanitize_html($berita['isi']); ?>
   </article>
 </section>

@@ -1,9 +1,4 @@
 html { scroll-padding-top: 80px; }
-/* PENTING: wrapper #site-header dibuat "display:contents" agar
-   navbar (position:sticky) menempel relatif ke seluruh halaman,
-   bukan terkurung di dalam wrapper yang pendek. Tanpa ini, navbar
-   ikut hilang saat di-scroll ke bawah. */
-#site-header { display: contents; }
 .font-serif { font-family: var(--font-serif); }
 
 /* Grain / paper texture overlay on cream */
@@ -35,20 +30,9 @@ html { scroll-padding-top: 80px; }
 .acc-item.open .acc-body{ max-height:240px; }
 .acc-item.open .acc-icon{ transform:rotate(45deg); }
 
-/* nav scrolled — frosted glass (ikut warna tema) */
-#topnav{ transition: background .35s ease, backdrop-filter .35s ease, box-shadow .35s ease, border-color .35s ease; border-bottom:1px solid transparent; }
-#topnav.scrolled{
-  background:rgba(247,243,233,.6);
-  backdrop-filter:blur(16px) saturate(160%);
-  -webkit-backdrop-filter:blur(16px) saturate(160%);
-  box-shadow:0 8px 30px -12px rgba(14,59,46,.25);
-  border-bottom:1px solid rgba(14,59,46,.10);
-}
-.dark #topnav.scrolled{
-  background:rgba(8,41,31,.5);
-  box-shadow:0 8px 30px -12px rgba(0,0,0,.55);
-  border-bottom:1px solid rgba(247,243,233,.10);
-}
+/* nav scrolled */
+#topnav.scrolled{ background:rgba(247,243,233,.9); backdrop-filter:blur(10px); box-shadow:0 1px 0 rgba(14,59,46,.08); }
+.dark #topnav.scrolled{ background:rgba(8,41,31,.85); }
 
 #mnav{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
 #mnav.open{ max-height:420px; }
@@ -66,3 +50,72 @@ html { scroll-padding-top: 80px; }
 .blur-fade.show{
   opacity:1; transform:translateY(0); filter:blur(0);
 }
+
+/* ── Artikel / prose (halaman detail berita) ── */
+.artikel{ font-size:1.0625rem; line-height:1.85; }
+.artikel > *:first-child{ margin-top:0; }
+.artikel p{ margin:0 0 1.25em; }
+.artikel h3{ font-family:var(--font-serif); font-weight:600; font-size:1.6rem; line-height:1.3; color:#0E3B2E; margin:1.8em 0 .6em; }
+.artikel h4{ font-family:var(--font-serif); font-weight:600; font-size:1.25rem; color:#0E3B2E; margin:1.5em 0 .5em; }
+.dark .artikel h3, .dark .artikel h4{ color:#F7F3E9; }
+.artikel ul, .artikel ol{ margin:0 0 1.25em; padding-left:1.4em; }
+.artikel ul{ list-style:disc; }
+.artikel ol{ list-style:decimal; }
+.artikel li{ margin:.4em 0; }
+.artikel a{ color:#2F7D52; text-decoration:underline; text-underline-offset:2px; }
+.dark .artikel a{ color:#E0BC45; }
+.artikel img{ max-width:100%; height:auto; border-radius:1rem; margin:1.5em 0; box-shadow:0 10px 30px -10px rgba(14,59,46,.25); }
+.artikel blockquote{ border-left:3px solid #C9A227; padding:.25em 0 .25em 1.1em; margin:1.5em 0; font-style:italic; color:#0E3B2Ecc; }
+.dark .artikel blockquote{ color:#F7F3E9cc; }
+.artikel strong, .artikel b{ font-weight:700; color:#0E3B2E; }
+.dark .artikel strong, .dark .artikel b{ color:#F7F3E9; }
+.artikel pre{ background:#0E3B2E; color:#F7F3E9; padding:1em 1.2em; border-radius:.8rem; overflow-x:auto; margin:1.5em 0; }
+.artikel code{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9em; }
+
+/* ── Hover lift untuk kartu (frontend) ── */
+.lift{ transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease; }
+.lift:hover{ transform:translateY(-6px); box-shadow:0 22px 40px -18px rgba(14,59,46,.35); }
+.zoomimg{ overflow:hidden; }
+.zoomimg img{ transition:transform .5s cubic-bezier(.2,.7,.2,1); }
+.zoomimg:hover img{ transform:scale(1.06); }
+
+/* ── Stagger reveal (kartu muncul bertahap) ── */
+.reveal[data-delay="1"]{ transition-delay:.08s; }
+.reveal[data-delay="2"]{ transition-delay:.16s; }
+.reveal[data-delay="3"]{ transition-delay:.24s; }
+.reveal[data-delay="4"]{ transition-delay:.32s; }
+.reveal[data-delay="5"]{ transition-delay:.40s; }
+
+/* ── Float halus (ilustrasi hero) ── */
+@keyframes floaty{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-12px) } }
+.floaty{ animation:floaty 6s ease-in-out infinite; }
+
+/* ── Pause marquee saat hover ── */
+.marquee:hover .marquee__track{ animation-play-state:paused; }
+
+/* ── Hormati prefers-reduced-motion (aksesibilitas) ── */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  .reveal{ opacity:1 !important; transform:none !important; }
+}
+
+/* ── Modal konfirmasi hapus (admin) ── */
+#confirm-modal{ position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center; padding:1rem; }
+#confirm-modal.open{ display:flex; }
+#confirm-modal .cm-overlay{ position:absolute; inset:0; background:rgba(8,41,31,.55); backdrop-filter:blur(3px); opacity:0; transition:opacity .2s ease; }
+#confirm-modal.open .cm-overlay{ opacity:1; }
+#confirm-modal .cm-box{ position:relative; width:100%; max-width:380px; background:#fff; border-radius:1.25rem; padding:1.6rem 1.5rem 1.4rem; box-shadow:0 30px 60px -20px rgba(8,41,31,.5); transform:scale(.94) translateY(8px); opacity:0; transition:transform .22s cubic-bezier(.2,.7,.2,1), opacity .22s ease; }
+.dark #confirm-modal .cm-box{ background:#0E3B2E; color:#F7F3E9; }
+#confirm-modal.open .cm-box{ transform:scale(1) translateY(0); opacity:1; }
+#confirm-modal .cm-icon{ width:48px; height:48px; border-radius:50%; background:#fee2e2; color:#dc2626; display:flex; align-items:center; justify-content:center; margin-bottom:1rem; }
+.dark #confirm-modal .cm-icon{ background:rgba(220,38,38,.18); }
+#confirm-modal .cm-title{ font-family:var(--font-serif); font-size:1.2rem; font-weight:600; margin-bottom:.3rem; }
+#confirm-modal .cm-msg{ font-size:.9rem; color:#0E3B2E99; margin-bottom:1.3rem; }
+.dark #confirm-modal .cm-msg{ color:#F7F3E999; }
+#confirm-modal .cm-actions{ display:flex; gap:.6rem; }
+#confirm-modal .cm-btn{ flex:1; padding:.6rem 1rem; border-radius:.7rem; font-size:.85rem; font-weight:600; cursor:pointer; border:none; transition:all .15s ease; }
+#confirm-modal .cm-cancel{ background:#0E3B2E0d; color:#0E3B2E; }
+.dark #confirm-modal .cm-cancel{ background:#F7F3E91a; color:#F7F3E9; }
+#confirm-modal .cm-cancel:hover{ background:#0E3B2E1a; }
+#confirm-modal .cm-confirm{ background:#dc2626; color:#fff; }
+#confirm-modal .cm-confirm:hover{ background:#b91c1c; }

@@ -31,26 +31,38 @@ include __DIR__ . '/includes/head.php';
 </section>
 
 <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
+  <?php if (empty($beritaList)): ?>
+    <p class="text-center text-pine/60 dark:text-cream/60 py-16">Belum ada berita yang dipublikasikan.</p>
+  <?php else: ?>
   <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-    <?php foreach ($beritaList as $b):
-      $warna = $kategoriWarna[$b['kategori']] ?? 'bg-brass';
+    <?php foreach ($beritaList as $i => $b):
+      $warna     = $kategoriWarna[$b['kategori']] ?? 'bg-brass';
+      $gambarUrl = !empty($b['gambar']) ? 'admin/uploads/berita/' . $b['gambar'] : null;
+      $delay     = ($i % 3) + 1;
     ?>
-    <a href="berita-detail.php?slug=<?php echo rawurlencode($b['slug']); ?>" class="group block bg-cream-deep dark:bg-pine rounded-[1.5rem] ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass transition overflow-hidden">
-      <?php if ($b['gambar']): ?>
-      <div class="aspect-[16/9] overflow-hidden">
-        <img src="admin/uploads/berita/<?php echo esc($b['gambar']); ?>" alt="<?php echo esc($b['judul']); ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+    <a href="berita-detail.php?slug=<?php echo rawurlencode($b['slug']); ?>"
+       class="group reveal lift flex flex-col bg-cream-deep dark:bg-pine rounded-[1.5rem] overflow-hidden ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass/60"
+       data-delay="<?php echo $delay; ?>">
+      <div class="zoomimg relative aspect-[16/10] overflow-hidden">
+        <?php if ($gambarUrl): ?>
+          <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($b['judul']); ?>" class="w-full h-full object-cover">
+        <?php else: ?>
+          <div class="w-full h-full bg-gradient-to-br from-leaf to-pine flex items-center justify-center">
+            <span class="font-serif text-cream/90 text-2xl tracking-wide"><?php echo esc($b['kategori']); ?></span>
+          </div>
+        <?php endif; ?>
+        <span class="absolute top-4 left-4 inline-block <?php echo $warna; ?> text-cream text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full shadow-lg"><?php echo esc($b['kategori']); ?></span>
       </div>
-      <?php endif; ?>
-      <div class="p-7">
-      <span class="inline-block <?php echo $warna; ?> text-cream text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full mb-4"><?php echo esc($b['kategori']); ?></span>
-      <p class="text-xs text-pine/50 dark:text-cream/50 mb-2"><?php echo tglPendek($b['tanggal']); ?></p>
-      <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition"><?php echo esc($b['judul']); ?></h3>
-      <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5"><?php echo esc(mb_strimwidth(strip_tags($b['isi']), 0, 160, '...')); ?></p>
-      <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      <div class="flex flex-col flex-1 p-7">
+        <p class="text-xs text-pine/50 dark:text-cream/50 mb-2"><?php echo tglPendek($b['tanggal']); ?> · <?php echo (int)$b['dilihat']; ?> dilihat</p>
+        <h3 class="font-serif text-xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition"><?php echo esc($b['judul']); ?></h3>
+        <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5"><?php echo esc(mb_strimwidth(strip_tags($b['isi']), 0, 130, '…')); ?></p>
+        <span class="elink mt-auto text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
       </div>
     </a>
     <?php endforeach; ?>
   </div>
+  <?php endif; ?>
 </section>
 
 <section class="relative z-10 max-w-6xl mx-auto px-5 pb-20 sm:pb-28">

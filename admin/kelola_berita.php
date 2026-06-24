@@ -36,15 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
         } else {
             // Handle image upload
             $gambar = $_POST['gambar_lama'] ?? null;
-
-            // Delete existing image if checkbox checked
-            if (!empty($_POST['hapus_gambar']) && $gambar) {
-                if (file_exists(__DIR__ . '/uploads/berita/' . $gambar)) {
-                    unlink(__DIR__ . '/uploads/berita/' . $gambar);
-                }
-                $gambar = null;
-            }
-
             if (!empty($_FILES['gambar']['name'])) {
                 $uploaded = upload_gambar($_FILES['gambar'], __DIR__ . '/uploads/berita');
                 if ($uploaded) {
@@ -73,23 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
             }
         }
         $mode = 'form';
-    }
-
-    // DELETE IMAGE ONLY
-    if ($action === 'hapus_gambar') {
-        $id = (int)($_POST['id'] ?? 0);
-        $row = $pdo->prepare('SELECT gambar FROM berita WHERE id=?');
-        $row->execute([$id]);
-        $row = $row->fetch();
-        if ($row && $row['gambar']) {
-            if (file_exists(__DIR__ . '/uploads/berita/' . $row['gambar'])) {
-                unlink(__DIR__ . '/uploads/berita/' . $row['gambar']);
-            }
-            $pdo->prepare('UPDATE berita SET gambar=NULL WHERE id=?')->execute([$id]);
-            flash('success', 'Gambar berhasil dihapus.');
-        }
-        header('Location: kelola_berita.php');
-        exit;
     }
 
     // DELETE
@@ -161,12 +135,8 @@ if ($mode === 'form'):
     <div>
       <label class="block text-sm font-semibold mb-1.5">Gambar</label>
       <?php if (!empty($edit['gambar'])): ?>
-        <div class="mb-2 flex items-start gap-3">
+        <div class="mb-2">
           <img src="uploads/berita/<?php echo esc($edit['gambar']); ?>" alt="" class="h-24 rounded-lg object-cover ring-1 ring-pine/10">
-          <label class="flex items-center gap-2 text-xs text-red-500 mt-2 cursor-pointer">
-            <input type="checkbox" name="hapus_gambar" value="1" class="rounded border-red-300 text-red-500 focus:ring-red-400">
-            Hapus gambar
-          </label>
         </div>
       <?php endif; ?>
       <input type="file" name="gambar" accept="image/*"
@@ -225,17 +195,7 @@ if ($mode === 'form'):
               <td class="px-5 py-3.5">
                 <div class="flex items-center gap-3">
                   <?php if ($r['gambar']): ?>
-                    <div class="relative shrink-0 group/img">
-                      <img src="uploads/berita/<?php echo esc($r['gambar']); ?>" alt="" class="w-12 h-12 rounded-lg object-cover ring-1 ring-pine/10">
-                      <form method="POST" onsubmit="return confirm('Hapus gambar berita ini?')" class="absolute -top-1.5 -right-1.5">
-                        <?php echo csrf_field(); ?>
-                        <input type="hidden" name="action" value="hapus_gambar">
-                        <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
-                        <button class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600 shadow-sm opacity-0 group-hover/img:opacity-100 transition-opacity cursor-pointer" title="Hapus gambar">
-                          <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                      </form>
-                    </div>
+                    <img src="uploads/berita/<?php echo esc($r['gambar']); ?>" alt="" class="w-12 h-12 rounded-lg object-cover ring-1 ring-pine/10 shrink-0">
                   <?php else: ?>
                     <div class="w-12 h-12 rounded-lg bg-pine/5 dark:bg-cream/5 flex items-center justify-center shrink-0">
                       <svg class="w-5 h-5 text-pine/30 dark:text-cream/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5"/></svg>
@@ -256,7 +216,7 @@ if ($mode === 'form'):
                 <div class="flex items-center justify-end gap-2">
                   <a href="kelola_berita.php?edit=<?php echo $r['id']; ?>"
                      class="btn-action px-3 py-1.5 rounded-lg text-xs font-semibold bg-pine/5 dark:bg-cream/10 hover:bg-brass/15 hover:text-brass transition">Edit</a>
-                  <form method="POST" onsubmit="return confirmDelete('Hapus berita ini?')" class="inline">
+                  <form method="POST" data-confirm="Hapus berita ini?" class="inline">
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?php echo $r['id']; ?>">

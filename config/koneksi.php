@@ -10,10 +10,7 @@ header('X-Content-Type-Options: nosniff');
 header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
-
-/* ── CSP with nonce ──────────────────────────────── */
-$cspNonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{$cspNonce}' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:; frame-src https://maps.google.com https://www.google.com");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://fonts.gstatic.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:; frame-src https://maps.google.com https://www.google.com");
 
 /* ── Session Cookie Security ──────────────────────── */
 if (session_status() === PHP_SESSION_NONE) {
@@ -96,11 +93,17 @@ function sanitize_html(string $html): string {
     // Use DOMDocument for attribute-level sanitization (no regex bypass)
     $doc = new DOMDocument('1.0', 'UTF-8');
     libxml_use_internal_errors(true);
-    $doc->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $doc->loadHTML('<?xml encoding="UTF-8"><div id="__sanitize_root__">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
     libxml_clear_errors();
 
     $xpath = new DOMXPath($doc);
+
+    // Capture our wrapper node BEFORE attribute stripping (its id would be
+    // removed by the loop below, so we keep a direct reference).
+    $root = $xpath->query('//*[@id="__sanitize_root__"]')->item(0);
+
     foreach ($xpath->query('//*') as $node) {
+        if ($node === $root) { continue; }
         $tag = strtolower($node->nodeName);
         $keep = $allowedAttrs[$tag] ?? [];
 
@@ -122,9 +125,17 @@ function sanitize_html(string $html): string {
         foreach ($remove as $attr) $node->removeAttributeNode($attr);
     }
 
-    // Extract body content
-    $body = $doc->getElementsByTagName('body')->item(0);
-    return $body ? $doc->saveHTML($body) : '';
+    // Extract sanitized content (serialize children of our wrapper).
+    // Note: with LIBXML_HTML_NOIMPLIED there is no <body>, so we wrapped the
+    // input in a known <div> and return its inner HTML.
+    if (!$root) {
+        return '';
+    }
+    $out = '';
+    foreach ($root->childNodes as $child) {
+        $out .= $doc->saveHTML($child);
+    }
+    return $out;
 }
 
 /**
@@ -143,41 +154,4 @@ function tglPendek(string $tgl): string {
     $bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
     $d = new DateTime($tgl);
     return $d->format('d') . ' ' . $bulan[(int)$d->format('m') - 1] . ' ' . $d->format('Y');
-}
-
-/* ── Custom Error Handler (prevent info disclosure) ── */
-set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
-    $logMessage = date('[Y-m-d H:i:s]') . " PHP Error [$errno]: $errstr in $errfile on line $errline\n";
-    error_log($logMessage, 3, __DIR__ . '/../logs/php_errors.log');
-    if ((int)ini_get('display_errors') === 0) {
-        http_response_code(500);
-        echo '<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:60px"><h1>500</h1><p>Terjadi kesalahan internal.</p></body></html>';
-        exit;
-    }
-    return false;
-});
-
-set_exception_handler(function (Throwable $e): void {
-    $logMessage = date('[Y-m-d H:i:s]') . ' Uncaught Exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString() . "\n";
-    error_log($logMessage, 3, __DIR__ . '/../logs/php_errors.log');
-    http_response_code(500);
-    echo '<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:60px"><h1>500</h1><p>Terjadi kesalahan internal.</p></body></html>';
-    exit;
-});
-
-/* ── Audit Logging ────────────────────────────────── */
-function audit_log(string $action, string $table = null, int $record_id = null): void {
-    try {
-        $stmt = db()->prepare('INSERT INTO audit_log (user_id, action, table_name, record_id, ip_address, created_at) VALUES (?, ?, ?, ?, ?, NOW())');
-        $stmt->execute([
-            $_SESSION['admin_id'] ?? null,
-            $action,
-            $table,
-            $record_id,
-            $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0'
-        ]);
-    } catch (Throwable $e) {
-        // Silently fail - don't break the app if audit table doesn't exist
-        error_log('Audit log failed: ' . $e->getMessage());
-    }
 }

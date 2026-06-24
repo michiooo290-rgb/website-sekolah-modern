@@ -7,24 +7,16 @@ $namaSekolah = setting('nama_sekolah') ?? 'SMA Putra Persada Batam';
 $fullTitle   = $pageTitle . ' — Admin ' . $namaSekolah;
 $currentPage = basename($_SERVER['PHP_SELF']);
 
-$navGroups = [
-    'Menu Utama' => [
-        ['file'=>'dashboard.php', 'icon'=>'grid', 'label'=>'Dashboard'],
-    ],
-    'Konten' => [
-        ['file'=>'kelola_berita.php',   'icon'=>'news',  'label'=>'Berita'],
-        ['file'=>'kelola_guru.php',     'icon'=>'users', 'label'=>'Guru & Staf'],
-        ['file'=>'kelola_ekskul.php',   'icon'=>'star',  'label'=>'Ekstrakurikuler'],
-        ['file'=>'kelola_visimisi.php', 'icon'=>'eye',   'label'=>'Visi & Misi'],
-        ['file'=>'kelola_tentang.php',  'icon'=>'info',  'label'=>'Tentang'],
-        ['file'=>'kelola_ppdb.php',     'icon'=>'doc',   'label'=>'PPDB'],
-    ],
-    'Komunikasi' => [
-        ['file'=>'pesan_masuk.php', 'icon'=>'mail', 'label'=>'Pesan Masuk'],
-    ],
-    'Sistem' => [
-        ['file'=>'kelola_pengaturan.php', 'icon'=>'cog', 'label'=>'Pengaturan'],
-    ],
+$navItems = [
+    ['file'=>'dashboard.php',        'icon'=>'grid',    'label'=>'Dashboard'],
+    ['file'=>'kelola_pengaturan.php', 'icon'=>'cog',     'label'=>'Pengaturan'],
+    ['file'=>'kelola_berita.php',     'icon'=>'news',    'label'=>'Berita'],
+    ['file'=>'kelola_guru.php',       'icon'=>'users',   'label'=>'Guru & Staf'],
+    ['file'=>'kelola_ekskul.php',     'icon'=>'star',    'label'=>'Ekstrakurikuler'],
+    ['file'=>'kelola_visimisi.php',   'icon'=>'eye',     'label'=>'Visi & Misi'],
+    ['file'=>'kelola_tentang.php',    'icon'=>'info',    'label'=>'Tentang'],
+    ['file'=>'kelola_ppdb.php',       'icon'=>'doc',     'label'=>'PPDB'],
+    ['file'=>'pesan_masuk.php',       'icon'=>'mail',    'label'=>'Pesan Masuk'],
 ];
 
 $iconPaths = [
@@ -48,7 +40,7 @@ $iconPaths = [
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script nonce="<?php echo $cspNonce; ?>" src="../assets/js/tailwind.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0/dist/index.global.js" integrity="sha384-nWTzRTCY/9V4Bo352ehygr1c4cnst4XN6lMR3fipakEQrhVpc0hEM5Dii3Amz0sT" crossorigin="anonymous"></script>
   <style type="text/tailwindcss">
     @custom-variant dark (&:where(.dark, .dark *));
     @theme {
@@ -63,15 +55,16 @@ $iconPaths = [
       --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
   </style>
+  <script>
+    document.documentElement.classList.toggle('dark',
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
+  </script>
   <style>
     /* Admin-specific transitions */
-    .sidebar-link{position:relative;transition:background .2s ease,color .2s ease}
-    .sidebar-link .nav-ic{transition:background .2s ease,color .2s ease}
-    .sidebar-link:hover{background:rgba(247,243,233,.06)}
-    .sidebar-link:hover .nav-ic{background:rgba(247,243,233,.10)}
-    .sidebar-link.active{background:linear-gradient(90deg,rgba(201,162,39,.18),rgba(201,162,39,.04));color:#E0BC45}
-    .sidebar-link.active .nav-ic{background:#C9A227;color:#08291F}
-    .sidebar-link.active::before{content:"";position:absolute;left:0;top:.5rem;bottom:.5rem;width:3px;border-radius:0 4px 4px 0;background:#E0BC45}
+    .sidebar-link{position:relative;transition:all .25s ease}
+    .sidebar-link:hover{padding-left:1.25rem}
+    .sidebar-link.active{background:rgba(201,162,39,.12);color:#C9A227}
+    .sidebar-link.active::before{content:"";position:absolute;left:0;top:.375rem;bottom:.375rem;width:3px;border-radius:0 3px 3px 0;background:#C9A227}
     .admin-card{transition:transform .25s ease,box-shadow .25s ease}
     .admin-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px -5px rgba(14,59,46,.1)}
     .dark .admin-card:hover{box-shadow:0 8px 25px -5px rgba(0,0,0,.3)}
@@ -80,6 +73,26 @@ $iconPaths = [
     .btn-action:active{transform:translateY(0) scale(.98)}
     .fade-in{opacity:0;transform:translateY(12px);animation:fadeUp .4s ease forwards}
     @keyframes fadeUp{to{opacity:1;transform:none}}
+    /* Modal konfirmasi hapus */
+    #confirm-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:1rem}
+    #confirm-modal.open{display:flex}
+    #confirm-modal .cm-overlay{position:absolute;inset:0;background:rgba(8,41,31,.55);backdrop-filter:blur(3px);opacity:0;transition:opacity .2s ease}
+    #confirm-modal.open .cm-overlay{opacity:1}
+    #confirm-modal .cm-box{position:relative;width:100%;max-width:380px;background:#fff;border-radius:1.25rem;padding:1.6rem 1.5rem 1.4rem;box-shadow:0 30px 60px -20px rgba(8,41,31,.5);transform:scale(.94) translateY(8px);opacity:0;transition:transform .22s cubic-bezier(.2,.7,.2,1),opacity .22s ease}
+    .dark #confirm-modal .cm-box{background:#0E3B2E;color:#F7F3E9}
+    #confirm-modal.open .cm-box{transform:scale(1) translateY(0);opacity:1}
+    #confirm-modal .cm-icon{width:48px;height:48px;border-radius:50%;background:#fee2e2;color:#dc2626;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+    .dark #confirm-modal .cm-icon{background:rgba(220,38,38,.18)}
+    #confirm-modal .cm-title{font-family:'Fraunces',Georgia,serif;font-size:1.2rem;font-weight:600;margin-bottom:.3rem}
+    #confirm-modal .cm-msg{font-size:.9rem;color:#0E3B2E99;margin-bottom:1.3rem}
+    .dark #confirm-modal .cm-msg{color:#F7F3E999}
+    #confirm-modal .cm-actions{display:flex;gap:.6rem}
+    #confirm-modal .cm-btn{flex:1;padding:.6rem 1rem;border-radius:.7rem;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .15s ease}
+    #confirm-modal .cm-cancel{background:#0E3B2E0d;color:#0E3B2E}
+    .dark #confirm-modal .cm-cancel{background:#F7F3E91a;color:#F7F3E9}
+    #confirm-modal .cm-cancel:hover{background:#0E3B2E1a}
+    #confirm-modal .cm-confirm{background:#dc2626;color:#fff}
+    #confirm-modal .cm-confirm:hover{background:#b91c1c}
     .sidebar-enter{animation:slideIn .3s ease forwards}
     @keyframes slideIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
     /* Mobile sidebar */
@@ -90,33 +103,6 @@ $iconPaths = [
     .table-row{transition:background .15s ease}
     .table-row:hover{background:rgba(201,162,39,.04)}
     .dark .table-row:hover{background:rgba(201,162,39,.06)}
-
-    /* ── Global content polish (applies to every admin page) ── */
-    main input[type=text],main input[type=email],main input[type=url],
-    main input[type=password],main input[type=date],main input[type=number],
-    main input[type=search],main input[type=tel],main textarea,main select{
-      box-shadow:inset 0 1px 2px rgba(14,59,46,.04);
-    }
-    main input:hover:not(:focus),main textarea:hover:not(:focus),main select:hover:not(:focus){
-      border-color:rgba(201,162,39,.55)!important;
-    }
-    main input:focus,main textarea:focus,main select:focus{
-      box-shadow:0 0 0 4px rgba(201,162,39,.16)!important;
-    }
-    main select{
-      appearance:none;-webkit-appearance:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232F7D52'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-      background-repeat:no-repeat;background-position:right .85rem center;background-size:1.05rem;padding-right:2.5rem!important;
-    }
-    main input[type=file]{cursor:pointer}
-    button,.btn-action,a[role=button]{cursor:pointer}
-    /* Card elevation */
-    .admin-card{box-shadow:0 1px 2px rgba(14,59,46,.04),0 6px 16px -10px rgba(14,59,46,.12)}
-    /* Table header band */
-    table thead tr{background:rgba(14,59,46,.03)}
-    /* Hide sidebar scrollbar (still scrollable on short screens) */
-    #sidebar nav{scrollbar-width:none;-ms-overflow-style:none}
-    #sidebar nav::-webkit-scrollbar{display:none}
   </style>
 </head>
 <body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
@@ -139,61 +125,46 @@ $iconPaths = [
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto py-3 px-3 space-y-3.5">
-      <?php
-      $unread = db()->query('SELECT COUNT(*) FROM pesan_kontak WHERE dibaca = 0')->fetchColumn();
-      foreach ($navGroups as $groupLabel => $items): ?>
-        <div>
-          <p class="px-3 mb-1 text-[10px] font-bold tracking-[0.18em] text-cream/35 uppercase"><?php echo $groupLabel; ?></p>
-          <div class="space-y-0.5">
-            <?php foreach ($items as $item):
-              $isActive = $currentPage === $item['file']; ?>
-              <a href="<?php echo $item['file']; ?>"
-                 class="sidebar-link flex items-center gap-3 px-2.5 py-2 rounded-xl text-sm
-                        <?php echo $isActive ? 'active font-semibold' : 'text-cream/70 hover:text-cream'; ?>">
-                <span class="nav-ic flex items-center justify-center w-8 h-8 rounded-lg shrink-0 <?php echo $isActive ? '' : 'bg-cream/5'; ?>">
-                  <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <?php echo $iconPaths[$item['icon']]; ?>
-                  </svg>
-                </span>
-                <span class="truncate"><?php echo $item['label']; ?></span>
-                <?php if ($item['file'] === 'pesan_masuk.php' && $unread > 0): ?>
-                  <span class="ml-auto bg-brass text-pine-deep text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"><?php echo $unread; ?></span>
-                <?php endif; ?>
-              </a>
-            <?php endforeach; ?>
-          </div>
-        </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+      <?php foreach ($navItems as $item): ?>
+        <a href="<?php echo $item['file']; ?>"
+           class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm
+                  <?php echo $currentPage === $item['file']
+                      ? 'active font-semibold text-brass-light'
+                      : 'text-cream/70 hover:text-cream hover:bg-cream/5'; ?>">
+          <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <?php echo $iconPaths[$item['icon']]; ?>
+          </svg>
+          <?php echo $item['label']; ?>
+          <?php if ($item['file'] === 'pesan_masuk.php'):
+              $unread = db()->query('SELECT COUNT(*) FROM pesan_kontak WHERE dibaca = 0')->fetchColumn();
+              if ($unread > 0): ?>
+                <span class="ml-auto bg-brass text-pine-deep text-[10px] font-bold px-2 py-0.5 rounded-full"><?php echo $unread; ?></span>
+              <?php endif;
+          endif; ?>
+        </a>
       <?php endforeach; ?>
     </nav>
 
     <!-- Footer -->
-    <div class="p-3 border-t border-cream/10">
-      <!-- User card -->
-      <div class="flex items-center gap-3 p-2.5 mb-2.5 rounded-xl bg-cream/5 ring-1 ring-cream/8">
-        <div class="w-9 h-9 rounded-full bg-brass flex items-center justify-center text-pine-deep font-bold text-sm shrink-0">
+    <div class="p-4 border-t border-cream/10">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-8 h-8 rounded-full bg-brass/20 flex items-center justify-center text-brass-light font-bold text-xs">
           <?php echo strtoupper(substr(admin_name(), 0, 1)); ?>
         </div>
-        <div class="text-xs min-w-0">
-          <p class="font-semibold truncate"><?php echo esc(admin_name()); ?></p>
-          <p class="text-brass-light/80 capitalize truncate"><?php echo esc($_SESSION['admin_role'] ?? 'admin'); ?></p>
+        <div class="text-xs">
+          <p class="font-semibold"><?php echo esc(admin_name()); ?></p>
+          <p class="text-cream/50"><?php echo esc($_SESSION['admin_role'] ?? 'admin'); ?></p>
         </div>
       </div>
-      <!-- Action buttons -->
-      <div class="grid grid-cols-2 gap-2">
-        <a href="../index.php" target="_blank"
-           class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold
-                  bg-cream/5 text-cream/80 ring-1 ring-cream/10 hover:bg-cream/10 hover:text-cream transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-          Website
-        </a>
-        <a href="logout.php"
-           class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold
-                  bg-red-500/10 text-red-300 ring-1 ring-red-500/20 hover:bg-red-500/20 hover:text-red-200 transition">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
-          Keluar
-        </a>
-      </div>
+      <a href="logout.php" class="flex items-center gap-2 text-xs text-cream/50 hover:text-red-400 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+        Keluar
+      </a>
+      <a href="../index.php" target="_blank" class="flex items-center gap-2 text-xs text-cream/50 hover:text-cream mt-2 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+        Lihat Website
+      </a>
     </div>
   </aside>
 
