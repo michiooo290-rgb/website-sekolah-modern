@@ -12,39 +12,41 @@ const NAV = [
 function renderHeader(active){
   active = active || '';
   return `
-<div class="bg-pine text-cream/90 text-xs py-2 relative z-20">
-  <div class="marquee"><div class="marquee__track">
-    ✦ Penerimaan Peserta Didik Baru TA 2026/2027 telah dibuka &nbsp;•&nbsp; Jalur Prestasi, Reguler & Beasiswa &nbsp;•&nbsp; Akreditasi A &nbsp;•&nbsp; SMA Putra Persada Batam — Cerdas, Berkarakter, Berakhlak &nbsp;•&nbsp; Hubungi (0778) XXX-XXXX &nbsp;✦&nbsp; Penerimaan Peserta Didik Baru TA 2026/2027 telah dibuka &nbsp;•&nbsp; Jalur Prestasi, Reguler & Beasiswa &nbsp;•&nbsp;
-  </div></div>
-</div>
-<header id="topnav" class="sticky top-0 z-30 transition-all">
-  <div class="max-w-6xl mx-auto px-5 h-[72px] flex items-center justify-between">
-    <a href="index.php" class="flex items-center gap-3">
-      <img src="assets/img/logo.jpeg" class="h-10 w-10 rounded-full object-cover ring-1 ring-brass/60">
-      <div class="leading-none">
-        <p class="font-serif font-semibold text-pine dark:text-cream text-[17px]">Putra Persada</p>
-        <p class="text-[10px] tracking-[0.3em] text-leaf dark:text-brass-light mt-1">SMA · BATAM</p>
+<div class="sticky top-0 z-30">
+  <div class="bg-pine text-cream/90 text-xs py-2 relative">
+    <div class="marquee"><div class="marquee__track">
+      ✦ Penerimaan Peserta Didik Baru TA 2026/2027 telah dibuka &nbsp;•&nbsp; Jalur Prestasi, Reguler & Beasiswa &nbsp;•&nbsp; Akreditasi A &nbsp;•&nbsp; SMA Putra Persada Batam — Cerdas, Berkarakter, Berakhlak &nbsp;•&nbsp; Hubungi (0778) XXX-XXXX &nbsp;✦&nbsp; Penerimaan Peserta Didik Baru TA 2026/2027 telah dibuka &nbsp;•&nbsp; Jalur Prestasi, Reguler & Beasiswa &nbsp;•&nbsp;
+    </div></div>
+  </div>
+  <header id="topnav" class="transition-all">
+    <div class="max-w-6xl mx-auto px-5 h-[72px] flex items-center justify-between">
+      <a href="index.php" class="flex items-center gap-3">
+        <img src="assets/img/logo.jpeg" class="h-10 w-10 rounded-full object-cover ring-1 ring-brass/60">
+        <div class="leading-none">
+          <p class="font-serif font-semibold text-pine dark:text-cream text-[17px]">Putra Persada</p>
+          <p class="text-[10px] tracking-[0.3em] text-leaf dark:text-brass-light mt-1">SMA · BATAM</p>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-[13px] font-medium">
+        ${NAV.map(([h,l])=>`<a href="${h}" class="elink hover:text-leaf dark:hover:text-brass-light ${h===active?'text-leaf dark:text-brass-light':''}">${l}</a>`).join('')}
+      </nav>
+      <div class="flex items-center gap-2">
+        <button id="themeToggle" aria-label="Ganti tema terang/gelap" title="Ganti tema terang/gelap" class="p-2 rounded-full text-pine dark:text-cream hover:bg-pine/10 dark:hover:bg-cream/10 transition">
+          <svg class="dark:hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="hidden dark:block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <a href="ppdb.php" class="hidden md:inline-flex items-center gap-2 bg-pine dark:bg-brass text-cream dark:text-pine-deep text-[13px] font-semibold px-5 py-2.5 rounded-full hover:bg-pine-deep dark:hover:bg-brass-light transition">Daftar PPDB</a>
+        <button id="mbtn" class="md:hidden p-2 text-pine dark:text-cream"><svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h18M4 13h18M4 19h18" stroke-linecap="round"/></svg></button>
       </div>
-    </a>
-    <nav class="hidden md:flex items-center gap-6 text-[13px] font-medium">
-      ${NAV.map(([h,l])=>`<a href="${h}" class="elink hover:text-leaf dark:hover:text-brass-light ${h===active?'text-leaf dark:text-brass-light':''}">${l}</a>`).join('')}
-    </nav>
-    <div class="flex items-center gap-2">
-      <button id="themeToggle" aria-label="Ganti tema terang/gelap" title="Ganti tema terang/gelap" class="p-2 rounded-full text-pine dark:text-cream hover:bg-pine/10 dark:hover:bg-cream/10 transition">
-        <svg class="dark:hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="hidden dark:block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-      </button>
-      <a href="ppdb.php" class="hidden md:inline-flex items-center gap-2 bg-pine dark:bg-brass text-cream dark:text-pine-deep text-[13px] font-semibold px-5 py-2.5 rounded-full hover:bg-pine-deep dark:hover:bg-brass-light transition">Daftar PPDB</a>
-      <button id="mbtn" class="md:hidden p-2 text-pine dark:text-cream"><svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h18M4 13h18M4 19h18" stroke-linecap="round"/></svg></button>
     </div>
-  </div>
-  <div id="mnav" class="md:hidden bg-cream dark:bg-pine-deep border-t border-pine/10 dark:border-cream/10">
-    <div class="px-5 py-3 flex flex-col gap-1">
-      ${NAV.map(([h,l])=>`<a href="${h}" class="mlink py-2.5 border-b border-pine/5 dark:border-cream/5">${l}</a>`).join('')}
-      <a href="ppdb.php" class="mlink mt-2 text-center bg-pine dark:bg-brass text-cream dark:text-pine-deep font-semibold py-2.5 rounded-full">Daftar PPDB</a>
+    <div id="mnav" class="md:hidden bg-cream dark:bg-pine-deep border-t border-pine/10 dark:border-cream/10">
+      <div class="px-5 py-3 flex flex-col gap-1">
+        ${NAV.map(([h,l])=>`<a href="${h}" class="mlink py-2.5 border-b border-pine/5 dark:border-cream/5">${l}</a>`).join('')}
+        <a href="ppdb.php" class="mlink mt-2 text-center bg-pine dark:bg-brass text-cream dark:text-pine-deep font-semibold py-2.5 rounded-full">Daftar PPDB</a>
+      </div>
     </div>
-  </div>
-</header>`;
+  </header>
+</div>`;
 }
 
 function renderFooter(){
