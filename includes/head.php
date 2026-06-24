@@ -46,4 +46,4 @@ $fullTitle   = $pageTitle === $namaSekolah ? "$namaSekolah — $tagline" : "$pag
   <script nonce="<?php echo $cspNonce ?? ''; ?>" src="assets/js/lenis.min.js"></script>
 </head>
 <body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
-  <div id="site-header"></div>
+  <div id="site-header" class="sticky top-0 z-30"></div>
