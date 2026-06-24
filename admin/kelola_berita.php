@@ -10,6 +10,22 @@ $mode  = 'list';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
+    // HAPUS FOTO SAJA
+    if ($action === 'hapus_foto') {
+        $id  = (int)($_POST['id'] ?? 0);
+        $row = $pdo->prepare('SELECT gambar FROM berita WHERE id=?');
+        $row->execute([$id]);
+        $row = $row->fetch();
+        if ($row && $row['gambar']) {
+            $path = __DIR__ . '/uploads/berita/' . $row['gambar'];
+            if (file_exists($path)) unlink($path);
+            $pdo->prepare('UPDATE berita SET gambar=NULL WHERE id=?')->execute([$id]);
+            flash('success', 'Foto berhasil dihapus.');
+        }
+        header('Location: kelola_berita.php?edit=' . $id);
+        exit;
+    }
+
     // CREATE / UPDATE
     if ($action === 'save') {
         $id       = $_POST['id'] ?? null;
@@ -135,8 +151,25 @@ if ($mode === 'form'):
     <div>
       <label class="block text-sm font-semibold mb-1.5">Gambar</label>
       <?php if (!empty($edit['gambar'])): ?>
-        <div class="mb-2">
-          <img src="uploads/berita/<?php echo esc($edit['gambar']); ?>" alt="" class="h-24 rounded-lg object-cover ring-1 ring-pine/10">
+        <div class="mb-3 flex items-start gap-3">
+          <img src="uploads/berita/<?php echo esc($edit['gambar']); ?>" alt=""
+               class="h-24 rounded-lg object-cover ring-1 ring-pine/10">
+          <!-- Tombol Hapus Foto -->
+          <form method="POST"
+                data-confirm="Hapus foto ini? Foto akan dihapus permanen."
+                class="inline">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="action" value="hapus_foto">
+            <input type="hidden" name="id" value="<?php echo $edit['id']; ?>">
+            <button type="submit"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+              Hapus Foto
+            </button>
+          </form>
         </div>
       <?php endif; ?>
       <input type="file" name="gambar" accept="image/*"
