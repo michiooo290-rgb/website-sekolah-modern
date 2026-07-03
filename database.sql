@@ -144,6 +144,22 @@ INSERT INTO ekstrakurikuler (nama, kategori, deskripsi, pembina, jadwal) VALUES
 ('PMR (Palang Merah Remaja)','Organisasi & Kepanduan','Pelatihan pertolongan pertama dan kepedulian sosial.',        'Rina Wulandari',    'Kamis 14.00');
 
 -- ─────────────────────────────────────────────
+-- 5b. kategori_ekskul
+-- ─────────────────────────────────────────────
+CREATE TABLE kategori_ekskul (
+  id     INT AUTO_INCREMENT PRIMARY KEY,
+  nama   VARCHAR(50) NOT NULL UNIQUE,
+  urutan INT         NOT NULL DEFAULT 0
+) ENGINE=InnoDB;
+
+INSERT INTO kategori_ekskul (nama, urutan) VALUES
+  ('Keagamaan', 1),
+  ('Olahraga', 2),
+  ('Seni & Budaya', 3),
+  ('Akademik & Sains', 4),
+  ('Organisasi & Kepanduan', 5);
+
+-- ─────────────────────────────────────────────
 -- 6. visi_misi
 -- ─────────────────────────────────────────────
 CREATE TABLE visi_misi (
