@@ -63,6 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } // end CSRF check
 }
 
+$ppdbStatus = setting('ppdb_status') ?? 'buka';
+$ppdbOpen   = ($ppdbStatus === 'buka');
+
 $pageTitle = 'Kontak';
 include __DIR__ . '/includes/head.php';
 ?>
@@ -194,5 +197,5 @@ include __DIR__ . '/includes/head.php';
   </div>
 </section>
 
-<?php $inlineJS = "wireHeaderFooter('kontak.php');"; ?>
+<?php $inlineJS = "wireHeaderFooter('kontak.php', " . ($ppdbOpen ? 'true' : 'false') . ");"; ?>
 <?php include __DIR__ . '/includes/foot.php'; ?>

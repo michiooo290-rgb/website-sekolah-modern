@@ -9,14 +9,17 @@ const NAV = [
   ['kontak.php','Kontak'],
 ];
 
-function renderHeader(active){
+function renderHeader(active, ppdbOpen){
   active = active || '';
+  if (typeof ppdbOpen === 'undefined') ppdbOpen = true;
+  const marqueeOpen = '<span class="marquee-ribbon-item"><span>✦</span> Penerimaan Peserta Didik Baru TA 2026/2027</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Jalur Prestasi, Reguler & Beasiswa</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Cerdas, Berkarakter, Berakhlak</span><span class="marquee-ribbon-item">•</span>';
+  const marqueeClosed = '<span class="marquee-ribbon-item"><span>✦</span> PPDB 2026/2027 Telah Ditutup</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Informasi Tahun Ajaran Berikutnya Segera Hadir</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Hubungi Kami untuk Informasi Lebih Lanjut</span><span class="marquee-ribbon-item">•</span>';
   return `
 <div class="sticky top-0 z-30">
-  <div class="bg-pine text-cream/90 text-xs py-2 relative">
-    <div class="marquee"><div class="marquee__track">
-      ✦ Penerimaan Peserta Didik Baru TA 2026/2027 telah dibuka &nbsp;•&nbsp; Jalur Prestasi, Reguler & Beasiswa &nbsp;•&nbsp; Akreditasi A &nbsp;•&nbsp; SMA Putra Persada Batam — Cerdas, Berkarakter, Berakhlak &nbsp;•&nbsp; Hubungi (0778) XXX-XXXX &nbsp;✦&nbsp; Penerimaan Peserta Didik Baru TA 2026/2027 telah dibuka &nbsp;•&nbsp; Jalur Prestasi, Reguler & Beasiswa &nbsp;•&nbsp;
-    </div></div>
+  <div class="bg-pine text-cream/90 text-xs py-2 relative marquee-ribbon">
+    <div class="marquee-ribbon-row">
+      ${Array(3).fill(ppdbOpen ? marqueeOpen : marqueeClosed).join('')}
+    </div>
   </div>
   <header id="topnav" class="transition-all">
     <div class="max-w-6xl mx-auto px-5 h-[72px] flex items-center justify-between">
@@ -35,14 +38,14 @@ function renderHeader(active){
           <svg class="dark:hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="hidden dark:block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
-        <a href="ppdb.php" class="hidden md:inline-flex items-center gap-2 bg-pine dark:bg-brass text-cream dark:text-pine-deep text-[13px] font-semibold px-5 py-2.5 rounded-full hover:bg-pine-deep dark:hover:bg-brass-light transition">Daftar PPDB</a>
+        <a href="ppdb.php" class="highlight-btn hidden md:inline-flex items-center gap-2 bg-pine dark:bg-brass text-cream dark:text-pine-deep text-[13px] font-semibold px-5 py-2.5 rounded-full hover:bg-pine-deep dark:hover:bg-brass-light transition">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</a>
         <button id="mbtn" class="md:hidden p-2 text-pine dark:text-cream"><svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h18M4 13h18M4 19h18" stroke-linecap="round"/></svg></button>
       </div>
     </div>
     <div id="mnav" class="md:hidden bg-cream dark:bg-pine-deep border-t border-pine/10 dark:border-cream/10">
       <div class="px-5 py-3 flex flex-col gap-1">
         ${NAV.map(([h,l])=>`<a href="${h}" class="mlink py-2.5 border-b border-pine/5 dark:border-cream/5">${l}</a>`).join('')}
-        <a href="ppdb.php" class="mlink mt-2 text-center bg-pine dark:bg-brass text-cream dark:text-pine-deep font-semibold py-2.5 rounded-full">Daftar PPDB</a>
+        <a href="ppdb.php" class="mlink mt-2 text-center bg-pine dark:bg-brass text-cream dark:text-pine-deep font-semibold py-2.5 rounded-full">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</a>
       </div>
     </div>
   </header>
@@ -129,26 +132,75 @@ function initChrome(){
   const bfIO = new IntersectionObserver(es=> es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); bfIO.unobserve(e.target); } }), {threshold:0});
   document.querySelectorAll('.blur-fade').forEach(el=> bfIO.observe(el));
 
-  /* Counter animation */
+  /* Counter animation — iOS-style per-digit blur (21st.dev inspired) */
   const counterEls = document.querySelectorAll('[data-counter]');
   if (counterEls.length) {
+    /* Build digit spans once */
+    function buildDigits(el, raw){
+      const match = raw.match(/^([\d.]+)/);
+      if(!match) return null;
+      const target = parseFloat(match[1]);
+      const suffix = raw.slice(match[1].length);
+      const decimals = match[1].includes('.') ? match[1].split('.')[1].length : 0;
+      const fmt = (v) => (v).toFixed(decimals).replace(/\.0+$/,'');
+      const paddedTarget = fmt(target);
+      const digits = paddedTarget.split('');
+      /* Clear element using DOM methods */
+      while(el.firstChild) el.removeChild(el.firstChild);
+      const spans = [];
+      digits.forEach(ch=>{
+        const s = document.createElement('span');
+        s.className = 'abn-digit';
+        s.textContent = ch === '.' ? '.' : '0';
+        el.appendChild(s);
+        spans.push({el:s, isDigit:ch !== '.', targetChar:ch});
+      });
+      if(suffix){
+        const sf = document.createElement('span');
+        sf.textContent = suffix;
+        sf.style.marginLeft = '2px';
+        el.appendChild(sf);
+      }
+      return {spans, target, fmt, decimals};
+    }
+
     const counterIO = new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
         if(!entry.isIntersecting) return;
         const el = entry.target;
         counterIO.unobserve(el);
         const raw = el.getAttribute('data-counter');
-        const match = raw.match(/^([\d.]+)/);
-        if(!match) return;
-        const target = parseFloat(match[1]);
-        const suffix = raw.slice(match[1].length);
-        const decimals = match[1].includes('.') ? match[1].split('.')[1].length : 0;
+        const data = buildDigits(el, raw);
+        if(!data) return;
+
         const dur = 1200;
         const start = performance.now();
+        let prevFormatted = data.fmt(0);
+
         function tick(now){
           const p = Math.min((now - start) / dur, 1);
           const ease = 1 - Math.pow(1 - p, 3);
-          el.textContent = (target * ease).toFixed(decimals).replace(/\.0+$/,'') + (p >= 1 ? suffix : '');
+          const currentFormatted = data.fmt(data.target * ease);
+
+          /* Compare each digit, blur only changed ones */
+          for(let i = 0; i < data.spans.length; i++){
+            const sp = data.spans[i];
+            if(!sp.isDigit) continue;
+            const newChar = currentFormatted[i] || '0';
+            const oldChar = prevFormatted[i] || '0';
+            if(newChar !== oldChar){
+              sp.el.classList.add('abn-changing');
+              sp.el.textContent = newChar;
+              /* Remove blur after short delay (spring settle) */
+              setTimeout(()=>{
+                sp.el.classList.remove('abn-changing');
+                sp.el.classList.add('abn-settling');
+                setTimeout(()=> sp.el.classList.remove('abn-settling'), 350);
+              }, 80);
+            }
+          }
+          prevFormatted = currentFormatted;
+
           if(p < 1) requestAnimationFrame(tick);
         }
         requestAnimationFrame(tick);
@@ -165,11 +217,168 @@ function initChrome(){
       if(!open) item.classList.add('open');
     });
   });
+
+  /* ── Dia Text / Word Cycling (21st.dev inspired) ── */
+  document.querySelectorAll('.dia-text').forEach(el=>{
+    const words = (el.getAttribute('data-words') || '').split(',').map(s=>s.trim()).filter(Boolean);
+    if(words.length < 2) return;
+    const interval = parseInt(el.getAttribute('data-interval') || '2500', 10);
+    el.textContent = '';
+    const wrap = document.createElement('span');
+    wrap.className = 'dia-text-wrap';
+    el.appendChild(wrap);
+    const wordEls = words.map((w,i)=>{
+      const s = document.createElement('span');
+      s.className = 'dia-text-word' + (i === 0 ? ' dia-active' : '');
+      s.textContent = w;
+      wrap.appendChild(s);
+      return s;
+    });
+    let idx = 0;
+    setInterval(()=>{
+      const curr = wordEls[idx];
+      idx = (idx + 1) % words.length;
+      const next = wordEls[idx];
+      curr.classList.remove('dia-active');
+      curr.classList.add('dia-exit');
+      next.classList.remove('dia-exit');
+      next.classList.add('dia-active');
+      setTimeout(()=> curr.classList.remove('dia-exit'), 500);
+    }, interval);
+  });
+
+  /* ── Highlight Buttons (21st.dev inspired) ── */
+  document.querySelectorAll('.highlight-btn').forEach(btn=>{
+    /* Create spotlight overlay */
+    const spot = document.createElement('span');
+    spot.className = 'hl-spotlight';
+    btn.appendChild(spot);
+
+    btn.addEventListener('mousemove', (e)=>{
+      const rect = btn.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      btn.style.setProperty('--mx', x + '%');
+      btn.style.setProperty('--my', y + '%');
+    });
+
+    btn.addEventListener('click', (e)=>{
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 0.5;
+      const ripple = document.createElement('span');
+      ripple.className = 'hl-ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+      btn.appendChild(ripple);
+      ripple.addEventListener('animationend', ()=> ripple.remove());
+    });
+  });
+
+  /* ── Frame Buttons (21st.dev inspired) — corner chevrons ── */
+  document.querySelectorAll('.frame-btn').forEach(btn=>{
+    ['fb-tl','fb-tr','fb-bl','fb-br'].forEach(cls=>{
+      const corner = document.createElement('span');
+      corner.className = 'fb-corner ' + cls;
+      btn.appendChild(corner);
+    });
+  });
+
+  /* ── Slot Text (21st.dev inspired) — per-character roll ── */
+  document.querySelectorAll('.slot-text').forEach(el=>{
+    const text = el.getAttribute('data-slot-text') || el.textContent;
+    const origText = el.textContent;
+    el.textContent = '';
+    text.split('').forEach(ch=>{
+      const charWrap = document.createElement('span');
+      charWrap.className = 'slot-char';
+      const inner = document.createElement('span');
+      inner.className = 'slot-char-inner';
+      inner.textContent = ch === ' ' ? ' ' : ch;
+      charWrap.appendChild(inner);
+      el.appendChild(charWrap);
+    });
+    /* On hover, roll to alternate text if data-slot-hover exists */
+    const hoverText = el.getAttribute('data-slot-hover');
+    if(hoverText){
+      el.addEventListener('mouseenter', ()=>{
+        el.classList.add('slot-rolling');
+        setTimeout(()=>{
+          const chars = el.querySelectorAll('.slot-char-inner');
+          hoverText.split('').forEach((ch,i)=>{
+            if(chars[i]) chars[i].textContent = ch === ' ' ? ' ' : ch;
+          });
+          el.classList.remove('slot-rolling');
+        }, 300);
+      });
+      el.addEventListener('mouseleave', ()=>{
+        el.classList.add('slot-rolling');
+        setTimeout(()=>{
+          const chars = el.querySelectorAll('.slot-char-inner');
+          origText.split('').forEach((ch,i)=>{
+            if(chars[i]) chars[i].textContent = ch === ' ' ? ' ' : ch;
+          });
+          el.classList.remove('slot-rolling');
+        }, 300);
+      });
+    }
+  });
+
+  /* ── Scroll Reel Testimonials (21st.dev inspired) ── */
+  /* Per-character text animation */
+  document.querySelectorAll('.reel-quote').forEach(el=>{
+    const text = el.textContent;
+    el.textContent = '';
+    text.split('').forEach((ch,i)=>{
+      const span = document.createElement('span');
+      span.className = 'reel-char';
+      span.textContent = ch === ' ' ? ' ' : ch;
+      span.style.transitionDelay = (i * 18) + 'ms';
+      el.appendChild(span);
+    });
+  });
+
+  /* Reveal cards on scroll + counter-rotate columns */
+  const reelCards = document.querySelectorAll('.reel-card');
+  if(reelCards.length){
+    const reelIO = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('reel-visible');
+          reelIO.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.15});
+    reelCards.forEach(c=> reelIO.observe(c));
+  }
+
+  /* Counter-rotate columns on scroll */
+  const reelCols = document.querySelectorAll('.reel-col');
+  if(reelCols.length){
+    let ticking = false;
+    function updateReel(){
+      const section = document.querySelector('.reel-section');
+      if(!section) return;
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+      reelCols.forEach((col,i)=>{
+        const dir = col.classList.contains('reel-col-up') ? -1 : 1;
+        const offset = (progress - 0.5) * 80 * dir;
+        col.style.transform = 'translateY(' + offset + 'px)';
+      });
+      ticking = false;
+    }
+    window.addEventListener('scroll', ()=>{
+      if(!ticking){ requestAnimationFrame(updateReel); ticking = true; }
+    }, {passive:true});
+    updateReel();
+  }
 }
 
 /* Wire header + footer + paper texture + initChrome */
-function wireHeaderFooter(activePage){
-  document.getElementById('site-header').innerHTML = renderHeader(activePage);
+function wireHeaderFooter(activePage, ppdbOpen){
+  document.getElementById('site-header').innerHTML = renderHeader(activePage, ppdbOpen !== false);
   document.getElementById('site-footer').innerHTML = renderFooter();
   document.body.classList.add('paper');
   initChrome();

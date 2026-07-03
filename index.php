@@ -23,6 +23,9 @@ $guruList = $pdo->query('SELECT nama, jabatan, foto FROM guru ORDER BY urutan AS
 $beritaList = $pdo->query('SELECT judul, slug, kategori, isi, tanggal, dilihat FROM berita ORDER BY tanggal DESC LIMIT 4')->fetchAll();
 
 $namaSekolah = setting('nama_sekolah') ?? 'SMA Putra Persada Batam';
+
+$ppdbStatus = setting('ppdb_status') ?? 'buka';
+$ppdbOpen   = ($ppdbStatus === 'buka');
 $pageTitle = $namaSekolah;
 include __DIR__ . '/includes/head.php';
 ?>
@@ -32,10 +35,11 @@ include __DIR__ . '/includes/head.php';
   <div class="grid lg:grid-cols-12 gap-10 items-center">
     <div class="lg:col-span-6 reveal show">
       <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-5"><span class="h-px w-8 bg-brass"></span> Sekolah Menengah Atas</p>
-      <h1 class="font-serif font-semibold text-pine dark:text-cream leading-[1.05] text-[40px] sm:text-6xl lg:text-[68px]"><span class="blur-fade">Menumbuhkan</span><br><span class="blur-fade" style="transition-delay:.12s"><span class="italic text-leaf dark:text-brass-light">ilmu</span> & <span class="italic text-leaf dark:text-brass-light">akhlak</span></span><br><span class="blur-fade" style="transition-delay:.24s">yang berbuah.</span></h1>
+      <h1 class="font-serif font-semibold text-pine dark:text-cream leading-[1.05] text-[40px] sm:text-6xl lg:text-[68px]"><span class="blur-fade">Menumbuhkan</span><br><span class="blur-fade" style="transition-delay:.12s"><span class="italic shimmer-text">ilmu</span> & <span class="italic shimmer-text">akhlak</span></span><br><span class="blur-fade" style="transition-delay:.24s">yang berbuah.</span></h1>
+      <p class="mt-3 text-lg sm:text-xl text-leaf dark:text-brass-light font-medium"><span class="dia-text" data-words="Berkarakter,Berprestasi,Beriman,Berwawasan Global" data-interval="2800"></span></p>
       <p class="mt-6 text-pine/70 dark:text-cream/70 max-w-md text-[15px] leading-relaxed"><?php echo esc($namaSekolah); ?> — ruang tumbuh bagi generasi cerdas dan berkarakter islami, siap melangkah ke perguruan tinggi terbaik.</p>
       <div class="mt-8 flex flex-wrap items-center gap-4">
-        <a href="ppdb.php" class="bg-brass text-pine-deep font-semibold px-7 py-3.5 rounded-full hover:bg-brass-light transition">Pendaftaran 2026/2027</a>
+        <a href="ppdb.php" class="highlight-btn bg-brass text-pine-deep font-semibold px-7 py-3.5 rounded-full hover:bg-brass-light transition"><?php echo $ppdbOpen ? 'Pendaftaran 2026/2027' : 'Info PPDB 2026/2027'; ?></a>
         <a href="tentang.php" class="elink font-semibold text-pine dark:text-cream">Pelajari lebih lanjut →</a>
       </div>
     </div>
@@ -188,7 +192,7 @@ include __DIR__ . '/includes/head.php';
       <p class="text-xs text-pine/50 dark:text-cream/50 mb-2"><?php echo tglPendek($first['tanggal']); ?></p>
       <h3 class="font-serif text-2xl sm:text-3xl text-pine dark:text-cream mb-3 leading-snug group-hover:text-leaf dark:group-hover:text-brass-light transition"><?php echo esc($first['judul']); ?></h3>
       <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-5"><?php echo esc(mb_strimwidth(strip_tags($first['isi']), 0, 160, '...')); ?></p>
-      <span class="elink text-sm font-semibold text-leaf dark:text-brass-light">Baca selengkapnya →</span>
+      <span class="slot-text elink text-sm font-semibold text-leaf dark:text-brass-light" data-slot-hover="Buka detail ↓">Baca selengkapnya →</span>
     </a>
     <div class="flex flex-col divide-y divide-pine/10 dark:divide-cream/10">
       <?php foreach (array_slice($beritaList, 1) as $b): ?>
@@ -197,6 +201,36 @@ include __DIR__ . '/includes/head.php';
     </div>
   </div>
   <?php endif; ?>
+</section>
+
+<!-- TESTIMONI -->
+<section class="relative z-10 bg-cream-deep dark:bg-pine reel-section">
+  <div class="max-w-6xl mx-auto px-5 py-20 sm:py-28">
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
+      <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Testimoni</p>
+      <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream">Apa kata mereka tentang kami?</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <?php
+      $testiList = [
+        ['nama'=>'Ibu Siti Aminah','role'=>'Orang Tua Siswa','quote'=>'Anak saya berkembang luar biasa di sini. Guru-gurunya sangat perhatian dan lingkungan belajarnya sangat mendukung.','avatar'=>'assets/img/testi-1.jpg'],
+        ['nama'=>'Ahmad Rizki','role'=>'Alumni 2024','quote'=>'Berkat bimbingan intensif di SMA Putra Persada, saya berhasil masuk PTN favorit. Terima kasih atas semua ilmunya.','avatar'=>'assets/img/testi-2.jpg'],
+        ['nama'=>'Dr. Hendra','role'=>'Kepala Sekolah','quote'=>'Kami berkomitmen membentuk generasi yang cerdas secara akademik, kuat dalam karakter, dan teguh dalam keimanan.','avatar'=>'assets/img/testi-3.jpg'],
+      ];
+      foreach($testiList as $i=>$t): ?>
+      <div class="reel-card ring-1 ring-pine/10 dark:ring-cream/10" data-delay="<?php echo $i; ?>">
+        <p class="reel-quote">"<?php echo esc($t['quote']); ?>"</p>
+        <div class="reel-author">
+          <img src="<?php echo esc($t['avatar']); ?>" alt="<?php echo esc($t['nama']); ?>" class="reel-avatar" onerror="this.style.display='none'">
+          <div>
+            <p class="reel-name text-pine dark:text-cream"><?php echo esc($t['nama']); ?></p>
+            <p class="reel-role"><?php echo esc($t['role']); ?></p>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
 </section>
 
 <!-- FAQ -->
@@ -215,11 +249,11 @@ include __DIR__ . '/includes/head.php';
   <div class="rounded-[2rem] bg-gradient-to-br from-leaf to-pine text-cream px-8 sm:px-14 py-14 text-center relative overflow-hidden reveal">
     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brass/20 blur-3xl"></div>
     <p class="text-xs font-semibold tracking-widest text-brass-light uppercase mb-4">Penerimaan Peserta Didik Baru</p>
-    <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto">Mulai perjalananmu bersama Putra Persada.</h2>
-    <p class="text-cream/80 mt-5 max-w-lg mx-auto">Kuota terbatas untuk Tahun Ajaran 2026/2027. Tersedia jalur prestasi, reguler, dan beasiswa.</p>
-    <a href="ppdb.php" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">Daftar Sekarang</a>
+    <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto"><?php echo $ppdbOpen ? 'Mulai perjalananmu bersama Putra Persada.' : 'PPDB Tahun Ajaran 2026/2027 telah ditutup.'; ?></h2>
+    <p class="text-cream/80 mt-5 max-w-lg mx-auto"><?php echo $ppdbOpen ? 'Kuota terbatas untuk Tahun Ajaran 2026/2027. Tersedia jalur prestasi, reguler, dan beasiswa.' : 'Hubungi kami untuk informasi pendaftaran tahun ajaran berikutnya.'; ?></p>
+    <a href="ppdb.php" class="highlight-btn frame-btn inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition"><?php echo $ppdbOpen ? 'Daftar Sekarang' : 'Info Lebih Lanjut'; ?></a>
   </div>
 </section>
 
-<?php $inlineJS = "wireHeaderFooter('index.php');"; ?>
+<?php $inlineJS = "wireHeaderFooter('index.php', " . ($ppdbOpen ? 'true' : 'false') . ");"; ?>
 <?php include __DIR__ . '/includes/foot.php'; ?>

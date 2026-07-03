@@ -17,6 +17,9 @@ $telepon   = setting('telepon') ?? '';
 $email     = setting('email') ?? '';
 $jamOp     = setting('jam_operasional') ?? '';
 
+$ppdbStatus = setting('ppdb_status') ?? 'buka';
+$ppdbOpen   = ($ppdbStatus === 'buka');
+
 $jadwalIcons = ['📅','📝','📋','🏫','🎒'];
 $alurIcons   = ['📍','📝','📝','✅'];
 
@@ -30,9 +33,29 @@ include __DIR__ . '/includes/head.php';
     <nav class="text-xs text-cream/60 mb-5"><a href="index.php" class="hover:text-brass-light">Beranda</a> <span class="mx-1">/</span> <span class="text-brass-light">PPDB</span></nav>
     <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-brass-light uppercase mb-4"><span class="h-px w-8 bg-brass"></span> Penerimaan Peserta Didik Baru</p>
     <h1 class="font-serif text-4xl sm:text-6xl leading-tight max-w-3xl">PPDB 2026/2027</h1>
-    <p class="text-cream/80 mt-5 max-w-xl">Informasi lengkap pendaftaran siswa baru SMA Putra Persada Batam. Pendaftaran dilakukan secara offline (datang langsung ke sekolah).</p>
+    <p class="text-cream/80 mt-5 max-w-xl">
+      <?php if ($ppdbOpen): ?>
+        Informasi lengkap pendaftaran siswa baru SMA Putra Persada Batam. Pendaftaran dilakukan secara offline (datang langsung ke sekolah).
+      <?php else: ?>
+        Informasi PPDB tahun ajaran 2026/2027. Pendaftaran telah ditutup.
+      <?php endif; ?>
+    </p>
+    <?php if (!$ppdbOpen): ?>
+    <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-red-300 uppercase mt-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse"></span> Pendaftaran Ditutup
+    </p>
+    <?php endif; ?>
   </div>
 </section>
+
+<?php if (!$ppdbOpen): ?>
+<div class="relative z-10 bg-amber-50 dark:bg-amber-900/20 border-y border-amber-200 dark:border-amber-700/40">
+  <div class="max-w-6xl mx-auto px-5 py-5 flex items-center gap-4">
+    <span class="text-xl shrink-0">ℹ️</span>
+    <p class="text-sm text-pine/80 dark:text-cream/80">PPDB Tahun Ajaran 2026/2027 telah ditutup. Informasi berikut masih tersedia sebagai referensi.</p>
+  </div>
+</div>
+<?php endif; ?>
 
 <!-- Syarat -->
 <section class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
@@ -102,7 +125,9 @@ include __DIR__ . '/includes/head.php';
           <li class="flex items-start gap-3"><span class="text-brass-light text-lg mt-0.5">✉️</span><div><p class="font-semibold text-cream">Email</p><p class="text-cream/70"><?php echo esc($email); ?></p></div></li>
           <li class="flex items-start gap-3"><span class="text-brass-light text-lg mt-0.5">🕐</span><div><p class="font-semibold text-cream">Jam Operasional</p><p class="text-cream/70"><?php echo nl2br(esc($jamOp)); ?></p></div></li>
         </ul>
+        <?php if ($ppdbOpen): ?>
         <a href="#" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-7 py-3.5 rounded-full hover:bg-brass-light transition">📄 Unduh Formulir PPDB (PDF)</a>
+        <?php endif; ?>
       </div>
       <div class="rounded-2xl overflow-hidden ring-1 ring-cream/10 aspect-video">
         <iframe src="<?php echo esc($mapsEmbed); ?>" width="100%" height="100%" style="border:0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -125,11 +150,11 @@ include __DIR__ . '/includes/head.php';
 <section class="relative z-10 max-w-6xl mx-auto px-5 pb-20 sm:pb-28">
   <div class="rounded-[2rem] bg-gradient-to-br from-leaf to-pine text-cream px-8 sm:px-14 py-14 text-center relative overflow-hidden reveal">
     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brass/20 blur-3xl"></div>
-    <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto">Masih punya pertanyaan?</h2>
-    <p class="text-cream/80 mt-5 max-w-lg mx-auto">Hubungi kami langsung atau kunjungi sekolah untuk konsultasi gratis seputar PPDB.</p>
+    <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto"><?php echo $ppdbOpen ? 'Masih punya pertanyaan?' : 'Ingin tahu info PPDB tahun depan?'; ?></h2>
+    <p class="text-cream/80 mt-5 max-w-lg mx-auto"><?php echo $ppdbOpen ? 'Hubungi kami langsung atau kunjungi sekolah untuk konsultasi gratis seputar PPDB.' : 'Hubungi kami untuk informasi pendaftaran tahun ajaran berikutnya atau kunjungi sekolah langsung.'; ?></p>
     <a href="kontak.php" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">Hubungi Kami</a>
   </div>
 </section>
 
-<?php $inlineJS = "wireHeaderFooter('ppdb.php');"; ?>
+<?php $inlineJS = "wireHeaderFooter('ppdb.php', " . ($ppdbOpen ? 'true' : 'false') . ");"; ?>
 <?php include __DIR__ . '/includes/foot.php'; ?>

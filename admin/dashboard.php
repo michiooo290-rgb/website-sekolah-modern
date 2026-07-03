@@ -13,6 +13,9 @@ $stats = [
 $beritaTerbaru = db()->query('SELECT judul, kategori, tanggal, dilihat FROM berita ORDER BY tanggal DESC LIMIT 5')->fetchAll();
 $pesanTerbaru  = db()->query('SELECT id, nama, subjek, tanggal, dibaca FROM pesan_kontak ORDER BY tanggal DESC LIMIT 5')->fetchAll();
 
+$ppdbStatus = setting('ppdb_status') ?? 'buka';
+$ppdbOpen = ($ppdbStatus === 'buka');
+
 // Time-based greeting (server time)
 $h = (int)date('G');
 if     ($h < 11) { $greet = 'Selamat pagi';   }
@@ -36,6 +39,12 @@ include 'admin_head.php';
         <svg class="w-6 h-6 text-brass-light shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.456-2.456L14.25 6l1.035-.259a3.375 3.375 0 002.456-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
       </h2>
       <p class="text-cream/65 text-sm max-w-lg">Berikut ringkasan aktivitas website sekolah hari ini. Kelola konten dengan mudah dari satu tempat.</p>
+      <div class="flex items-center gap-2 mt-3">
+        <span class="w-2.5 h-2.5 rounded-full <?php echo $ppdbOpen ? 'bg-leaf' : 'bg-red-400'; ?>"></span>
+        <span class="text-xs font-semibold <?php echo $ppdbOpen ? 'text-leaf' : 'text-red-400'; ?>">
+          PPDB: <?php echo $ppdbOpen ? 'Terbuka' : 'Tertutup'; ?>
+        </span>
+      </div>
     </div>
     <div class="shrink-0 flex items-center gap-3">
       <?php if ($stats['pesan_baru'] > 0): ?>

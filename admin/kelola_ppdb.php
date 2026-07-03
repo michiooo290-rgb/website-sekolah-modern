@@ -7,6 +7,16 @@ $pdo = db();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
+    // Toggle PPDB status
+    if ($action === 'toggle_ppdb') {
+        $current = setting('ppdb_status') ?? 'buka';
+        $new = ($current === 'buka') ? 'tutup' : 'buka';
+        $pdo->prepare("INSERT INTO pengaturan (kunci, nilai) VALUES ('ppdb_status', ?) ON DUPLICATE KEY UPDATE nilai = VALUES(nilai)")->execute([$new]);
+        flash('success', 'PPDB ' . ($new === 'buka' ? 'dibuka' : 'ditutup') . '.');
+        header('Location: kelola_ppdb.php');
+        exit;
+    }
+
     // Save / add item
     if ($action === 'save_item') {
         $bagian  = $_POST['bagian'] ?? '';
@@ -78,12 +88,39 @@ $jadwal = $pdo->query("SELECT * FROM ppdb_info WHERE bagian='jadwal' ORDER BY ur
 $alur   = $pdo->query("SELECT * FROM ppdb_info WHERE bagian='alur' ORDER BY urutan")->fetchAll();
 $faq    = $pdo->query("SELECT * FROM ppdb_info WHERE bagian='faq' ORDER BY urutan")->fetchAll();
 $fileFormulir = setting('file_formulir_ppdb');
+$ppdbStatus = setting('ppdb_status') ?? 'buka';
+$isOpen = ($ppdbStatus === 'buka');
 
 $pageTitle = 'Kelola PPDB';
 include 'admin_head.php';
 ?>
 
 <div class="max-w-3xl space-y-8">
+
+  <!-- Status PPDB -->
+  <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-3 h-3 rounded-full <?php echo $isOpen ? 'bg-leaf' : 'bg-red-500'; ?> animate-pulse"></span>
+        <div>
+          <h3 class="font-serif text-lg font-bold">Status PPDB</h3>
+          <p class="text-sm text-pine/60 dark:text-cream/60">
+            <?php echo $isOpen ? 'Pendaftaran sedang dibuka' : 'Pendaftaran telah ditutup'; ?>
+          </p>
+        </div>
+      </div>
+      <form method="POST" onsubmit="return confirm('<?php echo $isOpen ? 'Tutup pendaftaran PPDB?' : 'Buka kembali pendaftaran PPDB?'; ?>')">
+        <?php echo csrf_field(); ?>
+        <input type="hidden" name="action" value="toggle_ppdb">
+        <button type="submit" class="btn-action px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md transition
+          <?php echo $isOpen
+              ? 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
+              : 'bg-leaf/10 text-leaf hover:bg-leaf/20 dark:bg-leaf/20 dark:text-leaf'; ?>">
+          <?php echo $isOpen ? 'Tutup PPDB' : 'Buka PPDB'; ?>
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- Upload Formulir -->
   <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">

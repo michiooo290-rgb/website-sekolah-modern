@@ -52,7 +52,8 @@ INSERT INTO pengaturan (kunci, nilai) VALUES
   ('ig_url',         '#'),
   ('yt_url',         '#'),
   ('tiktok_url',     '#'),
-  ('fb_url',         '#');
+  ('fb_url',         '#'),
+  ('ppdb_status',    'buka');
 
 -- ─────────────────────────────────────────────
 -- 3. berita

@@ -16,6 +16,9 @@ $kategoriWarna = [
   'Lingkungan' => 'bg-teal-600',
 ];
 
+$ppdbStatus = setting('ppdb_status') ?? 'buka';
+$ppdbOpen   = ($ppdbStatus === 'buka');
+
 $pageTitle = 'Berita';
 include __DIR__ . '/includes/head.php';
 ?>
@@ -74,5 +77,5 @@ include __DIR__ . '/includes/head.php';
   </div>
 </section>
 
-<?php $inlineJS = "wireHeaderFooter('berita.php');"; ?>
+<?php $inlineJS = "wireHeaderFooter('berita.php', " . ($ppdbOpen ? 'true' : 'false') . ");"; ?>
 <?php include __DIR__ . '/includes/foot.php'; ?>

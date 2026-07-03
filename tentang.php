@@ -11,6 +11,9 @@ $sambutan  = $pdo->query("SELECT * FROM tentang WHERE bagian='sambutan' LIMIT 1"
 $fasilitas = $pdo->query("SELECT * FROM tentang WHERE bagian='fasilitas' ORDER BY id ASC")->fetchAll();
 $kepsek    = $pdo->query("SELECT * FROM guru WHERE jabatan='Kepala Sekolah' LIMIT 1")->fetch();
 
+$ppdbStatus = setting('ppdb_status') ?? 'buka';
+$ppdbOpen   = ($ppdbStatus === 'buka');
+
 $pageTitle = 'Tentang Kami';
 include __DIR__ . '/includes/head.php';
 ?>
@@ -112,9 +115,9 @@ include __DIR__ . '/includes/head.php';
     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brass/20 blur-3xl"></div>
     <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto">Bergabunglah bersama kami.</h2>
     <p class="text-cream/80 mt-5 max-w-lg mx-auto">SMA Putra Persada Batam — tempat terbaik untuk memulai perjalanan pendidikan putra-putri Anda.</p>
-    <a href="ppdb.php" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">Daftar PPDB</a>
+    <a href="ppdb.php" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition"><?php echo $ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'; ?></a>
   </div>
 </section>
 
-<?php $inlineJS = "wireHeaderFooter('tentang.php');"; ?>
+<?php $inlineJS = "wireHeaderFooter('tentang.php', " . ($ppdbOpen ? 'true' : 'false') . ");"; ?>
 <?php include __DIR__ . '/includes/foot.php'; ?>
