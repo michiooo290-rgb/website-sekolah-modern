@@ -83,6 +83,25 @@
         return false;
       };
     })();
+
+    /* ── Cegah klik-dobel: kunci tombol submit setelah form berhasil dikirim ── */
+    document.addEventListener('submit', function (e) {
+      const form = e.target;
+      if (e.defaultPrevented) return;             // dibatalkan oleh validasi / konfirmasi
+      if (form.matches('[data-confirm]')) return; // form hapus ditangani lewat modal
+      if (form.dataset.submitting === '1') { e.preventDefault(); return; }
+      form.dataset.submitting = '1';
+      const btns = form.querySelectorAll('button[type="submit"], button:not([type]), input[type="submit"]');
+      // Nonaktifkan setelah data terkirim (timeout 0) agar nilai tombol tetap ikut terkirim
+      setTimeout(function () {
+        btns.forEach(function (b) {
+          b.disabled = true;
+          b.style.opacity = '.65';
+          b.style.cursor = 'wait';
+          b.setAttribute('aria-busy', 'true');
+        });
+      }, 0);
+    }, false);
   </script>
 </body>
 </html>
