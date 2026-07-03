@@ -112,10 +112,14 @@ include __DIR__ . '/includes/head.php';
 <section id="program" class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28">
   <div class="reveal text-center max-w-2xl mx-auto mb-16">
     <p class="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Program Akademik</p>
-    <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream">Peminatan unggulan, satu tujuan: masa depanmu.</h2>
+    <h2 class="font-serif text-3xl sm:text-4xl text-pine dark:text-cream">Satu peminatan, fokus penuh untuk masa depanmu.</h2>
   </div>
-  <div class="grid md:grid-cols-1 max-w-xl mx-auto gap-8 reveal">
-    <div class="group relative text-center"><p class="font-serif text-7xl text-brass/25 dark:text-brass/40 leading-none mb-2">01</p><h3 class="font-serif text-2xl text-pine dark:text-cream mb-3">Peminatan IPS</h3><p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed mb-4">Ekonomi · Geografi · Sosiologi · Sejarah — jalur hukum, bisnis, dan sosial.</p><div class="mt-6 h-px bg-pine/10 dark:bg-cream/10 group-hover:bg-brass transition"></div></div>
+  <div class="max-w-xl mx-auto reveal">
+    <div class="group relative text-center bg-cream-deep dark:bg-pine rounded-[1.5rem] p-10 sm:p-12 ring-1 ring-pine/10 dark:ring-cream/10 hover:ring-brass/40 transition">
+      <span class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brass/15 text-brass mb-6"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg></span>
+      <h3 class="font-serif text-2xl sm:text-3xl text-pine dark:text-cream mb-3">Peminatan IPS</h3>
+      <p class="text-pine/70 dark:text-cream/70 text-sm leading-relaxed max-w-md mx-auto">Ekonomi · Geografi · Sosiologi · Sejarah — mempersiapkan jalur hukum, bisnis, dan sosial menuju perguruan tinggi terbaik.</p>
+    </div>
   </div>
   <p class="text-center mt-12 reveal"><a href="ekstrakurikuler.php" class="elink text-sm font-semibold text-leaf dark:text-brass-light">Lihat juga kegiatan ekstrakurikuler →</a></p>
 </section>
@@ -139,6 +143,7 @@ include __DIR__ . '/includes/head.php';
       <p class="text-cream/70 mt-4 text-sm">Dibina oleh pendidik profesional yang berdedikasi membersamai setiap siswa.</p>
     </div>
   </div>
+  <?php if (!empty($guruList)): ?>
   <div class="guru-outer guru-fade reveal pb-20 sm:pb-28">
     <div class="guru-track">
       <?php
@@ -157,6 +162,11 @@ include __DIR__ . '/includes/head.php';
       <?php endforeach; ?>
     </div>
   </div>
+  <?php else: ?>
+  <div class="max-w-6xl mx-auto px-5 pb-20 sm:pb-28">
+    <p class="text-center text-sm text-cream/50">Data guru akan segera ditampilkan.</p>
+  </div>
+  <?php endif; ?>
 </section>
 
 <!-- AGENDA -->
@@ -199,6 +209,12 @@ include __DIR__ . '/includes/head.php';
       <a href="berita-detail.php?slug=<?php echo esc($b['slug']); ?>" class="group flex items-start gap-4 py-5 first:pt-0"><span class="numdot text-2xl text-brass/50 dark:text-brass/60 leading-none shrink-0 mt-1">✦</span><div><span class="text-[11px] font-semibold text-brass dark:text-brass-light tracking-wide uppercase"><?php echo esc($b['kategori']); ?> · <?php echo tglPendek($b['tanggal']); ?></span><h3 class="font-serif text-lg text-pine dark:text-cream leading-snug mt-1 group-hover:text-leaf dark:group-hover:text-brass-light transition"><?php echo esc($b['judul']); ?></h3></div></a>
       <?php endforeach; ?>
     </div>
+  </div>
+  <?php else: ?>
+  <div class="reveal text-center py-16 rounded-[1.5rem] bg-cream-deep dark:bg-pine ring-1 ring-pine/10 dark:ring-cream/10">
+    <div class="w-16 h-16 rounded-2xl bg-brass/15 flex items-center justify-center mx-auto mb-4"><svg class="w-8 h-8 text-brass" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"/></svg></div>
+    <p class="font-serif text-xl text-pine dark:text-cream mb-1">Belum ada kabar terbaru</p>
+    <p class="text-sm text-pine/60 dark:text-cream/60">Nantikan berita dan kegiatan terbaru dari sekolah kami.</p>
   </div>
   <?php endif; ?>
 </section>
