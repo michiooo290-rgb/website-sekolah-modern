@@ -74,9 +74,9 @@ $seoJsonLd = json_encode([
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="<?php echo esc($seoCanonical); ?>">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <!-- Favicon: logo sekolah -->
   <link rel="icon" type="image/jpeg" href="assets/img/logo.jpeg">
+  <link rel="shortcut icon" href="assets/img/logo.jpeg">
   <link rel="apple-touch-icon" href="assets/img/logo.jpeg">
   <meta name="theme-color" content="#0E3B2E">
 
