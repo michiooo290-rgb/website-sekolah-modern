@@ -6,10 +6,10 @@ $pdo  = db();
 $edit = null;
 $mode = 'list'; // list | form | kategori
 
-// ── Ambil semua kategori dari DB ─────────────────────
+// ── Ambil semua kategori dari DB ──────────────────
 $kategoriList = $pdo->query('SELECT * FROM kategori_ekskul ORDER BY urutan, nama')->fetchAll();
 
-// ── Handle actions ───────────────────────────────────
+// ── Handle actions ────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
@@ -131,9 +131,9 @@ $pageTitle = match($mode) {
 };
 include 'admin_head.php';
 
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 // MODE: FORM EKSKUL
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 if ($mode === 'form'): ?>
 
 <form method="POST" class="max-w-2xl space-y-6">
@@ -196,9 +196,9 @@ if ($mode === 'form'): ?>
 </form>
 
 <?php
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 // MODE: KELOLA KATEGORI
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 elseif ($mode === 'kategori'): ?>
 
 <div class="max-w-2xl space-y-6">
@@ -226,7 +226,13 @@ elseif ($mode === 'kategori'): ?>
     </div>
 
     <?php if (empty($kategoriList)): ?>
-      <p class="text-sm text-pine/50 dark:text-cream/50 p-8 text-center">Belum ada kategori.</p>
+      <div class="p-10 text-center">
+        <div class="w-14 h-14 rounded-2xl bg-pine/5 dark:bg-cream/10 flex items-center justify-center mx-auto mb-3">
+          <svg class="w-7 h-7 text-pine/25 dark:text-cream/25" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 6h.008v.008H6V6z"/></svg>
+        </div>
+        <p class="text-sm font-semibold text-pine/70 dark:text-cream/70 mb-1">Belum ada kategori</p>
+        <p class="text-sm text-pine/50 dark:text-cream/50">Tambahkan kategori pertama lewat kolom di atas.</p>
+      </div>
     <?php else: ?>
       <ul class="divide-y divide-pine/5 dark:divide-cream/5">
         <?php foreach ($kategoriList as $kat): ?>
@@ -269,9 +275,9 @@ elseif ($mode === 'kategori'): ?>
 </div>
 
 <?php
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 // MODE: LIST EKSKUL
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
 else: ?>
 
 <div class="flex items-center justify-between mb-6">
@@ -293,7 +299,17 @@ else: ?>
 <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 overflow-hidden">
   <?php $rows = $pdo->query('SELECT * FROM ekstrakurikuler ORDER BY kategori, nama')->fetchAll(); ?>
   <?php if (empty($rows)): ?>
-    <p class="text-sm text-pine/50 dark:text-cream/50 p-8 text-center">Belum ada ekstrakurikuler.</p>
+    <div class="p-12 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-pine/5 dark:bg-cream/10 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-pine/25 dark:text-cream/25" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>
+      </div>
+      <p class="text-sm font-semibold text-pine/70 dark:text-cream/70 mb-1">Belum ada ekstrakurikuler</p>
+      <p class="text-sm text-pine/50 dark:text-cream/50 mb-4">Tambahkan kegiatan ekskul untuk ditampilkan di halaman publik.</p>
+      <a href="kelola_ekskul.php?new=1" class="btn-action inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brass hover:bg-brass-light text-pine-deep font-semibold text-sm shadow-md shadow-brass/20 hover:shadow-lg transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        Tambah Ekskul Pertama
+      </a>
+    </div>
   <?php else: ?>
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
