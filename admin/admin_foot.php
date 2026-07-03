@@ -16,6 +16,12 @@
       ov.classList.toggle('hidden');
     }
 
+    /* Ganti tema terang/gelap & simpan pilihan ke localStorage */
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('admin-theme', isDark ? 'dark' : 'light');
+    }
+
     /* Auto-dismiss flash after 5s */
     setTimeout(() => {
       const f = document.getElementById('flash-msg');

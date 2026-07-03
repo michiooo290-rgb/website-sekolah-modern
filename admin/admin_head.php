@@ -7,6 +7,9 @@ $namaSekolah = setting('nama_sekolah') ?? 'SMA Putra Persada Batam';
 $fullTitle   = $pageTitle . ' — Admin ' . $namaSekolah;
 $currentPage = basename($_SERVER['PHP_SELF']);
 
+$hari      = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+$tglTopbar = $hari[(int)date('w')] . ', ' . tglIndo(date('Y-m-d'));
+
 $navItems = [
     ['file'=>'dashboard.php',        'icon'=>'grid',    'label'=>'Dashboard'],
     ['file'=>'kelola_pengaturan.php', 'icon'=>'cog',     'label'=>'Pengaturan'],
@@ -56,8 +59,13 @@ $iconPaths = [
     }
   </style>
   <script>
-    document.documentElement.classList.toggle('dark',
-      window.matchMedia('(prefers-color-scheme: dark)').matches);
+    /* Tema: pakai pilihan tersimpan; jika belum ada, ikuti preferensi sistem */
+    (function () {
+      var stored = localStorage.getItem('admin-theme');
+      var isDark = stored ? (stored === 'dark')
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', isDark);
+    })();
   </script>
   <style>
     /* Admin-specific transitions */
@@ -107,7 +115,7 @@ $iconPaths = [
 </head>
 <body class="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">
   <!-- Mobile overlay -->
-  <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" onclick="toggleSidebar()" aria-hidden="true"></div>
 
   <!-- Sidebar -->
   <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-pine-deep text-cream z-50 flex flex-col sidebar-enter
@@ -174,13 +182,18 @@ $iconPaths = [
     <header class="sticky top-0 z-30 bg-cream/80 dark:bg-pine-deep/80 backdrop-blur-md border-b border-pine/8 dark:border-cream/8">
       <div class="flex items-center justify-between px-5 lg:px-8 h-16">
         <div class="flex items-center gap-4">
-          <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-pine/5 dark:hover:bg-cream/5 transition">
+          <button onclick="toggleSidebar()" aria-label="Buka menu navigasi" class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-pine/5 dark:hover:bg-cream/5 transition">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
           </button>
           <h2 class="font-serif text-lg font-bold"><?php echo esc($pageTitle); ?></h2>
         </div>
         <div class="flex items-center gap-3 text-sm text-pine/60 dark:text-cream/60">
-          <span><?php echo date('l, d M Y'); ?></span>
+          <span class="hidden sm:inline"><?php echo esc($tglTopbar); ?></span>
+          <button type="button" onclick="toggleTheme()" aria-label="Ganti mode terang atau gelap" title="Ganti mode terang/gelap"
+                  class="btn-action p-2 rounded-lg hover:bg-pine/5 dark:hover:bg-cream/5 transition">
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+            <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+          </button>
         </div>
       </div>
     </header>
@@ -194,13 +207,13 @@ $iconPaths = [
         <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-leaf/10 text-leaf dark:bg-leaf/20 dark:text-leaf ring-1 ring-leaf/20 text-sm fade-in" id="flash-msg">
           <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span><?php echo esc($success); ?></span>
-          <button onclick="this.parentElement.remove()" class="ml-auto -mr-1 p-1 rounded hover:bg-leaf/10 transition">&times;</button>
+          <button onclick="this.parentElement.remove()" aria-label="Tutup notifikasi" class="ml-auto -mr-1 p-1 rounded hover:bg-leaf/10 transition">&times;</button>
         </div>
       <?php endif;
       if ($error): ?>
         <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-800/40 text-sm fade-in" id="flash-msg">
           <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span><?php echo esc($error); ?></span>
-          <button onclick="this.parentElement.remove()" class="ml-auto -mr-1 p-1 rounded hover:bg-red-100 transition">&times;</button>
+          <button onclick="this.parentElement.remove()" aria-label="Tutup notifikasi" class="ml-auto -mr-1 p-1 rounded hover:bg-red-100 transition">&times;</button>
         </div>
       <?php endif; ?>
