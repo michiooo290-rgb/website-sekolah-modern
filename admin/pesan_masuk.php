@@ -43,9 +43,53 @@ if (isset($_GET['id'])) {
     }
 }
 
-$total  = $pdo->query('SELECT COUNT(*) FROM pesan_kontak')->fetchColumn();
-$unread = $pdo->query('SELECT COUNT(*) FROM pesan_kontak WHERE dibaca=0')->fetchColumn();
-$rows   = $pdo->query('SELECT id, nama, email, subjek, tanggal, dibaca FROM pesan_kontak ORDER BY tanggal DESC')->fetchAll();
+// ── List: pencarian, filter, pagination ─────────────────────────────
+$q      = isset($_GET['q']) ? trim($_GET['q']) : '';
+$filter = (isset($_GET['filter']) && $_GET['filter'] === 'unread') ? 'unread' : '';
+$perPage = 15;
+$hal     = isset($_GET['hal']) ? max(1, (int)$_GET['hal']) : 1;
+
+// Hitung total keseluruhan & belum dibaca (tanpa filter, untuk badge & pills)
+$total  = (int)$pdo->query('SELECT COUNT(*) FROM pesan_kontak')->fetchColumn();
+$unread = (int)$pdo->query('SELECT COUNT(*) FROM pesan_kontak WHERE dibaca=0')->fetchColumn();
+
+// Susun WHERE dinamis untuk daftar
+$where  = [];
+$params = [];
+if ($q !== '') {
+    $where[] = '(nama LIKE ? OR email LIKE ? OR subjek LIKE ?)';
+    $like = '%' . $q . '%';
+    $params[] = $like;
+    $params[] = $like;
+    $params[] = $like;
+}
+if ($filter === 'unread') {
+    $where[] = 'dibaca = 0';
+}
+$whereSql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
+$isFiltering = ($q !== '' || $filter === 'unread');
+
+// Total baris yang cocok (untuk pagination)
+$countStmt = $pdo->prepare("SELECT COUNT(*) FROM pesan_kontak $whereSql");
+$countStmt->execute($params);
+$totalRows = (int)$countStmt->fetchColumn();
+
+$totalPages = max(1, (int)ceil($totalRows / $perPage));
+if ($hal > $totalPages) $hal = $totalPages;
+$offset = ($hal - 1) * $perPage;
+
+// Ambil baris halaman ini (LIMIT/OFFSET int aman karena sudah di-cast)
+$listStmt = $pdo->prepare("SELECT id, nama, email, subjek, tanggal, dibaca FROM pesan_kontak $whereSql ORDER BY tanggal DESC LIMIT $perPage OFFSET $offset");
+$listStmt->execute($params);
+$rows = $listStmt->fetchAll();
+
+// Helper untuk membangun URL yang mempertahankan q + filter
+$pageUrl = function (array $override = []) use ($q, $filter) {
+    $base = ['q' => $q !== '' ? $q : null, 'filter' => $filter !== '' ? $filter : null];
+    $merged = array_merge($base, $override);
+    $merged = array_filter($merged, fn($v) => $v !== null && $v !== '');
+    return 'pesan_masuk.php' . ($merged ? ('?' . http_build_query($merged)) : '');
+};
 
 $pageTitle = 'Pesan Masuk';
 include 'admin_head.php';
@@ -99,9 +143,15 @@ include 'admin_head.php';
 
 <?php else: ?>
 <!-- List View -->
-<div class="flex items-center justify-between mb-6">
+<div class="flex flex-wrap items-center justify-between gap-3 mb-5">
   <div class="flex items-center gap-3">
-    <p class="text-sm text-pine/60 dark:text-cream/60"><?php echo $total; ?> pesan</p>
+    <p class="text-sm text-pine/60 dark:text-cream/60">
+      <?php if ($isFiltering): ?>
+        <?php echo $totalRows; ?> dari <?php echo $total; ?> pesan
+      <?php else: ?>
+        <?php echo $total; ?> pesan
+      <?php endif; ?>
+    </p>
     <?php if ($unread > 0): ?>
       <span class="bg-brass text-pine-deep text-[10px] font-bold px-2 py-0.5 rounded-full"><?php echo $unread; ?> belum dibaca</span>
     <?php endif; ?>
@@ -111,11 +161,35 @@ include 'admin_head.php';
   <?php endif; ?>
 </div>
 
+<!-- Pencarian + Filter -->
+<div class="flex flex-wrap items-center gap-3 mb-5">
+  <form method="GET" class="flex items-center gap-2 flex-1 min-w-[240px]">
+    <?php if ($filter !== ''): ?><input type="hidden" name="filter" value="<?php echo esc($filter); ?>"><?php endif; ?>
+    <div class="relative flex-1">
+      <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-pine/40 dark:text-cream/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>
+      <input type="text" name="q" value="<?php echo esc($q); ?>" placeholder="Cari nama, email, atau subjek..." class="w-full pl-9 pr-3 py-2 rounded-xl text-sm bg-white/60 dark:bg-pine/40 ring-1 ring-pine/10 dark:ring-cream/10 focus:ring-2 focus:ring-brass outline-none">
+    </div>
+    <button class="px-4 py-2 rounded-xl text-sm font-semibold bg-pine text-cream hover:bg-pine-deep transition">Cari</button>
+    <?php if ($q !== ''): ?>
+      <a href="<?php echo esc($pageUrl(['q' => null, 'hal' => null])); ?>" class="px-3 py-2 rounded-xl text-sm text-pine/60 dark:text-cream/60 hover:text-pine dark:hover:text-cream transition">Reset</a>
+    <?php endif; ?>
+  </form>
+  <div class="flex items-center gap-1 bg-white/60 dark:bg-pine/40 rounded-xl ring-1 ring-pine/10 dark:ring-cream/10 p-1">
+    <a href="<?php echo esc($pageUrl(['filter' => null, 'hal' => null])); ?>" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition <?php echo $filter === '' ? 'bg-brass text-pine-deep' : 'text-pine/60 dark:text-cream/60 hover:text-pine dark:hover:text-cream'; ?>">Semua</a>
+    <a href="<?php echo esc($pageUrl(['filter' => 'unread', 'hal' => null])); ?>" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition <?php echo $filter === 'unread' ? 'bg-brass text-pine-deep' : 'text-pine/60 dark:text-cream/60 hover:text-pine dark:hover:text-cream'; ?>">Belum dibaca<?php if ($unread > 0): ?> · <?php echo $unread; ?><?php endif; ?></a>
+  </div>
+</div>
+
 <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 overflow-hidden">
   <?php if (empty($rows)): ?>
     <div class="p-12 text-center">
       <svg class="w-12 h-12 text-pine/20 dark:text-cream/20 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
-      <p class="text-sm text-pine/50 dark:text-cream/50">Belum ada pesan masuk.</p>
+      <?php if ($isFiltering): ?>
+        <p class="text-sm text-pine/50 dark:text-cream/50">Tidak ada pesan yang cocok dengan pencarian/filter.</p>
+        <a href="pesan_masuk.php" class="inline-block mt-3 text-xs font-semibold text-leaf dark:text-brass-light hover:underline">Tampilkan semua pesan</a>
+      <?php else: ?>
+        <p class="text-sm text-pine/50 dark:text-cream/50">Belum ada pesan masuk.</p>
+      <?php endif; ?>
     </div>
   <?php else: ?>
     <div class="divide-y divide-pine/5 dark:divide-cream/5">
@@ -138,6 +212,43 @@ include 'admin_head.php';
     </div>
   <?php endif; ?>
 </div>
+
+<?php if ($totalPages > 1): ?>
+<nav class="flex items-center justify-center gap-1 mt-6" aria-label="Navigasi halaman">
+  <?php if ($hal > 1): ?>
+    <a href="<?php echo esc($pageUrl(['hal' => $hal - 1])); ?>" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-white/60 dark:bg-pine/40 ring-1 ring-pine/10 dark:ring-cream/10 hover:bg-brass hover:text-pine-deep transition">← Sebelumnya</a>
+  <?php else: ?>
+    <span class="px-3 py-1.5 rounded-lg text-sm font-semibold text-pine/30 dark:text-cream/30 cursor-not-allowed">← Sebelumnya</span>
+  <?php endif; ?>
+
+  <?php
+    $start = max(1, $hal - 2);
+    $end   = min($totalPages, $hal + 2);
+    if ($start > 1): ?>
+      <a href="<?php echo esc($pageUrl(['hal' => 1])); ?>" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-semibold bg-white/60 dark:bg-pine/40 ring-1 ring-pine/10 dark:ring-cream/10 hover:bg-brass hover:text-pine-deep transition">1</a>
+      <?php if ($start > 2): ?><span class="px-1 text-pine/40 dark:text-cream/40">…</span><?php endif; ?>
+    <?php endif; ?>
+
+  <?php for ($p = $start; $p <= $end; $p++): ?>
+    <?php if ($p == $hal): ?>
+      <span class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold bg-brass text-pine-deep"><?php echo $p; ?></span>
+    <?php else: ?>
+      <a href="<?php echo esc($pageUrl(['hal' => $p])); ?>" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-semibold bg-white/60 dark:bg-pine/40 ring-1 ring-pine/10 dark:ring-cream/10 hover:bg-brass hover:text-pine-deep transition"><?php echo $p; ?></a>
+    <?php endif; ?>
+  <?php endfor; ?>
+
+  <?php if ($end < $totalPages): ?>
+    <?php if ($end < $totalPages - 1): ?><span class="px-1 text-pine/40 dark:text-cream/40">…</span><?php endif; ?>
+    <a href="<?php echo esc($pageUrl(['hal' => $totalPages])); ?>" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-semibold bg-white/60 dark:bg-pine/40 ring-1 ring-pine/10 dark:ring-cream/10 hover:bg-brass hover:text-pine-deep transition"><?php echo $totalPages; ?></a>
+  <?php endif; ?>
+
+  <?php if ($hal < $totalPages): ?>
+    <a href="<?php echo esc($pageUrl(['hal' => $hal + 1])); ?>" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-white/60 dark:bg-pine/40 ring-1 ring-pine/10 dark:ring-cream/10 hover:bg-brass hover:text-pine-deep transition">Berikutnya →</a>
+  <?php else: ?>
+    <span class="px-3 py-1.5 rounded-lg text-sm font-semibold text-pine/30 dark:text-cream/30 cursor-not-allowed">Berikutnya →</span>
+  <?php endif; ?>
+</nav>
+<?php endif; ?>
 <?php endif; ?>
 
 <?php include 'admin_foot.php'; ?>
