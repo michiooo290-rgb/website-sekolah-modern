@@ -50,6 +50,7 @@ $iconPaths = [
       --color-pine: #0E3B2E;
       --color-pine-deep: #08291F;
       --color-leaf: #2F7D52;
+      --color-leaf-light: #5AA97C;
       --color-cream: #F7F3E9;
       --color-cream-deep: #EFE8D6;
       --color-brass: #C9A227;
@@ -102,7 +103,8 @@ $iconPaths = [
     #confirm-modal .cm-confirm{background:#dc2626;color:#fff}
     #confirm-modal .cm-confirm:hover{background:#b91c1c}
     .sidebar-enter{animation:slideIn .3s ease forwards}
-    @keyframes slideIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+    /* opacity-only: animasi tidak menimpa transform -translate-x-full agar sidebar tetap tersembunyi di mobile */
+    @keyframes slideIn{from{opacity:0}to{opacity:1}}
     /* Mobile sidebar */
     #sidebar{transition:transform .3s ease}
     #sidebar.closed{transform:translateX(-100%)}
@@ -204,14 +206,14 @@ $iconPaths = [
       $success = get_flash('success');
       $error   = get_flash('error');
       if ($success): ?>
-        <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-leaf/10 text-leaf dark:bg-leaf/20 dark:text-leaf ring-1 ring-leaf/20 text-sm fade-in" id="flash-msg">
+        <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-leaf/10 text-leaf dark:bg-leaf/20 dark:text-leaf ring-1 ring-leaf/20 text-sm fade-in flash-msg">
           <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span><?php echo esc($success); ?></span>
           <button onclick="this.parentElement.remove()" aria-label="Tutup notifikasi" class="ml-auto -mr-1 p-1 rounded hover:bg-leaf/10 transition">&times;</button>
         </div>
       <?php endif;
       if ($error): ?>
-        <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-800/40 text-sm fade-in" id="flash-msg">
+        <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-800/40 text-sm fade-in flash-msg">
           <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span><?php echo esc($error); ?></span>
           <button onclick="this.parentElement.remove()" aria-label="Tutup notifikasi" class="ml-auto -mr-1 p-1 rounded hover:bg-red-100 transition">&times;</button>

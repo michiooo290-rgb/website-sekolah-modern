@@ -22,10 +22,11 @@
       localStorage.setItem('admin-theme', isDark ? 'dark' : 'light');
     }
 
-    /* Auto-dismiss flash after 5s */
+    /* Auto-dismiss flash after 5s (dukung lebih dari satu notifikasi) */
     setTimeout(() => {
-      const f = document.getElementById('flash-msg');
-      if (f) { f.style.transition = 'opacity .3s'; f.style.opacity = '0'; setTimeout(() => f.remove(), 300); }
+      document.querySelectorAll('.flash-msg').forEach(f => {
+        f.style.transition = 'opacity .3s'; f.style.opacity = '0'; setTimeout(() => f.remove(), 300);
+      });
     }, 5000);
 
     /* ── Konfirmasi hapus via modal kustom ── */
@@ -75,7 +76,7 @@
         openModal(form, form.getAttribute('data-confirm'));
       }, true);
 
-      // Kompatibilitas: pola lama data-confirm="msg"
+      // Kompatibilitas: pola lama confirmDelete(msg)
       window.confirmDelete = function (msg) {
         const form = (window.event && window.event.target) ? window.event.target.closest('form') : null;
         if (form) { openModal(form, msg); }
