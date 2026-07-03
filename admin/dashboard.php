@@ -76,7 +76,7 @@ include 'admin_head.php';
       <div class="flex items-start justify-between mb-4">
         <div class="w-11 h-11 rounded-xl bg-<?php echo $c['color']; ?>/10 dark:bg-<?php echo $c['color']; ?>/15
                     flex items-center justify-center group-hover:scale-110 transition-transform">
-          <svg class="w-5 h-5 text-<?php echo $c['color']; ?> dark:text-<?php echo $c['color']; ?>-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-<?php echo $c['color']; ?> dark:text-<?php echo $c['color'] === 'brass' ? 'brass-light' : 'emerald-400'; ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <?php echo $icons[$c['icon']]; ?>
           </svg>
         </div>
