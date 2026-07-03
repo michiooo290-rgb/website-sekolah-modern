@@ -4,7 +4,7 @@ require_login();
 
 $pdo = db();
 
-// ── Handle POST ─────────────────────────────────────
+// ── Handle POST ──────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
@@ -85,7 +85,7 @@ include 'admin_head.php';
                      class="flex-1 px-3 py-2 rounded-lg bg-cream dark:bg-pine-deep border border-pine/10 dark:border-cream/10 focus:border-brass focus:ring-2 focus:ring-brass/20 outline-none transition text-sm">
               <button class="btn-action px-3 py-2 rounded-lg text-xs font-semibold bg-pine/5 dark:bg-cream/10 hover:bg-brass/15 hover:text-brass transition opacity-0 group-hover:opacity-100">Simpan</button>
             </form>
-            <form method="POST" onsubmit="return confirmDelete('Hapus item ini?')">
+            <form method="POST" data-confirm="Hapus item ini?">
               <?php echo csrf_field(); ?>
               <input type="hidden" name="action" value="delete_item">
               <input type="hidden" name="id" value="<?php echo $item['id']; ?>">

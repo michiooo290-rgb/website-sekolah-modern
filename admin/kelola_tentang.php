@@ -144,7 +144,7 @@ include 'admin_head.php';
               </form>
               <div class="flex items-center justify-between">
                 <button type="submit" form="edit-fas-<?php echo $f['id']; ?>" class="btn-action px-4 py-2 rounded-lg text-xs font-semibold bg-brass/10 text-brass hover:bg-brass/20 transition">Simpan</button>
-                <form method="POST" onsubmit="return confirmDelete('Hapus fasilitas ini?')">
+                <form method="POST" data-confirm="Hapus fasilitas ini?">
                   <?php echo csrf_field(); ?>
                   <input type="hidden" name="action" value="delete_fasilitas">
                   <input type="hidden" name="id" value="<?php echo $f['id']; ?>">

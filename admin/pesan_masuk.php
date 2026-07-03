@@ -65,7 +65,7 @@ include 'admin_head.php';
         <h3 class="font-serif text-xl font-bold mb-1"><?php echo esc($detail['subjek'] ?: 'Tanpa Subjek'); ?></h3>
         <p class="text-sm text-pine/60 dark:text-cream/60"><?php echo tglIndo($detail['tanggal']); ?></p>
       </div>
-      <form method="POST" onsubmit="return confirmDelete('Hapus pesan ini?')">
+      <form method="POST" data-confirm="Hapus pesan ini?">
         <?php echo csrf_field(); ?>
         <input type="hidden" name="action" value="delete">
         <input type="hidden" name="id" value="<?php echo $detail['id']; ?>">
