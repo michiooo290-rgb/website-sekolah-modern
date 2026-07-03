@@ -16,10 +16,17 @@
       ov.classList.toggle('hidden');
     }
 
-    /* Auto-dismiss flash after 5s */
+    /* Ganti tema terang/gelap & simpan pilihan ke localStorage */
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('admin-theme', isDark ? 'dark' : 'light');
+    }
+
+    /* Auto-dismiss flash after 5s (dukung lebih dari satu notifikasi) */
     setTimeout(() => {
-      const f = document.getElementById('flash-msg');
-      if (f) { f.style.transition = 'opacity .3s'; f.style.opacity = '0'; setTimeout(() => f.remove(), 300); }
+      document.querySelectorAll('.flash-msg').forEach(f => {
+        f.style.transition = 'opacity .3s'; f.style.opacity = '0'; setTimeout(() => f.remove(), 300);
+      });
     }, 5000);
 
     /* ── Konfirmasi hapus via modal kustom ── */
@@ -69,13 +76,32 @@
         openModal(form, form.getAttribute('data-confirm'));
       }, true);
 
-      // Kompatibilitas: pola lama data-confirm="msg"
+      // Kompatibilitas: pola lama confirmDelete(msg)
       window.confirmDelete = function (msg) {
         const form = (window.event && window.event.target) ? window.event.target.closest('form') : null;
         if (form) { openModal(form, msg); }
         return false;
       };
     })();
+
+    /* ── Cegah klik-dobel: kunci tombol submit setelah form berhasil dikirim ── */
+    document.addEventListener('submit', function (e) {
+      const form = e.target;
+      if (e.defaultPrevented) return;             // dibatalkan oleh validasi / konfirmasi
+      if (form.matches('[data-confirm]')) return; // form hapus ditangani lewat modal
+      if (form.dataset.submitting === '1') { e.preventDefault(); return; }
+      form.dataset.submitting = '1';
+      const btns = form.querySelectorAll('button[type="submit"], button:not([type]), input[type="submit"]');
+      // Nonaktifkan setelah data terkirim (timeout 0) agar nilai tombol tetap ikut terkirim
+      setTimeout(function () {
+        btns.forEach(function (b) {
+          b.disabled = true;
+          b.style.opacity = '.65';
+          b.style.cursor = 'wait';
+          b.setAttribute('aria-busy', 'true');
+        });
+      }, 0);
+    }, false);
   </script>
 </body>
 </html>

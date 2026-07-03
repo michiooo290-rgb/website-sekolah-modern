@@ -191,7 +191,7 @@ include 'admin_head.php';
                 </div>
                 <div class="flex items-center gap-2">
                   <button type="submit" form="edit-ppdb-<?php echo $item['id']; ?>" class="btn-action px-4 py-2 rounded-lg text-xs font-semibold bg-brass/10 text-brass hover:bg-brass/20 transition">Simpan</button>
-                  <form method="POST" onsubmit="return confirmDelete('Hapus item ini?')" class="inline">
+                  <form method="POST" data-confirm="Hapus item ini?" class="inline">
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="action" value="delete_item">
                     <input type="hidden" name="id" value="<?php echo $item['id']; ?>">

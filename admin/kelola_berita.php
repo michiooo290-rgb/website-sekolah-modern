@@ -6,7 +6,7 @@ $pdo   = db();
 $edit  = null;
 $mode  = 'list';
 
-// ── Handle actions ──────────────────────────────────
+// ── Handle actions ─────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
@@ -118,6 +118,15 @@ include 'admin_head.php';
 if ($mode === 'form'):
 ?>
 
+<?php if ($edit && $edit['gambar']): ?>
+<!-- Form terpisah untuk hapus foto (diletakkan di LUAR form utama agar HTML valid: form tidak boleh bersarang) -->
+<form method="POST" id="form-hapus-foto" data-confirm="Hapus foto ini? Foto akan dihapus permanen." class="hidden">
+  <?php echo csrf_field(); ?>
+  <input type="hidden" name="action" value="hapus_foto">
+  <input type="hidden" name="id" value="<?php echo $edit['id']; ?>">
+</form>
+<?php endif; ?>
+
 <form method="POST" enctype="multipart/form-data" class="max-w-3xl space-y-6">
   <?php echo csrf_field(); ?>
   <input type="hidden" name="action" value="save">
@@ -154,22 +163,15 @@ if ($mode === 'form'):
         <div class="mb-3 flex items-start gap-3">
           <img src="uploads/berita/<?php echo esc($edit['gambar']); ?>" alt=""
                class="h-24 rounded-lg object-cover ring-1 ring-pine/10">
-          <!-- Tombol Hapus Foto -->
-          <form method="POST"
-                data-confirm="Hapus foto ini? Foto akan dihapus permanen."
-                class="inline">
-            <?php echo csrf_field(); ?>
-            <input type="hidden" name="action" value="hapus_foto">
-            <input type="hidden" name="id" value="<?php echo $edit['id']; ?>">
-            <button type="submit"
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
-              Hapus Foto
-            </button>
-          </form>
+          <!-- Tombol Hapus Foto: submit ke form #form-hapus-foto (di luar form utama) -->
+          <button type="submit" form="form-hapus-foto"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+            Hapus Foto
+          </button>
         </div>
       <?php endif; ?>
       <input type="file" name="gambar" accept="image/*"
@@ -179,9 +181,26 @@ if ($mode === 'form'):
 
     <div>
       <label class="block text-sm font-semibold mb-1.5">Isi Berita</label>
-      <textarea name="isi" rows="12" required
-                class="w-full px-4 py-2.5 rounded-xl bg-cream dark:bg-pine-deep border border-pine/15 dark:border-cream/15 focus:border-brass focus:ring-2 focus:ring-brass/20 outline-none transition text-sm font-sans"><?php echo esc($edit['isi'] ?? ''); ?></textarea>
-      <p class="text-xs text-pine/50 dark:text-cream/50 mt-1">Mendukung tag HTML untuk format (p, h3, ul, li, strong, em).</p>
+      <div class="rte rounded-xl border border-pine/15 dark:border-cream/15 focus-within:border-brass focus-within:ring-2 focus-within:ring-brass/20 transition overflow-hidden">
+        <div class="rte-toolbar flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-pine/10 dark:border-cream/10 bg-cream dark:bg-pine-deep">
+          <button type="button" class="rte-btn" data-cmd="bold" title="Tebal" aria-label="Tebal"><b>B</b></button>
+          <button type="button" class="rte-btn" data-cmd="italic" title="Miring" aria-label="Miring"><i>I</i></button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="h3" title="Judul bagian" aria-label="Judul bagian">H3</button>
+          <button type="button" class="rte-btn" data-cmd="formatBlock" data-val="p" title="Paragraf biasa" aria-label="Paragraf biasa">¶</button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" data-cmd="insertUnorderedList" title="Daftar butir" aria-label="Daftar butir">• Butir</button>
+          <button type="button" class="rte-btn" data-cmd="insertOrderedList" title="Daftar bernomor" aria-label="Daftar bernomor">1. Nomor</button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" data-cmd="createLink" title="Sisipkan tautan" aria-label="Sisipkan tautan">Tautan</button>
+          <button type="button" class="rte-btn" data-cmd="removeFormat" title="Bersihkan format" aria-label="Bersihkan format">Bersihkan</button>
+        </div>
+        <div id="rte-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Isi berita"
+             data-placeholder="Tulis isi berita di sini…"
+             class="rte-editor min-h-[16rem] max-h-[34rem] overflow-y-auto px-4 py-3 bg-cream dark:bg-pine-deep text-pine dark:text-cream text-sm leading-relaxed outline-none"><?php echo sanitize_html($edit['isi'] ?? ''); ?></div>
+      </div>
+      <textarea name="isi" id="rte-source" class="hidden" aria-hidden="true"><?php echo esc($edit['isi'] ?? ''); ?></textarea>
+      <p class="text-xs text-pine/50 dark:text-cream/50 mt-1">Gunakan tombol format di atas untuk menata teks — tidak perlu menulis kode HTML.</p>
     </div>
   </div>
 
@@ -193,6 +212,69 @@ if ($mode === 'form'):
     </button>
   </div>
 </form>
+
+<style>
+  .rte-btn{min-width:2rem;height:2rem;padding:0 .55rem;display:inline-flex;align-items:center;justify-content:center;border-radius:.5rem;font-size:.8rem;font-weight:600;color:#0E3B2E;background:transparent;cursor:pointer;border:none;transition:background .15s ease;line-height:1}
+  .dark .rte-btn{color:#F7F3E9}
+  .rte-btn:hover{background:rgba(201,162,39,.18)}
+  .rte-sep{width:1px;height:1.25rem;background:rgba(14,59,46,.15);margin:0 .15rem}
+  .dark .rte-sep{background:rgba(247,243,233,.15)}
+  .rte-editor h3{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1.25rem;margin:.6em 0 .3em}
+  .rte-editor p{margin:.5em 0}
+  .rte-editor ul{list-style:disc;padding-left:1.5em;margin:.5em 0}
+  .rte-editor ol{list-style:decimal;padding-left:1.5em;margin:.5em 0}
+  .rte-editor li{margin:.25em 0}
+  .rte-editor a{color:#2F7D52;text-decoration:underline}
+  .dark .rte-editor a{color:#E0BC45}
+  .rte-editor:empty::before{content:attr(data-placeholder);color:#9ca3af;pointer-events:none}
+</style>
+<script>
+  (function () {
+    var editor = document.getElementById('rte-editor');
+    var source = document.getElementById('rte-source');
+    if (!editor || !source) return;
+
+    try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
+
+    function sync() { source.value = editor.innerHTML.trim(); }
+
+    document.querySelectorAll('.rte-toolbar .rte-btn').forEach(function (btn) {
+      // mousedown + preventDefault agar seleksi teks di editor tidak hilang saat tombol diklik
+      btn.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        editor.focus();
+        var cmd = btn.getAttribute('data-cmd');
+        var val = btn.getAttribute('data-val');
+        if (cmd === 'createLink') {
+          var url = prompt('Masukkan alamat tautan (URL):', 'https://');
+          if (!url) return;
+          document.execCommand('createLink', false, url);
+        } else if (cmd === 'formatBlock') {
+          document.execCommand('formatBlock', false, '<' + val + '>');
+        } else {
+          document.execCommand(cmd, false, null);
+        }
+        sync();
+      });
+    });
+
+    editor.addEventListener('input', sync);
+    editor.addEventListener('blur', sync);
+    sync();
+
+    var form = editor.closest('form');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        sync();
+        if (editor.textContent.trim() === '') {
+          e.preventDefault();
+          alert('Isi berita tidak boleh kosong.');
+          editor.focus();
+        }
+      });
+    }
+  })();
+</script>
 
 <?php else: ?>
 

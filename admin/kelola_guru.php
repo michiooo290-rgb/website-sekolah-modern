@@ -6,7 +6,7 @@ $pdo   = db();
 $edit  = null;
 $mode  = 'list';
 
-// ── Handle actions ──────────────────────────────────
+// ── Handle actions ─────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
@@ -170,7 +170,7 @@ if ($mode === 'form'):
         <div class="flex items-center gap-2 mt-4 pt-3 border-t border-pine/8 dark:border-cream/8">
           <a href="kelola_guru.php?edit=<?php echo $r['id']; ?>"
              class="btn-action flex-1 text-center px-3 py-2 rounded-lg text-xs font-semibold bg-pine/5 dark:bg-cream/10 hover:bg-brass/15 hover:text-brass transition">Edit</a>
-          <form method="POST" onsubmit="return confirmDelete('Hapus guru ini?')" class="flex-1">
+          <form method="POST" data-confirm="Hapus guru ini?" class="flex-1">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
