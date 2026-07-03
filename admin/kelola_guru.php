@@ -6,7 +6,7 @@ $pdo   = db();
 $edit  = null;
 $mode  = 'list';
 
-// ── Handle actions ─────────────────────────────────
+// ── Handle actions ──────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf()) {
     $action = $_POST['action'] ?? '';
 
@@ -142,9 +142,23 @@ if ($mode === 'form'):
 
 <?php else: ?>
 
-<div class="flex items-center justify-between mb-6">
-  <?php $count = $pdo->query('SELECT COUNT(*) FROM guru')->fetchColumn(); ?>
-  <p class="text-sm text-pine/60 dark:text-cream/60"><?php echo $count; ?>/9 entri guru</p>
+<?php
+// ── Cari ──────────────────────────────
+$q     = trim($_GET['q'] ?? '');
+$count = (int) $pdo->query('SELECT COUNT(*) FROM guru')->fetchColumn();
+if ($q !== '') {
+    $stmt = $pdo->prepare('SELECT * FROM guru WHERE nama LIKE ? OR jabatan LIKE ? OR mapel LIKE ? ORDER BY urutan ASC, id ASC');
+    $like = '%' . $q . '%';
+    $stmt->execute([$like, $like, $like]);
+    $rows = $stmt->fetchAll();
+} else {
+    $rows = $pdo->query('SELECT * FROM guru ORDER BY urutan ASC, id ASC')->fetchAll();
+}
+$isFiltering = ($q !== '');
+?>
+
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+  <p class="text-sm text-pine/60 dark:text-cream/60"><span class="font-semibold text-pine dark:text-cream"><?php echo $count; ?></span>/9 entri guru</p>
   <?php if ($count < 9): ?>
     <a href="kelola_guru.php?new=1" class="btn-action inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brass hover:bg-brass-light text-pine-deep font-semibold text-sm shadow-md shadow-brass/20 hover:shadow-lg transition">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
@@ -153,34 +167,66 @@ if ($mode === 'form'):
   <?php endif; ?>
 </div>
 
-<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-  <?php $rows = $pdo->query('SELECT * FROM guru ORDER BY urutan ASC, id ASC')->fetchAll(); ?>
-  <?php foreach ($rows as $r): ?>
-    <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 overflow-hidden group">
-      <div class="aspect-[4/3] overflow-hidden bg-pine/5 dark:bg-cream/5">
-        <img src="uploads/guru/<?php echo esc($r['foto']); ?>" alt="<?php echo esc($r['nama']); ?>"
-             class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-      </div>
-      <div class="p-5">
-        <p class="font-serif font-bold mb-0.5"><?php echo esc($r['nama']); ?></p>
-        <p class="text-sm text-leaf dark:text-brass-light"><?php echo esc($r['jabatan']); ?></p>
-        <?php if ($r['mapel']): ?>
-          <p class="text-xs text-pine/50 dark:text-cream/50 mt-0.5"><?php echo esc($r['mapel']); ?></p>
-        <?php endif; ?>
-        <div class="flex items-center gap-2 mt-4 pt-3 border-t border-pine/8 dark:border-cream/8">
-          <a href="kelola_guru.php?edit=<?php echo $r['id']; ?>"
-             class="btn-action flex-1 text-center px-3 py-2 rounded-lg text-xs font-semibold bg-pine/5 dark:bg-cream/10 hover:bg-brass/15 hover:text-brass transition">Edit</a>
-          <form method="POST" data-confirm="Hapus guru ini?" class="flex-1">
-            <?php echo csrf_field(); ?>
-            <input type="hidden" name="action" value="delete">
-            <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
-            <button class="btn-action w-full px-3 py-2 rounded-lg text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 transition">Hapus</button>
-          </form>
+<!-- Cari -->
+<form method="GET" class="flex flex-col sm:flex-row gap-3 mb-6">
+  <div class="relative flex-1">
+    <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-pine/40 dark:text-cream/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>
+    <input type="text" name="q" value="<?php echo esc($q); ?>" placeholder="Cari nama, jabatan, atau mapel…"
+           class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/60 dark:bg-pine/40 border border-pine/15 dark:border-cream/15 focus:border-brass focus:ring-2 focus:ring-brass/20 outline-none transition text-sm">
+  </div>
+  <button type="submit" class="btn-action px-5 py-2.5 rounded-xl bg-pine/5 dark:bg-cream/10 hover:bg-brass/15 hover:text-brass font-semibold text-sm transition">Cari</button>
+  <?php if ($isFiltering): ?>
+    <a href="kelola_guru.php" class="btn-action px-5 py-2.5 rounded-xl text-sm font-semibold text-pine/60 dark:text-cream/60 hover:bg-pine/5 dark:hover:bg-cream/10 transition text-center">Reset</a>
+  <?php endif; ?>
+</form>
+
+<?php if (empty($rows)): ?>
+  <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-12 text-center">
+    <div class="w-16 h-16 rounded-2xl bg-pine/5 dark:bg-cream/10 flex items-center justify-center mx-auto mb-4">
+      <svg class="w-8 h-8 text-pine/25 dark:text-cream/25" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+    </div>
+    <?php if ($isFiltering): ?>
+      <p class="text-sm font-semibold text-pine/70 dark:text-cream/70 mb-1">Tidak ada guru yang cocok</p>
+      <p class="text-sm text-pine/50 dark:text-cream/50 mb-4">Coba kata kunci lain.</p>
+      <a href="kelola_guru.php" class="btn-action inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-pine/5 dark:bg-cream/10 hover:bg-brass/15 hover:text-brass font-semibold text-sm transition">Reset pencarian</a>
+    <?php else: ?>
+      <p class="text-sm font-semibold text-pine/70 dark:text-cream/70 mb-1">Belum ada data guru</p>
+      <p class="text-sm text-pine/50 dark:text-cream/50 mb-4">Tambahkan Kepala Sekolah dan guru untuk ditampilkan di halaman publik.</p>
+      <a href="kelola_guru.php?new=1" class="btn-action inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brass hover:bg-brass-light text-pine-deep font-semibold text-sm shadow-md shadow-brass/20 hover:shadow-lg transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        Tambah Guru Pertama
+      </a>
+    <?php endif; ?>
+  </div>
+<?php else: ?>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <?php foreach ($rows as $r): ?>
+      <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 overflow-hidden group">
+        <div class="aspect-[4/3] overflow-hidden bg-pine/5 dark:bg-cream/5">
+          <img src="uploads/guru/<?php echo esc($r['foto']); ?>" alt="<?php echo esc($r['nama']); ?>"
+               class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        </div>
+        <div class="p-5">
+          <p class="font-serif font-bold mb-0.5"><?php echo esc($r['nama']); ?></p>
+          <p class="text-sm text-leaf dark:text-brass-light"><?php echo esc($r['jabatan']); ?></p>
+          <?php if ($r['mapel']): ?>
+            <p class="text-xs text-pine/50 dark:text-cream/50 mt-0.5"><?php echo esc($r['mapel']); ?></p>
+          <?php endif; ?>
+          <div class="flex items-center gap-2 mt-4 pt-3 border-t border-pine/8 dark:border-cream/8">
+            <a href="kelola_guru.php?edit=<?php echo $r['id']; ?>"
+               class="btn-action flex-1 text-center px-3 py-2 rounded-lg text-xs font-semibold bg-pine/5 dark:bg-cream/10 hover:bg-brass/15 hover:text-brass transition">Edit</a>
+            <form method="POST" data-confirm="Hapus guru ini?" class="flex-1">
+              <?php echo csrf_field(); ?>
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
+              <button class="btn-action w-full px-3 py-2 rounded-lg text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 transition">Hapus</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  <?php endforeach; ?>
-</div>
+    <?php endforeach; ?>
+  </div>
+<?php endif; ?>
 
 <?php endif; ?>
 
