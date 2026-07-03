@@ -6,15 +6,18 @@
  * HAPUS FILE INI setelah selesai!
  */
 
+require_once __DIR__ . '/../config/koneksi.php';
+
 // ── Security: Block if not local environment ──────────
+// Fail-closed: default ke "production" supaya halaman ini NONAKTIF kecuali
+// APP_ENV secara eksplisit di-set ke "local"/"development" (lewat .env atau
+// environment server).
 $allowedEnvs = ['local', 'development'];
-$currentEnv  = getenv('APP_ENV') ?: 'local';
-if (!in_array($currentEnv, $allowedEnvs)) {
+$currentEnv  = $_ENV['APP_ENV'] ?? (getenv('APP_ENV') ?: 'production');
+if (!in_array($currentEnv, $allowedEnvs, true)) {
     http_response_code(403);
     exit('403 Forbidden');
 }
-
-require_once __DIR__ . '/../config/koneksi.php';
 
 session_start();
 
