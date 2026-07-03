@@ -10,8 +10,15 @@ $stats = [
     'pesan_baru' => db()->query('SELECT COUNT(*) FROM pesan_kontak WHERE dibaca = 0')->fetchColumn(),
 ];
 
-$beritaTerbaru = db()->query('SELECT judul, kategori, tanggal, dilihat FROM berita ORDER BY tanggal DESC LIMIT 5')->fetchAll();
-$pesanTerbaru  = db()->query('SELECT id, nama, subjek, tanggal, dibaca FROM pesan_kontak ORDER BY tanggal DESC LIMIT 5')->fetchAll();
+// Metrik ringkasan tambahan
+$dilihatTotal   = (int)db()->query('SELECT COALESCE(SUM(dilihat),0) FROM berita')->fetchColumn();
+$beritaBulan    = (int)db()->query('SELECT COUNT(*) FROM berita WHERE MONTH(tanggal)=MONTH(CURDATE()) AND YEAR(tanggal)=YEAR(CURDATE())')->fetchColumn();
+$pesanBulan     = (int)db()->query('SELECT COUNT(*) FROM pesan_kontak WHERE MONTH(tanggal)=MONTH(CURDATE()) AND YEAR(tanggal)=YEAR(CURDATE())')->fetchColumn();
+$ekskulKategori = (int)db()->query('SELECT COUNT(DISTINCT kategori) FROM ekstrakurikuler')->fetchColumn();
+
+$beritaTerbaru  = db()->query('SELECT judul, kategori, tanggal, dilihat FROM berita ORDER BY tanggal DESC LIMIT 5')->fetchAll();
+$beritaPopuler  = db()->query('SELECT judul, kategori, tanggal, dilihat FROM berita ORDER BY dilihat DESC LIMIT 5')->fetchAll();
+$pesanTerbaru   = db()->query('SELECT id, nama, subjek, tanggal, dibaca FROM pesan_kontak ORDER BY tanggal DESC LIMIT 5')->fetchAll();
 
 $ppdbStatus = setting('ppdb_status') ?? 'buka';
 $ppdbOpen = ($ppdbStatus === 'buka');
@@ -63,7 +70,7 @@ include 'admin_head.php';
 </div>
 
 <!-- ============ Stat Cards ============ -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-5">
   <?php
   $cards = [
     ['label' => 'Berita',         'value' => $stats['berita'], 'icon' => 'news',  'color' => 'brass', 'href' => 'kelola_berita.php'],
@@ -101,6 +108,31 @@ include 'admin_head.php';
   <?php endforeach; ?>
 </div>
 
+<!-- ============ Ringkasan cepat ============ -->
+<div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-5 sm:p-6 mb-8">
+  <div class="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-pine/8 dark:divide-cream/8">
+    <?php
+    $ringkas = [
+      ['label' => 'Total Tayangan Berita', 'value' => number_format($dilihatTotal, 0, ',', '.'), 'sub' => 'akumulasi semua berita', 'd' => 'M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
+      ['label' => 'Berita Bulan Ini',      'value' => $beritaBulan, 'sub' => 'dipublikasikan',        'd' => 'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5'],
+      ['label' => 'Pesan Bulan Ini',       'value' => $pesanBulan,  'sub' => 'diterima',              'd' => 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75'],
+      ['label' => 'Kategori Ekskul',       'value' => $ekskulKategori, 'sub' => 'kelompok kegiatan',   'd' => 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z'],
+    ];
+    foreach ($ringkas as $r): ?>
+      <div class="flex items-center gap-3 px-2 sm:px-5 py-3 sm:py-1">
+        <span class="w-10 h-10 rounded-xl bg-leaf/10 dark:bg-leaf/15 flex items-center justify-center text-leaf dark:text-brass-light shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="<?php echo $r['d']; ?>"/></svg>
+        </span>
+        <div class="min-w-0">
+          <p class="font-serif text-2xl font-bold leading-tight"><?php echo $r['value']; ?></p>
+          <p class="text-xs font-semibold text-pine/70 dark:text-cream/70 truncate"><?php echo $r['label']; ?></p>
+          <p class="text-[10px] text-pine/45 dark:text-cream/45 truncate"><?php echo $r['sub']; ?></p>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+</div>
+
 <!-- ============ Quick actions ============ -->
 <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6 mb-8">
   <h3 class="font-serif text-lg font-bold mb-5">Akses Cepat</h3>
@@ -125,7 +157,7 @@ include 'admin_head.php';
   </div>
 </div>
 
-<div class="grid lg:grid-cols-2 gap-6">
+<div class="grid lg:grid-cols-3 gap-6">
   <!-- Berita Terbaru -->
   <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
     <div class="flex items-center justify-between mb-5">
@@ -156,6 +188,40 @@ include 'admin_head.php';
             <span class="flex items-center gap-1 text-xs text-pine/40 dark:text-cream/40 shrink-0">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               <?php echo $b['dilihat']; ?>
+            </span>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Berita Terpopuler -->
+  <div class="admin-card bg-white/60 dark:bg-pine/40 backdrop-blur-sm rounded-2xl ring-1 ring-pine/8 dark:ring-cream/8 p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-serif text-lg font-bold flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-brass/10 dark:bg-brass/15 flex items-center justify-center text-brass dark:text-brass-light">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+        </span>
+        Berita Terpopuler
+      </h3>
+      <a href="kelola_berita.php" class="text-xs font-semibold text-leaf dark:text-brass-light hover:underline">Kelola →</a>
+    </div>
+    <?php if (empty($beritaPopuler) || $dilihatTotal === 0): ?>
+      <div class="py-10 text-center">
+        <p class="text-sm text-pine/50 dark:text-cream/50">Belum ada data kunjungan.</p>
+      </div>
+    <?php else: ?>
+      <div class="space-y-1">
+        <?php foreach ($beritaPopuler as $i => $b): ?>
+          <div class="table-row py-2.5 px-2 -mx-2 rounded-lg flex items-center gap-3">
+            <span class="w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-bold shrink-0 <?php echo $i === 0 ? 'bg-brass text-pine-deep' : 'bg-pine/5 dark:bg-cream/10 text-pine/50 dark:text-cream/50'; ?>"><?php echo $i + 1; ?></span>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-semibold truncate"><?php echo esc($b['judul']); ?></p>
+              <p class="text-[10px] text-pine/45 dark:text-cream/45"><?php echo esc($b['kategori']); ?></p>
+            </div>
+            <span class="flex items-center gap-1 text-xs font-semibold text-pine/50 dark:text-cream/50 shrink-0">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <?php echo number_format((int)$b['dilihat'], 0, ',', '.'); ?>
             </span>
           </div>
         <?php endforeach; ?>
