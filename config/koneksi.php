@@ -155,3 +155,21 @@ function tglPendek(string $tgl): string {
     $d = new DateTime($tgl);
     return $d->format('d') . ' ' . $bulan[(int)$d->format('m') - 1] . ' ' . $d->format('Y');
 }
+
+/**
+ * Resolusi path foto guru — konsisten di seluruh halaman.
+ * - Kosong                          -> placeholder SVG
+ * - URL (http/https)                -> dipakai apa adanya
+ * - Diawali "assets/" atau "admin/" -> dipakai apa adanya (relatif root)
+ * - Nama file saja (hasil upload)   -> admin/uploads/guru/<file>
+ *
+ * $base: awalan untuk menyesuaikan lokasi halaman terhadap root situs.
+ *        '' untuk halaman root (index.php dll), '../' untuk halaman di folder admin/.
+ */
+function foto_guru(?string $foto, string $base = ''): string {
+    $foto = trim((string)($foto ?? ''));
+    if ($foto === '') return $base . 'assets/img/placeholder-guru.svg';
+    if (preg_match('~^https?://~i', $foto)) return $foto;
+    if (str_starts_with($foto, 'assets/') || str_starts_with($foto, 'admin/')) return $base . $foto;
+    return $base . 'admin/uploads/guru/' . $foto;
+}

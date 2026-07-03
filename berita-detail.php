@@ -52,7 +52,7 @@ include __DIR__ . '/includes/head.php';
 <?php if ($gambarUrl): ?>
 <section class="relative z-10 max-w-4xl mx-auto px-5 -mt-10 sm:-mt-16">
   <figure class="reveal rounded-[1.75rem] overflow-hidden shadow-2xl ring-1 ring-pine/10 dark:ring-cream/10">
-    <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($berita['judul']); ?>" class="w-full h-auto object-cover">
+    <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($berita['judul']); ?>" onerror="this.onerror=null;this.src='assets/img/placeholder-berita.svg'" class="w-full h-auto object-cover">
   </figure>
 </section>
 <?php endif; ?>

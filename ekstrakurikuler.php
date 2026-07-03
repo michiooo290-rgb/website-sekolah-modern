@@ -38,15 +38,26 @@ include __DIR__ . '/includes/head.php';
     <nav class="text-xs text-cream/60 mb-5"><a href="index.php" class="hover:text-brass-light">Beranda</a> <span class="mx-1">/</span> <span class="text-brass-light">Ekstrakurikuler</span></nav>
     <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-brass-light uppercase mb-4"><span class="h-px w-8 bg-brass"></span> Wadah Bakat & Minat</p>
     <h1 class="font-serif text-4xl sm:text-6xl leading-tight max-w-3xl">Ekstrakurikuler</h1>
+    <?php if ($total > 0): ?>
     <p class="text-cream/80 mt-5 max-w-xl">Lebih dari <?php echo $total; ?> kegiatan untuk mengembangkan bakat, minat, dan karakter siswa di luar jam pelajaran.</p>
     <div class="mt-8 flex flex-wrap gap-8">
       <div><p class="font-serif text-4xl text-brass-light"><?php echo count($kategori); ?></p><p class="text-xs text-cream/60 uppercase tracking-wide">Kategori</p></div>
       <div><p class="font-serif text-4xl text-brass-light"><?php echo $total; ?>+</p><p class="text-xs text-cream/60 uppercase tracking-wide">Pilihan Kegiatan</p></div>
     </div>
+    <?php else: ?>
+    <p class="text-cream/80 mt-5 max-w-xl">Beragam kegiatan untuk mengembangkan bakat, minat, dan karakter siswa di luar jam pelajaran.</p>
+    <?php endif; ?>
   </div>
 </section>
 
 <div class="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-24 space-y-20">
+  <?php if (empty($kategori)): ?>
+  <div class="reveal text-center py-16 rounded-[2rem] bg-cream-deep dark:bg-pine ring-1 ring-pine/10 dark:ring-cream/10">
+    <div class="w-16 h-16 rounded-2xl bg-brass/15 flex items-center justify-center mx-auto mb-4 text-3xl">🎯</div>
+    <h2 class="font-serif text-2xl sm:text-3xl text-pine dark:text-cream mb-2">Belum ada ekstrakurikuler</h2>
+    <p class="text-sm text-pine/60 dark:text-cream/60 max-w-md mx-auto">Daftar kegiatan ekstrakurikuler akan segera ditampilkan di sini. Nantikan informasinya, ya!</p>
+  </div>
+  <?php else: ?>
   <?php foreach ($kategori as $nama => $items):
     $icon = $kategoriMeta[$nama][0] ?? '✦';
     $grad = $kategoriMeta[$nama][1] ?? 'from-leaf to-pine';
@@ -77,6 +88,7 @@ include __DIR__ . '/includes/head.php';
     </div>
   </section>
   <?php endforeach; ?>
+  <?php endif; ?>
 </div>
 
 <section class="relative z-10 bg-pine text-cream">

@@ -33,7 +33,7 @@ include __DIR__ . '/includes/head.php';
   <div class="grid lg:grid-cols-2 gap-14 items-center">
     <div class="reveal">
       <div class="rounded-[2rem] overflow-hidden bg-gradient-to-br from-pine to-pine-deep aspect-[4/3] flex items-center justify-center shadow-xl">
-        <img src="assets/img/logo.jpeg" alt="Logo SMA Putra Persada" class="w-40 h-40 object-contain opacity-80">
+        <img src="assets/img/logo.jpeg" alt="Logo SMA Putra Persada" onerror="this.onerror=null;this.style.display='none'" class="w-40 h-40 object-contain opacity-80">
       </div>
     </div>
     <div class="reveal">
@@ -54,12 +54,12 @@ include __DIR__ . '/includes/head.php';
     <div class="grid lg:grid-cols-12 gap-10 items-start reveal">
       <div class="lg:col-span-4">
         <div class="relative overflow-hidden rounded-2xl aspect-[3/4] ring-1 ring-cream/10 bg-pine-deep">
-          <img src="<?php echo esc($kepsek['foto']); ?>" alt="<?php echo esc($kepsek['nama']); ?>" class="w-full h-full object-cover object-top">
+          <img src="<?php echo esc(foto_guru($kepsek['foto'] ?? '')); ?>" alt="<?php echo esc($kepsek['nama'] ?? 'Kepala Sekolah'); ?>" onerror="this.onerror=null;this.src='assets/img/placeholder-guru.svg'" class="w-full h-full object-cover object-top">
           <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-pine-deep/70 to-transparent"></div>
         </div>
         <div class="mt-4">
-          <p class="font-serif text-lg text-cream"><?php echo esc($kepsek['nama']); ?></p>
-          <p class="text-xs text-brass-light tracking-wide"><?php echo esc($kepsek['jabatan']); ?></p>
+          <p class="font-serif text-lg text-cream"><?php echo esc($kepsek['nama'] ?? ''); ?></p>
+          <p class="text-xs text-brass-light tracking-wide"><?php echo esc($kepsek['jabatan'] ?? ''); ?></p>
         </div>
       </div>
       <div class="lg:col-span-8">

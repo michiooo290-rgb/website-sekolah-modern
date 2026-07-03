@@ -48,7 +48,7 @@ include __DIR__ . '/includes/head.php';
        data-delay="<?php echo $delay; ?>">
       <div class="zoomimg relative w-full pt-[62.5%]">
         <?php if ($gambarUrl): ?>
-          <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($b['judul']); ?>" class="absolute inset-0 w-full h-full object-cover">
+          <img src="<?php echo esc($gambarUrl); ?>" alt="<?php echo esc($b['judul']); ?>" onerror="this.onerror=null;this.src='assets/img/placeholder-berita.svg'" class="absolute inset-0 w-full h-full object-cover">
         <?php else: ?>
           <div class="absolute inset-0 bg-gradient-to-br from-leaf to-pine flex items-center justify-center">
             <span class="font-serif text-cream/90 text-2xl tracking-wide"><?php echo esc($b['kategori']); ?></span>
