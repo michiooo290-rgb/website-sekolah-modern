@@ -32,6 +32,15 @@ $kategoriWarna = [
 $ppdbStatus = setting('ppdb_status') ?? 'buka';
 $ppdbOpen   = ($ppdbStatus === 'buka');
 
+// SEO: deskripsi & gambar Open Graph dinamis dari isi berita
+if ($berita) {
+    $metaDescription = trim(preg_replace('/\s+/', ' ', strip_tags($berita['isi'])));
+    $metaType = 'article';
+    if (!empty($berita['gambar'])) {
+        $metaImage = 'admin/uploads/berita/' . $berita['gambar'];
+    }
+}
+
 include __DIR__ . '/includes/head.php';
 ?>
 

@@ -1,0 +1,11 @@
+# robots.txt — SMA Putra Persada Batam
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /docs/
+
+# Peta situs — setelah website online, sebaiknya ganti dengan URL lengkap,
+# contoh: Sitemap: https://smaputrapersada.sch.id/sitemap.php
+Sitemap: /sitemap.php
