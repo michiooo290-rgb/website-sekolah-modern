@@ -1,5 +1,7 @@
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}button,input,textarea,select{font:inherit}img{max-width:100%}a{color:inherit;text-decoration:none}
 
+html.theme-switching *,html.theme-switching *::before,html.theme-switching *::after{transition:none!important}
+
 @keyframes guru-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .guru-outer{overflow:hidden}.guru-track{display:flex;gap:1.5rem;width:max-content;animation:guru-scroll 25s linear infinite}.guru-track:hover{animation-play-state:paused}.guru-slide{flex:0 0 auto;width:200px}.guru-slide img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:1rem}.guru-fade{mask:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);-webkit-mask:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%)}
 @media(min-width:640px){.guru-slide{width:240px}}

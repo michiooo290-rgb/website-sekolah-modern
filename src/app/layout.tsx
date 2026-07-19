@@ -16,8 +16,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <link rel="stylesheet" href="/assets/css/styles.css" />
       <style type="text/tailwindcss">{`@custom-variant dark (&:where(.dark, .dark *)); @theme { --color-pine:#0E3B2E; --color-pine-deep:#08291F; --color-leaf:#2F7D52; --color-cream:#F7F3E9; --color-cream-deep:#EFE8D6; --color-brass:#C9A227; --color-brass-light:#E0BC45; --font-serif:'Fraunces',Georgia,serif; --font-sans:'Plus Jakarta Sans',system-ui,sans-serif; }`}</style>
       <Script src="/assets/js/tailwind.js" strategy="beforeInteractive" />
-      <Script id="legacy-theme" strategy="beforeInteractive">{`try{var saved=localStorage.getItem('theme');var dark=saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',dark)}catch(e){}`}</Script>
-      <Script src="/assets/js/lenis.min.js" strategy="beforeInteractive" />
+      <Script id="legacy-theme" strategy="beforeInteractive">{`try{var saved=localStorage.getItem('theme');var dark=saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',dark);document.documentElement.style.colorScheme=dark?'dark':'light'}catch(e){}`}</Script>
     </head>
     <body className="min-h-dvh antialiased bg-cream dark:bg-pine-deep text-pine dark:text-cream font-sans">{children}</body>
   </html>;

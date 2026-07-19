@@ -115,15 +115,31 @@ function pageCTA(heading, text, btnLabel){
 
 function onScroll(){ const t = document.getElementById('topnav'); if (t) t.classList.toggle('scrolled', scrollY > 20); }
 
+function setTheme(isDark, persist){
+  const root = document.documentElement;
+  root.classList.add('theme-switching');
+  root.classList.toggle('dark', isDark);
+  root.style.colorScheme = isDark ? 'dark' : 'light';
+  if(persist !== false) localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  const button = document.getElementById('themeToggle');
+  if(button){
+    button.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    button.setAttribute('aria-label', isDark ? 'Gunakan tema terang' : 'Gunakan tema gelap');
+    button.setAttribute('title', isDark ? 'Gunakan tema terang' : 'Gunakan tema gelap');
+  }
+  requestAnimationFrame(()=> requestAnimationFrame(()=> root.classList.remove('theme-switching')));
+}
+
 function initChrome(){
-  addEventListener('scroll', onScroll);
+  /* Hindari event scroll ganda setelah navigasi client-side Next.js. */
+  removeEventListener('scroll', onScroll);
+  addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
   const mbtn = document.getElementById('mbtn'), mnav = document.getElementById('mnav');
   if (mbtn) mbtn.addEventListener('click', ()=> mnav.classList.toggle('open'));
   const tbtn = document.getElementById('themeToggle');
-  if (tbtn) tbtn.addEventListener('click', ()=>{
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  });
+  setTheme(document.documentElement.classList.contains('dark'), false);
+  if (tbtn) tbtn.addEventListener('click', ()=> setTheme(!document.documentElement.classList.contains('dark'), true));
   document.querySelectorAll('.mlink').forEach(a=> a.addEventListener('click', ()=> mnav.classList.remove('open')));
   const io = new IntersectionObserver(es=> es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); }), {threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
@@ -382,40 +398,6 @@ function wireHeaderFooter(activePage, ppdbOpen){
   document.getElementById('site-footer').innerHTML = renderFooter();
   document.body.classList.add('paper');
   initChrome();
-  initLenis();
 }
 
 /* ── Lenis Smooth Scroll ──────────────────────────── */
-function initLenis(){
-  if(typeof Lenis === 'undefined') return;
-
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    touchMultiplier: 1.5,
-    infinite: false,
-  });
-
-  // Sync Lenis with scroll events (untuk header sticky, dll)
-  lenis.on('scroll', () => {
-    onScroll();
-  });
-
-  // Animation frame loop
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
-
-  // Handle anchor links (smooth scroll ke section)
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      const target = document.querySelector(anchor.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        lenis.scrollTo(target);
-      }
-    });
-  });
-}
