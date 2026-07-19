@@ -222,6 +222,11 @@ html { scroll-padding-top: 80px; }
   position:relative; overflow:hidden; isolation:isolate;
   cursor:pointer;
 }
+.highlight-btn .hl-label{ position:relative; z-index:3; }
+.header-ppdb-btn{ background:#0E3B2E !important; color:#F7F3E9 !important; }
+.header-ppdb-btn:hover{ background:#08291F !important; }
+.dark .header-ppdb-btn{ background:#C9A227 !important; color:#08291F !important; }
+.dark .header-ppdb-btn:hover{ background:#E0BC45 !important; }
 .highlight-btn .hl-spotlight{
   position:absolute; inset:0; pointer-events:none; z-index:1;
   opacity:0; transition:opacity .3s ease;
