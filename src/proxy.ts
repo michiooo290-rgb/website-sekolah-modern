@@ -17,7 +17,16 @@ export async function proxy(request: NextRequest) {
       },
     },
   });
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.search = "";
+    return NextResponse.redirect(loginUrl);
+  }
+  if (request.nextUrl.pathname.startsWith("/admin") || request.nextUrl.pathname === "/login") {
+    response.headers.set("Cache-Control", "private, no-store, max-age=0");
+  }
   return response;
 }
 
