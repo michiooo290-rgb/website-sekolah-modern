@@ -42,3 +42,10 @@ logs/
 *.tmp
 *.bak
 *.cache
+.next/
+node_modules/
+.env
+.env.local
+.vercel
+npm-debug.log*
+*.tsbuildinfo
