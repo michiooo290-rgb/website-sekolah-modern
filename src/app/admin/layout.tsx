@@ -1,6 +1,7 @@
 import AdminChrome from "./admin-chrome";
 import { logout, requireAdmin } from "./actions";
 import "./admin.css";
+import "./admin-extras.css";
 
 export default async function AdminLayout({
 	children,
