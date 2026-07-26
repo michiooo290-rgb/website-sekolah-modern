@@ -5,6 +5,7 @@ import "./globals.css";
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://website-sekolah-modern.vercel.app").replace(/\/+$/, "");
 const NAMA = "SMA Putra Persada Batam";
 const DESKRIPSI = "Website resmi SMA Putra Persada Batam — unggul, berkarakter, dan beriman. Informasi PPDB, berita, ekstrakurikuler, dan profil sekolah.";
+const LOGO = "/assets/img/logo.jpeg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,7 +37,12 @@ export const metadata: Metadata = {
     title: NAMA,
     description: DESKRIPSI,
   },
-  icons: { icon: "/assets/img/favicon.svg" },
+  /* Logo sekolah dipakai sebagai ikon tab dan ikon layar utama. */
+  icons: {
+    icon: [{ url: LOGO, type: "image/jpeg" }],
+    shortcut: [{ url: LOGO, type: "image/jpeg" }],
+    apple: [{ url: LOGO, type: "image/jpeg" }],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
