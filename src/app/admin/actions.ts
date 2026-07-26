@@ -11,6 +11,21 @@ const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const MAX_PDF_SIZE = 10 * 1024 * 1024;
 const SAFE_HTML_TAGS = ["p", "br", "strong", "b", "em", "i", "ul", "ol", "li", "blockquote", "h2", "h3", "a"];
 
+/**
+ * redirect() dan notFound() bekerja dengan cara melempar error khusus yang
+ * membawa properti digest. Error semacam itu tidak boleh ditangkap, karena
+ * Next.js yang harus memprosesnya.
+ */
+function isFrameworkError(error: unknown) {
+  const digest = (error as { digest?: unknown } | null)?.digest;
+  return typeof digest === "string" && (digest.startsWith("NEXT_REDIRECT") || digest === "NEXT_NOT_FOUND");
+}
+
+function failureMessage(error: unknown) {
+  if (error instanceof Error && error.message) return error.message;
+  return "Terjadi kesalahan tak terduga";
+}
+
 function positiveId(value: unknown) {
   const id = Number(value);
   if (!Number.isSafeInteger(id) || id <= 0) throw new Error("Permintaan tidak valid");
@@ -77,7 +92,7 @@ export async function logout() {
   redirect("/login");
 }
 
-export async function saveResource(resource: string, formData: FormData) {
+async function persistResource(resource: string, formData: FormData) {
   const config = resources[resource];
   if (!config) throw new Error("Resource tidak valid");
   const { supabase, user } = await requireAdmin();
@@ -92,7 +107,7 @@ export async function saveResource(resource: string, formData: FormData) {
         const safeFile = await inspectUpload(raw, field.name);
         const path = `${config.table}/${crypto.randomUUID()}.${safeFile.extension}`;
         const { error } = await supabase.storage.from("media").upload(path, raw, { contentType: safeFile.contentType, upsert: false });
-        if (error) throw new Error("File gagal diunggah");
+        if (error) throw new Error(`File gagal diunggah: ${error.message}`);
         payload[field.name] = path;
       }
       continue;
@@ -109,7 +124,8 @@ export async function saveResource(resource: string, formData: FormData) {
     ? supabase.from(config.table).update(payload).eq("id", id)
     : supabase.from(config.table).insert(payload);
   const { data: saved, error } = await mutation.select("id").single();
-  if (error || !saved) throw new Error("Data gagal disimpan");
+  if (error) throw new Error(`Data gagal disimpan: ${error.message}`);
+  if (!saved) throw new Error("Data gagal disimpan: baris tersimpan tidak dapat dibaca kembali");
 
   await supabase.from("audit_log").insert({
     user_id: user.id,
@@ -122,16 +138,32 @@ export async function saveResource(resource: string, formData: FormData) {
   redirect(`/admin/${resource}?saved=1`);
 }
 
+export async function saveResource(resource: string, formData: FormData) {
+  try {
+    await persistResource(resource, formData);
+  } catch (error) {
+    if (isFrameworkError(error)) throw error;
+    console.error("saveResource gagal", { resource, error });
+    redirect(`/admin/${resource}?error=${encodeURIComponent(failureMessage(error))}`);
+  }
+}
+
 export async function deleteResource(resource: string, rawId: number) {
   const config = resources[resource];
   if (!config) throw new Error("Resource tidak valid");
-  const id = positiveId(rawId);
-  const { supabase, user } = await requireAdmin();
-  const { error } = await supabase.from(config.table).delete().eq("id", id);
-  if (error) throw new Error("Data gagal dihapus");
-  await supabase.from("audit_log").insert({ user_id: user.id, action: "delete", table_name: config.table, record_id: id });
-  revalidatePath("/");
-  revalidatePath(`/admin/${resource}`);
+  try {
+    const id = positiveId(rawId);
+    const { supabase, user } = await requireAdmin();
+    const { error } = await supabase.from(config.table).delete().eq("id", id);
+    if (error) throw new Error(`Data gagal dihapus: ${error.message}`);
+    await supabase.from("audit_log").insert({ user_id: user.id, action: "delete", table_name: config.table, record_id: id });
+    revalidatePath("/");
+    revalidatePath(`/admin/${resource}`);
+  } catch (error) {
+    if (isFrameworkError(error)) throw error;
+    console.error("deleteResource gagal", { resource, error });
+    redirect(`/admin/${resource}?error=${encodeURIComponent(failureMessage(error))}`);
+  }
 }
 
 export async function markMessage(rawId: number, remove = false) {
