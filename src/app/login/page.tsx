@@ -21,7 +21,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     ? "Supabase belum dikonfigurasi. Hubungi pengelola server."
     : params.error === "forbidden"
       ? "Akun ini tidak memiliki akses admin."
-      : "Email atau password tidak valid.";
+      : params.error === "locked"
+        ? "Terlalu banyak percobaan login yang gagal. Silakan coba lagi sekitar 15 menit lagi."
+        : "Email atau password tidak valid.";
 
   return (
     <section className="section">
