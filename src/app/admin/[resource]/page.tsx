@@ -7,7 +7,7 @@ export default async function ResourcePage({
   searchParams,
 }: {
   params: Promise<{ resource: string }>;
-  searchParams: Promise<{ edit?: string; saved?: string; error?: string }>;
+  searchParams: Promise<{ edit?: string; saved?: string; deleted?: string; error?: string }>;
 }) {
   const [{ resource }, query] = await Promise.all([params, searchParams]);
   const config = resources[resource];
@@ -27,6 +27,7 @@ export default async function ResourcePage({
       <span className="eyebrow">Kelola Konten</span>
       <h1 style={{ fontSize: "3rem" }}>{config.label}</h1>
       {query.saved && <p className="notice">Perubahan berhasil disimpan.</p>}
+      {query.deleted && <p className="notice">Data berhasil dihapus.</p>}
       {query.error && <p className="notice error">{query.error}</p>}
       <div className="grid two" style={{ alignItems: "start" }}>
         <article className="card">
@@ -54,7 +55,14 @@ export default async function ResourcePage({
                 )}
               </div>
             ))}
-            <button className="button">{editing ? "Simpan perubahan" : "Tambah data"}</button>
+            <div className="actions">
+              <button className="button">{editing ? "Simpan perubahan" : "Tambah data"}</button>
+              {editing && (
+                <a className="button secondary" href={`/admin/${resource}`}>
+                  Batal
+                </a>
+              )}
+            </div>
           </form>
         </article>
         <div className="table-wrap">
@@ -67,27 +75,35 @@ export default async function ResourcePage({
               </tr>
             </thead>
             <tbody>
-              {rows?.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.id}</td>
-                  <td>
-                    {config.fields.slice(0, 3).map((field) => (
-                      <div key={field.name}>
-                        <strong>{field.label}:</strong>{" "}
-                        {String(row[field.name] ?? "").replace(/<[^>]+>/g, "").slice(0, 90)}
-                      </div>
-                    ))}
-                  </td>
-                  <td>
-                    <a className="button secondary" href={`/admin/${resource}?edit=${row.id}`}>
-                      Edit
-                    </a>
-                    <form action={deleteResource.bind(null, resource, row.id)} style={{ marginTop: 8 }}>
-                      <button className="button danger">Hapus</button>
-                    </form>
+              {rows?.length ? (
+                rows.map((row) => (
+                  <tr key={row.id}>
+                    <td>{row.id}</td>
+                    <td>
+                      {config.fields.slice(0, 3).map((field) => (
+                        <div key={field.name}>
+                          <strong>{field.label}:</strong>{" "}
+                          {String(row[field.name] ?? "").replace(/<[^>]+>/g, "").slice(0, 90)}
+                        </div>
+                      ))}
+                    </td>
+                    <td>
+                      <a className="button secondary" href={`/admin/${resource}?edit=${row.id}`}>
+                        Edit
+                      </a>
+                      <form action={deleteResource.bind(null, resource, row.id)} style={{ marginTop: 8 }}>
+                        <button className="button danger">Hapus</button>
+                      </form>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3}>
+                    <p className="empty">Belum ada data.</p>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
