@@ -2,6 +2,24 @@
 
 html.theme-switching *,html.theme-switching *::before,html.theme-switching *::after{transition:none!important}
 
+/* Marquee guru (loop tak berujung). Jarak antar kartu memakai margin-right,
+   bukan gap flex, agar lebar total = 2 x lebar satu salinan sehingga
+   translateX(-50%) jatuh tepat di batas salinan dan sambungannya mulus. */
 @keyframes guru-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.guru-outer{overflow:hidden}.guru-track{display:flex;gap:1.5rem;width:max-content;animation:guru-scroll 25s linear infinite}.guru-track:hover{animation-play-state:paused}.guru-slide{flex:0 0 auto;width:200px}.guru-slide img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:1rem}.guru-fade{mask:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);-webkit-mask:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%)}
+.guru-outer{overflow:hidden}
+.guru-track{display:flex;width:max-content;animation:guru-scroll 40s linear infinite;will-change:transform}
+.guru-outer:hover .guru-track{animation-play-state:paused}
+.guru-slide{flex:0 0 auto;width:200px;margin-right:1.5rem}
+.guru-slide img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:1rem}
+.guru-fade{mask:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);-webkit-mask:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%)}
 @media(min-width:640px){.guru-slide{width:240px}}
+
+/* Aturan global prefers-reduced-motion memaksa animation-duration .001ms +
+   iteration-count 1, sehingga track langsung membeku di translateX(-50%) dan
+   kartu pertama tampak terpotong. Selector .guru-track lebih spesifik daripada
+   * sehingga override ini menang: track diam di posisi awal dan daftar tetap
+   bisa digeser horizontal. */
+@media (prefers-reduced-motion: reduce){
+  .guru-track{animation:none!important;transform:none!important}
+  .guru-outer{overflow-x:auto}
+}
