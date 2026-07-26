@@ -16,6 +16,7 @@ const navItems = [
 	{ href: "/admin/tentang", icon: "info", label: "Tentang" },
 	{ href: "/admin/ppdb", icon: "doc", label: "PPDB" },
 	{ href: "/admin/pesan", icon: "mail", label: "Pesan Masuk" },
+	{ href: "/admin/aktivitas", icon: "chart", label: "Aktivitas" },
 ];
 
 export default function AdminChrome({
