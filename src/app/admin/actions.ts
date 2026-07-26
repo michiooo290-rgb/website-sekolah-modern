@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import sanitizeHtml from "sanitize-html";
 import { createServerSupabase } from "@/lib/supabase";
+import { loadAdminSession } from "@/lib/admin-guard";
 import { resources, slugify, type FieldConfig } from "@/lib/admin-resources";
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
@@ -62,17 +63,12 @@ async function inspectUpload(file: File, fieldName: string) {
   throw new Error("Gambar harus berupa JPEG, PNG, atau WebP yang valid");
 }
 
+/**
+ * Pembungkus tipis di atas loadAdminSession() supaya modul yang sudah ada
+ * tetap bisa mengimpor requireAdmin dari sini tanpa perubahan.
+ */
 export async function requireAdmin() {
-  const supabase = await createServerSupabase();
-  if (!supabase) redirect("/login?error=config");
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-  const { data: profile } = await supabase.from("profiles").select("role,nama").eq("id", user.id).maybeSingle();
-  if (!profile || profile.role !== "admin") {
-    await supabase.auth.signOut();
-    redirect("/login?error=forbidden");
-  }
-  return { supabase, user, profile };
+  return loadAdminSession();
 }
 
 export async function logout() {
