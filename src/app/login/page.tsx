@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerSupabase } from "@/lib/supabase";
 import { login } from "./actions";
+import { SubmitButton } from "./submit-button";
 
 export const metadata = { title: "Login Admin" };
 
@@ -43,7 +44,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               <label htmlFor="password">Password</label>
               <input id="password" type="password" name="password" autoComplete="current-password" placeholder="Minimal 8 karakter" required minLength={8} maxLength={128} />
             </div>
-            <button className="button" type="submit">Masuk ke dashboard</button>
+            <SubmitButton />
           </form>
         </article>
         <p className="login-foot">
