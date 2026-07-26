@@ -229,3 +229,65 @@ export async function markMessage(rawId: number, remove = false) {
   }
   redirect(`/admin/pesan?${remove ? "deleted=1" : "read=1"}`);
 }
+
+/**
+ * Versi massal dari applyMessage. Sama seperti removeResources, jumlah baris
+ * yang benar benar terpengaruh diperiksa supaya penolakan Row Level Security
+ * tidak berlalu tanpa terlihat.
+ */
+async function applyMessages(ids: number[], remove: boolean) {
+  if (ids.length === 0) throw new Error("Belum ada pesan yang dipilih");
+  if (ids.length > MAX_BULK_DELETE) throw new Error(`Maksimal ${MAX_BULK_DELETE} pesan sekaligus`);
+
+  const { supabase, user } = await requireAdmin();
+  const query = remove
+    ? supabase.from("pesan_kontak").delete().in("id", ids).select("id")
+    : supabase.from("pesan_kontak").update({ dibaca: true }).in("id", ids).select("id");
+  const { data: affected, error } = await query;
+  if (error) throw new Error(`Pesan gagal diperbarui: ${error.message}`);
+  const terpengaruh = affected ?? [];
+  if (terpengaruh.length === 0) throw new Error("Pesan gagal diperbarui: baris tidak ditemukan atau tidak diizinkan");
+
+  await supabase.from("audit_log").insert(
+    terpengaruh.map((row) => ({
+      user_id: user.id,
+      action: remove ? "delete_message" : "read_message",
+      table_name: "pesan_kontak",
+      record_id: row.id,
+    })),
+  );
+  revalidatePath("/admin");
+  revalidatePath("/admin/pesan");
+  return terpengaruh.length;
+}
+
+/** Membaca kotak centang bernama "ids" dari formulir daftar pesan. */
+function pilihanPesan(formData: FormData) {
+  return Array.from(new Set(formData.getAll("ids").map((value) => positiveId(value))));
+}
+
+/** Hapus massal pesan masuk. */
+export async function deleteMessages(formData: FormData) {
+  let jumlah = 0;
+  try {
+    jumlah = await applyMessages(pilihanPesan(formData), true);
+  } catch (error) {
+    if (isFrameworkError(error)) throw error;
+    console.error("deleteMessages gagal", { error });
+    redirect(`/admin/pesan?error=${encodeURIComponent(failureMessage(error))}`);
+  }
+  redirect(`/admin/pesan?deleted=${jumlah}`);
+}
+
+/** Tandai sudah dibaca untuk seluruh pesan yang dipilih. */
+export async function readMessages(formData: FormData) {
+  let jumlah = 0;
+  try {
+    jumlah = await applyMessages(pilihanPesan(formData), false);
+  } catch (error) {
+    if (isFrameworkError(error)) throw error;
+    console.error("readMessages gagal", { error });
+    redirect(`/admin/pesan?error=${encodeURIComponent(failureMessage(error))}`);
+  }
+  redirect(`/admin/pesan?read=${jumlah}`);
+}
