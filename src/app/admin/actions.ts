@@ -9,6 +9,7 @@ import { resources, slugify, type FieldConfig } from "@/lib/admin-resources";
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const MAX_PDF_SIZE = 10 * 1024 * 1024;
+const MAX_BULK_DELETE = 500;
 const SAFE_HTML_TAGS = ["p", "br", "strong", "b", "em", "i", "ul", "ol", "li", "blockquote", "h2", "h3", "a"];
 
 /**
@@ -148,22 +149,54 @@ export async function saveResource(resource: string, formData: FormData) {
   redirect(`/admin/${resource}?saved=1`);
 }
 
-async function removeResource(resource: string, rawId: number) {
+/**
+ * Menghapus sekumpulan baris sekaligus dan mengembalikan jumlah yang benar
+ * benar terhapus, sehingga penolakan oleh Row Level Security tidak berlalu
+ * tanpa terlihat.
+ */
+async function removeResources(resource: string, ids: number[]) {
   const config = resources[resource];
   if (!config) throw new Error("Resource tidak valid");
-  const id = positiveId(rawId);
+  if (ids.length === 0) throw new Error("Belum ada data yang dipilih");
+  if (ids.length > MAX_BULK_DELETE) throw new Error(`Maksimal ${MAX_BULK_DELETE} data sekaligus`);
+
   const { supabase, user } = await requireAdmin();
-  const { data: removed, error } = await supabase.from(config.table).delete().eq("id", id).select("id");
+  const { data: removed, error } = await supabase.from(config.table).delete().in("id", ids).select("id");
   if (error) throw new Error(`Data gagal dihapus: ${error.message}`);
-  if (!removed || removed.length === 0) throw new Error("Data gagal dihapus: baris tidak ditemukan atau tidak diizinkan");
-  await supabase.from("audit_log").insert({ user_id: user.id, action: "delete", table_name: config.table, record_id: id });
+  const terhapus = removed ?? [];
+  if (terhapus.length === 0) throw new Error("Data gagal dihapus: baris tidak ditemukan atau tidak diizinkan");
+
+  await supabase.from("audit_log").insert(
+    terhapus.map((row) => ({
+      user_id: user.id,
+      action: "delete",
+      table_name: config.table,
+      record_id: row.id,
+    })),
+  );
   revalidatePath("/");
   revalidatePath(`/admin/${resource}`);
+  return terhapus.length;
 }
 
+/** Hapus massal dari formulir tabel; kotak centang bernama "ids". */
+export async function deleteResources(resource: string, formData: FormData) {
+  let jumlah = 0;
+  try {
+    const ids = Array.from(new Set(formData.getAll("ids").map((value) => positiveId(value))));
+    jumlah = await removeResources(resource, ids);
+  } catch (error) {
+    if (isFrameworkError(error)) throw error;
+    console.error("deleteResources gagal", { resource, error });
+    redirect(`/admin/${resource}?error=${encodeURIComponent(failureMessage(error))}`);
+  }
+  redirect(`/admin/${resource}?deleted=${jumlah}`);
+}
+
+/** Hapus satu baris; dipakai untuk pemanggilan di luar formulir tabel. */
 export async function deleteResource(resource: string, rawId: number) {
   try {
-    await removeResource(resource, rawId);
+    await removeResources(resource, [positiveId(rawId)]);
   } catch (error) {
     if (isFrameworkError(error)) throw error;
     console.error("deleteResource gagal", { resource, rawId, error });
