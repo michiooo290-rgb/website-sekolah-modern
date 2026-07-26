@@ -2,9 +2,41 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://website-sekolah-modern.vercel.app").replace(/\/+$/, "");
+const NAMA = "SMA Putra Persada Batam";
+const DESKRIPSI = "Website resmi SMA Putra Persada Batam — unggul, berkarakter, dan beriman. Informasi PPDB, berita, ekstrakurikuler, dan profil sekolah.";
+
 export const metadata: Metadata = {
-  title: { default: "SMA Putra Persada Batam", template: "%s | SMA Putra Persada" },
-  description: "Website resmi SMA Putra Persada Batam — unggul, berkarakter, dan beriman.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: NAMA, template: "%s | SMA Putra Persada" },
+  description: DESKRIPSI,
+  applicationName: NAMA,
+  keywords: [
+    "SMA Putra Persada",
+    "SMA Putra Persada Batam",
+    "SMA swasta Batam",
+    "SMA islam Batam",
+    "PPDB Batam",
+    "PPDB 2026/2027",
+    "sekolah menengah atas Batam",
+  ],
+  alternates: { canonical: "/" },
+  /* Halaman publik boleh diindeks; larangan untuk dashboard diatur di robots.ts. */
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: SITE_URL,
+    siteName: NAMA,
+    title: NAMA,
+    description: DESKRIPSI,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: NAMA,
+    description: DESKRIPSI,
+  },
+  icons: { icon: "/assets/img/favicon.svg" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
