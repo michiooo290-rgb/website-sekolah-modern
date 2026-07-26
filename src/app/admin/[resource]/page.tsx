@@ -1,6 +1,14 @@
 import { notFound } from "next/navigation";
 import { resources } from "@/lib/admin-resources";
-import { deleteResource, requireAdmin, saveResource } from "../actions";
+import { deleteResources, requireAdmin, saveResource } from "../actions";
+import Toast from "../toast";
+import BulkTable, { type BulkRow } from "./bulk-table";
+
+function ringkasNilai(value: unknown) {
+  const teks = String(value ?? "").replace(/<[^>]+>/g, "").trim();
+  if (!teks) return "—";
+  return teks.length > 90 ? `${teks.slice(0, 90)}…` : teks;
+}
 
 export default async function ResourcePage({
   params,
@@ -21,14 +29,34 @@ export default async function ResourcePage({
 
   const editing = query.edit ? rows?.find((row) => String(row.id) === query.edit) : null;
   const action = saveResource.bind(null, resource);
+  const bulkAction = deleteResources.bind(null, resource);
+
+  const bulkRows: BulkRow[] = (rows ?? []).map((row) => ({
+    id: Number(row.id),
+    cells: config.fields.slice(0, 3).map((field) => ({
+      label: field.label,
+      value: ringkasNilai(row[field.name]),
+    })),
+  }));
+
+  const jumlahDihapus = Number(query.deleted ?? 0);
+  const notifikasi = query.error
+    ? { tone: "error" as const, message: query.error }
+    : query.saved
+      ? { tone: "ok" as const, message: "Perubahan berhasil disimpan." }
+      : query.deleted
+        ? {
+            tone: "ok" as const,
+            message:
+              jumlahDihapus > 1 ? `${jumlahDihapus} data berhasil dihapus.` : "Data berhasil dihapus.",
+          }
+        : null;
 
   return (
     <>
+      {notifikasi && <Toast message={notifikasi.message} tone={notifikasi.tone} />}
       <span className="eyebrow">Kelola Konten</span>
       <h1 style={{ fontSize: "3rem" }}>{config.label}</h1>
-      {query.saved && <p className="notice">Perubahan berhasil disimpan.</p>}
-      {query.deleted && <p className="notice">Data berhasil dihapus.</p>}
-      {query.error && <p className="notice error">{query.error}</p>}
       <div className="grid two" style={{ alignItems: "start" }}>
         <article className="card">
           <h2>{editing ? "Edit data" : "Tambah data"}</h2>
@@ -65,48 +93,7 @@ export default async function ResourcePage({
             </div>
           </form>
         </article>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Data</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows?.length ? (
-                rows.map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.id}</td>
-                    <td>
-                      {config.fields.slice(0, 3).map((field) => (
-                        <div key={field.name}>
-                          <strong>{field.label}:</strong>{" "}
-                          {String(row[field.name] ?? "").replace(/<[^>]+>/g, "").slice(0, 90)}
-                        </div>
-                      ))}
-                    </td>
-                    <td>
-                      <a className="button secondary" href={`/admin/${resource}?edit=${row.id}`}>
-                        Edit
-                      </a>
-                      <form action={deleteResource.bind(null, resource, row.id)} style={{ marginTop: 8 }}>
-                        <button className="button danger">Hapus</button>
-                      </form>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={3}>
-                    <p className="empty">Belum ada data.</p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <BulkTable resource={resource} label={config.label} rows={bulkRows} action={bulkAction} />
       </div>
     </>
   );
