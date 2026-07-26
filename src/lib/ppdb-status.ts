@@ -15,9 +15,12 @@ export type PpdbStatus = {
   expired: boolean;
   /** Tanggal tutup dalam bahasa Indonesia, misalnya 30 Juni 2026. */
   closingLabel: string | null;
+  /** Sisa hari menuju hari terakhir pendaftaran; 0 berarti hari ini. */
+  daysLeft: number | null;
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /** Tanggal hari ini menurut waktu Jakarta, tidak bergantung zona waktu server. */
 export function todayInJakarta() {
@@ -32,6 +35,11 @@ export function formatIndonesianDate(value: string | null) {
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(`${value}T00:00:00Z`));
+}
+
+/** Selisih hari kalender antara hari ini di Jakarta dan tanggal tujuan. */
+function dayDifference(from: string, to: string) {
+  return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / MS_PER_DAY);
 }
 
 /**
@@ -49,7 +57,8 @@ export function resolvePpdbStatus(
 
   const rawDate = String(settings[PPDB_CLOSING_KEY] ?? "").trim();
   const closingDate = ISO_DATE.test(rawDate) ? rawDate : null;
-  const expired = closingDate !== null && todayInJakarta() > closingDate;
+  const today = todayInJakarta();
+  const expired = closingDate !== null && today > closingDate;
 
   return {
     open: manualOpen && !expired,
@@ -57,5 +66,6 @@ export function resolvePpdbStatus(
     closingDate,
     expired,
     closingLabel: formatIndonesianDate(closingDate),
+    daysLeft: closingDate ? dayDifference(today, closingDate) : null,
   };
 }
