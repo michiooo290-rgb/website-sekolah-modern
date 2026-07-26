@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+const supabaseHost = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://uvxwkkythmfedmhnzkax.supabase.co")
+  .replace(/^https?:\/\//, "")
+  .replace(/\/$/, "");
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
@@ -34,8 +38,10 @@ const nextConfig: NextConfig = {
     root: process.cwd(),
   },
   images: {
+    // Dibatasi ke project Supabase sendiri saja. Dengan pola *.supabase.co,
+    // project milik orang lain bisa ikut dioptimasi lewat domain ini.
     remotePatterns: [
-      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" },
     ],
   },
   async headers() {
