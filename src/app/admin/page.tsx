@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PPDB_CLOSING_KEY, PPDB_STATUS_KEY, resolvePpdbStatus } from "@/lib/ppdb-status";
 import { requireAdmin } from "./actions";
 import { Icon } from "./icons";
 
@@ -104,9 +105,8 @@ export default async function Dashboard() {
 			.limit(5),
 		supabase
 			.from("pengaturan")
-			.select("nilai")
-			.eq("kunci", "ppdb_status")
-			.maybeSingle(),
+			.select("kunci,nilai")
+			.in("kunci", [PPDB_STATUS_KEY, PPDB_CLOSING_KEY]),
 	]);
 
 	const tayangan = ((tayanganRes.data ?? []) as { dilihat: number | null }[]).reduce(
@@ -122,7 +122,14 @@ export default async function Dashboard() {
 	const populer = (populerRes.data ?? []) as BeritaRow[];
 	const pesan = (pesanRes.data ?? []) as PesanRow[];
 	const unread = pesanBaru.count ?? 0;
-	const ppdbOpen = (ppdbRes.data?.nilai ?? "buka") === "buka";
+	const ppdb = resolvePpdbStatus(
+		Object.fromEntries(
+			((ppdbRes.data ?? []) as { kunci: string; nilai: string | null }[]).map((row) => [
+				row.kunci,
+				row.nilai,
+			]),
+		),
+	);
 	const maxDilihat = Math.max(1, populer[0]?.dilihat ?? 0);
 
 	const kartu = [
@@ -195,6 +202,14 @@ export default async function Dashboard() {
 		{ href: "/admin/pengaturan", label: "Pengaturan", icon: "cog" },
 	];
 
+	const ppdbKeterangan = ppdb.open
+		? ppdb.closingLabel
+			? `tutup otomatis setelah ${ppdb.closingLabel}`
+			: "tanpa batas tanggal"
+		: ppdb.expired
+			? `berakhir ${ppdb.closingLabel}`
+			: "ditutup manual";
+
 	return (
 		<>
 			<div className="card welcome">
@@ -211,10 +226,16 @@ export default async function Dashboard() {
 							Berikut ringkasan aktivitas website sekolah hari ini. Kelola
 							konten dengan mudah dari satu tempat.
 						</p>
-						<div className={`status ${ppdbOpen ? "open" : "closed"}`}>
+						<Link
+							href="/admin/ppdb"
+							className={`status ${ppdb.open ? "open" : "closed"}`}
+							title="Atur status pendaftaran"
+						>
 							<span className="dot" />
-							<span>PPDB: {ppdbOpen ? "Terbuka" : "Tertutup"}</span>
-						</div>
+							<span>
+								PPDB: {ppdb.open ? "Terbuka" : "Tertutup"} &middot; {ppdbKeterangan}
+							</span>
+						</Link>
 					</div>
 					<div>
 						{unread > 0 ? (
