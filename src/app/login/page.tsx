@@ -1,3 +1,5 @@
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createServerSupabase } from "@/lib/supabase";
 import { login } from "./actions";
@@ -13,10 +15,41 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       if (profile?.role === "admin") redirect("/admin");
     }
   }
+
   const message = params.error === "config"
-    ? "Supabase belum dikonfigurasi."
+    ? "Supabase belum dikonfigurasi. Hubungi pengelola server."
     : params.error === "forbidden"
       ? "Akun ini tidak memiliki akses admin."
       : "Email atau password tidak valid.";
-  return <section className="section"><div className="container" style={{ maxWidth: 480 }}><article className="card"><span className="eyebrow">Area Pengelola</span><h1 style={{ fontSize: "2.8rem" }}>Login admin</h1><p>Gunakan akun yang telah ditambahkan sebagai admin di Supabase.</p>{params.error && <p className="notice error">{message}</p>}<form action={login} className="form"><div className="field"><label>Email</label><input type="email" name="email" autoComplete="username" required maxLength={254} /></div><div className="field"><label>Password</label><input type="password" name="password" autoComplete="current-password" required minLength={8} maxLength={128} /></div><button className="button">Masuk ke dashboard</button></form></article></div></section>;
+
+  return (
+    <section className="section">
+      <div className="container">
+        <p className="login-brand">
+          <Image src="/assets/img/logo.jpeg" alt="" width={36} height={36} />
+          SMA Putra Persada Batam
+        </p>
+        <article className="card">
+          <span className="eyebrow">Area Pengelola</span>
+          <h1>Login admin</h1>
+          <p>Gunakan akun yang telah ditambahkan sebagai admin di Supabase.</p>
+          {params.error && <p className="notice error">{message}</p>}
+          <form action={login} className="form">
+            <div className="field">
+              <label htmlFor="email">Email</label>
+              <input id="email" type="email" name="email" autoComplete="username" placeholder="nama@sekolah.sch.id" required maxLength={254} />
+            </div>
+            <div className="field">
+              <label htmlFor="password">Password</label>
+              <input id="password" type="password" name="password" autoComplete="current-password" placeholder="Minimal 8 karakter" required minLength={8} maxLength={128} />
+            </div>
+            <button className="button" type="submit">Masuk ke dashboard</button>
+          </form>
+        </article>
+        <p className="login-foot">
+          <Link href="/">&larr; Kembali ke website sekolah</Link>
+        </p>
+      </div>
+    </section>
+  );
 }
