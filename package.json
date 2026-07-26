@@ -12,11 +12,13 @@
   "dependencies": {
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@tailwindcss/postcss": "^4.3.3",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "sanitize-html": "latest",
+    "tailwindcss": "^4.3.3",
     "zod": "latest"
   },
   "devDependencies": {
