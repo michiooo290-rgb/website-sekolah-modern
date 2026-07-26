@@ -1,6 +1,45 @@
-import Link from "next/link";
+import AdminChrome from "./admin-chrome";
 import { logout, requireAdmin } from "./actions";
-import { resources } from "@/lib/admin-resources";
 import "./admin.css";
+import "./admin-extras.css";
 
-export default async function AdminLayout({children}:{children:React.ReactNode}){const {profile}=await requireAdmin();return <div className="admin-shell"><aside className="admin-nav"><Link href="/admin"><strong>Dashboard</strong></Link>{Object.entries(resources).map(([key,value])=><Link key={key} href={`/admin/${key}`}>{value.label}</Link>)}<Link href="/admin/pesan">Pesan Masuk</Link><form action={logout}><button className="button" style={{marginTop:12}}>Keluar</button></form><small style={{display:"block",padding:12,opacity:.6}}>{profile.nama}</small></aside><section className="admin-main">{children}</section></div>}
+export default async function AdminLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	const { supabase, profile } = await requireAdmin();
+
+	const [pesanBaru, sekolah] = await Promise.all([
+		supabase
+			.from("pesan_kontak")
+			.select("*", { count: "exact", head: true })
+			.eq("dibaca", false),
+		supabase
+			.from("pengaturan")
+			.select("nilai")
+			.eq("kunci", "nama_sekolah")
+			.maybeSingle(),
+	]);
+
+	const tanggal = new Intl.DateTimeFormat("id-ID", {
+		weekday: "long",
+		day: "numeric",
+		month: "long",
+		year: "numeric",
+		timeZone: "Asia/Jakarta",
+	}).format(new Date());
+
+	return (
+		<AdminChrome
+			nama={profile.nama}
+			role={profile.role ?? "admin"}
+			sekolah={sekolah.data?.nilai ?? "SMA Putra Persada Batam"}
+			tanggal={tanggal}
+			unread={pesanBaru.count ?? 0}
+			logout={logout}
+		>
+			{children}
+		</AdminChrome>
+	);
+}

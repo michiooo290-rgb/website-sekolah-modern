@@ -38,14 +38,14 @@ function renderHeader(active, ppdbOpen){
           <svg class="dark:hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="hidden dark:block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
-        <a href="ppdb.php" class="highlight-btn hidden md:inline-flex items-center gap-2 bg-pine dark:bg-brass text-cream dark:text-pine-deep text-[13px] font-semibold px-5 py-2.5 rounded-full hover:bg-pine-deep dark:hover:bg-brass-light transition">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</a>
+        <a href="ppdb.php" class="highlight-btn header-ppdb-btn hidden md:inline-flex items-center gap-2 text-[13px] font-semibold px-5 py-2.5 rounded-full transition"><span class="hl-label">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</span></a>
         <button id="mbtn" class="md:hidden p-2 text-pine dark:text-cream"><svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h18M4 13h18M4 19h18" stroke-linecap="round"/></svg></button>
       </div>
     </div>
     <div id="mnav" class="md:hidden bg-cream dark:bg-pine-deep border-t border-pine/10 dark:border-cream/10">
       <div class="px-5 py-3 flex flex-col gap-1">
         ${NAV.map(([h,l])=>`<a href="${h}" class="mlink py-2.5 border-b border-pine/5 dark:border-cream/5">${l}</a>`).join('')}
-        <a href="ppdb.php" class="mlink mt-2 text-center bg-pine dark:bg-brass text-cream dark:text-pine-deep font-semibold py-2.5 rounded-full">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</a>
+        <a href="ppdb.php" class="mlink header-ppdb-btn mt-2 text-center font-semibold py-2.5 rounded-full">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</a>
       </div>
     </div>
   </header>
