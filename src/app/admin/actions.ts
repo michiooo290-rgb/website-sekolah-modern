@@ -135,7 +135,6 @@ async function persistResource(resource: string, formData: FormData) {
   });
   revalidatePath("/");
   revalidatePath(`/admin/${resource}`);
-  redirect(`/admin/${resource}?saved=1`);
 }
 
 export async function saveResource(resource: string, formData: FormData) {
@@ -146,34 +145,54 @@ export async function saveResource(resource: string, formData: FormData) {
     console.error("saveResource gagal", { resource, error });
     redirect(`/admin/${resource}?error=${encodeURIComponent(failureMessage(error))}`);
   }
+  redirect(`/admin/${resource}?saved=1`);
+}
+
+async function removeResource(resource: string, rawId: number) {
+  const config = resources[resource];
+  if (!config) throw new Error("Resource tidak valid");
+  const id = positiveId(rawId);
+  const { supabase, user } = await requireAdmin();
+  const { data: removed, error } = await supabase.from(config.table).delete().eq("id", id).select("id");
+  if (error) throw new Error(`Data gagal dihapus: ${error.message}`);
+  if (!removed || removed.length === 0) throw new Error("Data gagal dihapus: baris tidak ditemukan atau tidak diizinkan");
+  await supabase.from("audit_log").insert({ user_id: user.id, action: "delete", table_name: config.table, record_id: id });
+  revalidatePath("/");
+  revalidatePath(`/admin/${resource}`);
 }
 
 export async function deleteResource(resource: string, rawId: number) {
-  const config = resources[resource];
-  if (!config) throw new Error("Resource tidak valid");
   try {
-    const id = positiveId(rawId);
-    const { supabase, user } = await requireAdmin();
-    const { error } = await supabase.from(config.table).delete().eq("id", id);
-    if (error) throw new Error(`Data gagal dihapus: ${error.message}`);
-    await supabase.from("audit_log").insert({ user_id: user.id, action: "delete", table_name: config.table, record_id: id });
-    revalidatePath("/");
-    revalidatePath(`/admin/${resource}`);
+    await removeResource(resource, rawId);
   } catch (error) {
     if (isFrameworkError(error)) throw error;
-    console.error("deleteResource gagal", { resource, error });
+    console.error("deleteResource gagal", { resource, rawId, error });
     redirect(`/admin/${resource}?error=${encodeURIComponent(failureMessage(error))}`);
   }
+  redirect(`/admin/${resource}?deleted=1`);
 }
 
-export async function markMessage(rawId: number, remove = false) {
+async function applyMessage(rawId: number, remove: boolean) {
   const id = positiveId(rawId);
   const { supabase, user } = await requireAdmin();
   const query = remove
-    ? supabase.from("pesan_kontak").delete().eq("id", id)
-    : supabase.from("pesan_kontak").update({ dibaca: true }).eq("id", id);
-  const { error } = await query;
-  if (error) throw new Error("Pesan gagal diperbarui");
+    ? supabase.from("pesan_kontak").delete().eq("id", id).select("id")
+    : supabase.from("pesan_kontak").update({ dibaca: true }).eq("id", id).select("id");
+  const { data: affected, error } = await query;
+  if (error) throw new Error(`Pesan gagal diperbarui: ${error.message}`);
+  if (!affected || affected.length === 0) throw new Error("Pesan gagal diperbarui: baris tidak ditemukan atau tidak diizinkan");
   await supabase.from("audit_log").insert({ user_id: user.id, action: remove ? "delete_message" : "read_message", table_name: "pesan_kontak", record_id: id });
+  revalidatePath("/admin");
   revalidatePath("/admin/pesan");
+}
+
+export async function markMessage(rawId: number, remove = false) {
+  try {
+    await applyMessage(rawId, remove);
+  } catch (error) {
+    if (isFrameworkError(error)) throw error;
+    console.error("markMessage gagal", { rawId, remove, error });
+    redirect(`/admin/pesan?error=${encodeURIComponent(failureMessage(error))}`);
+  }
+  redirect(`/admin/pesan?${remove ? "deleted=1" : "read=1"}`);
 }
