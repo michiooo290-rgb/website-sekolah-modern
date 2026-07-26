@@ -1,4 +1,5 @@
 import { markMessage, requireAdmin } from "../actions";
+import Toast from "../toast";
 
 export const metadata = { title: "Pesan Masuk" };
 
@@ -13,13 +14,19 @@ export default async function MessagesPage({
     .select("*")
     .order("tanggal", { ascending: false });
 
+  const notifikasi = query.error
+    ? { tone: "error" as const, message: query.error }
+    : query.deleted
+      ? { tone: "ok" as const, message: "Pesan berhasil dihapus." }
+      : query.read
+        ? { tone: "ok" as const, message: "Pesan ditandai sudah dibaca." }
+        : null;
+
   return (
     <>
+      {notifikasi && <Toast message={notifikasi.message} tone={notifikasi.tone} />}
       <span className="eyebrow">Kotak Masuk</span>
       <h1 style={{ fontSize: "3rem" }}>Pesan pengunjung</h1>
-      {query.read && <p className="notice">Pesan ditandai sudah dibaca.</p>}
-      {query.deleted && <p className="notice">Pesan berhasil dihapus.</p>}
-      {query.error && <p className="notice error">{query.error}</p>}
       {data?.length ? (
         <div className="grid two">
           {data.map((item) => (
