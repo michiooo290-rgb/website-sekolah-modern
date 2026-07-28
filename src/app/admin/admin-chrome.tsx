@@ -15,6 +15,8 @@ const navItems = [
 	{ href: "/admin/visi-misi", icon: "eye", label: "Visi & Misi" },
 	{ href: "/admin/tentang", icon: "info", label: "Tentang" },
 	{ href: "/admin/ppdb", icon: "doc", label: "PPDB" },
+	{ href: "/admin/agenda", icon: "calendar", label: "Agenda" },
+	{ href: "/admin/faq", icon: "sparkle", label: "FAQ" },
 	{ href: "/admin/pesan", icon: "mail", label: "Pesan Masuk" },
 	{ href: "/admin/aktivitas", icon: "chart", label: "Aktivitas" },
 ];
