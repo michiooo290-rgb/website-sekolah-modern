@@ -12,8 +12,8 @@ const NAV = [
 function renderHeader(active, ppdbOpen){
   active = active || '';
   if (typeof ppdbOpen === 'undefined') ppdbOpen = true;
-  const marqueeOpen = '<span class="marquee-ribbon-item"><span>✦</span> Penerimaan Peserta Didik Baru TA 2026/2027</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Jalur Prestasi, Reguler & Beasiswa</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Cerdas, Berkarakter, Berakhlak</span><span class="marquee-ribbon-item">•</span>';
-  const marqueeClosed = '<span class="marquee-ribbon-item"><span>✦</span> PPDB 2026/2027 Telah Ditutup</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Informasi Tahun Ajaran Berikutnya Segera Hadir</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Hubungi Kami untuk Informasi Lebih Lanjut</span><span class="marquee-ribbon-item">•</span>';
+  const marqueeOpen = '<span class="marquee-ribbon-item"><span>✦</span> Penerimaan Peserta Didik Baru TA 2026/2027</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Jalur Prestasi, Reguler & Beasiswa</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMAS Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Cerdas, Berkarakter, Berakhlak</span><span class="marquee-ribbon-item">•</span>';
+  const marqueeClosed = '<span class="marquee-ribbon-item"><span>✦</span> PPDB 2026/2027 Telah Ditutup</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Informasi Tahun Ajaran Berikutnya Segera Hadir</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMAS Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Hubungi Kami untuk Informasi Lebih Lanjut</span><span class="marquee-ribbon-item">•</span>';
   return `
 <div class="sticky top-0 z-30">
   <div class="bg-pine text-cream/90 text-xs py-2 relative marquee-ribbon">
@@ -27,7 +27,7 @@ function renderHeader(active, ppdbOpen){
         <img src="assets/img/logo.jpeg" class="h-10 w-10 rounded-full object-cover ring-1 ring-brass/60">
         <div class="leading-none">
           <p class="font-serif font-semibold text-pine dark:text-cream text-[17px]">Putra Persada</p>
-          <p class="text-[10px] tracking-[0.3em] text-leaf dark:text-brass-light mt-1">SMA · BATAM</p>
+          <p class="text-[10px] tracking-[0.3em] text-leaf dark:text-brass-light mt-1">SMAS · BATAM</p>
         </div>
       </a>
       <nav class="hidden md:flex items-center gap-6 text-[13px] font-medium">
@@ -59,7 +59,7 @@ function renderFooter(){
     <div class="md:col-span-5">
       <div class="flex items-center gap-3 mb-5">
         <img src="assets/img/logo.jpeg" class="h-12 w-12 rounded-full object-cover ring-1 ring-brass/60">
-        <div><p class="font-serif text-lg">SMA Putra Persada</p><p class="text-[10px] tracking-[0.3em] text-brass-light">BATAM</p></div>
+        <div><p class="font-serif text-lg">SMAS Putra Persada</p><p class="text-[10px] tracking-[0.3em] text-brass-light">BATAM</p></div>
       </div>
       <p class="text-cream/70 text-sm max-w-xs mb-5">Cerdas, berkarakter, dan berakhlak mulia — membersamai generasi menuju masa depan terbaik.</p>
       <div class="flex gap-3">${['Instagram','YouTube','TikTok','Facebook'].map(s=>`<a href="#" class="text-xs border border-cream/25 px-3 py-1.5 rounded-full hover:bg-cream hover:text-pine-deep transition">${s}</a>`).join('')}</div>
@@ -73,7 +73,7 @@ function renderFooter(){
       <ul class="space-y-2.5 text-sm text-cream/80">
         <li>📍 Kota Batam, Kepulauan Riau</li>
         <li>📞 (0778) XXX-XXXX</li>
-        <li>✉️ info@smaputrapersada.sch.id</li>
+        <li>✉️ info@SMASputrapersada.sch.id</li>
         <li>🕐 Senin–Jumat, 07.00–15.00 WIB</li>
       </ul>
       <form onsubmit="event.preventDefault(); alert('Terima kasih! (demo)'); this.reset();" class="mt-5 flex gap-2">
@@ -82,7 +82,7 @@ function renderFooter(){
       </form>
     </div>
   </div>
-  <div class="border-t border-cream/10 py-5 text-center text-xs text-cream/50">© 2026 SMA Putra Persada Batam · Seluruh hak cipta dilindungi.</div>
+  <div class="border-t border-cream/10 py-5 text-center text-xs text-cream/50">© 2026 SMAS Putra Persada Batam · Seluruh hak cipta dilindungi.</div>
 </footer>`;
 }
 
