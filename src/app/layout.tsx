@@ -3,16 +3,20 @@ import Script from "next/script";
 import "./globals.css";
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://website-sekolah-modern.vercel.app").replace(/\/+$/, "");
-const NAMA = "SMA Putra Persada Batam";
-const DESKRIPSI = "Website resmi SMA Putra Persada Batam — unggul, berkarakter, dan beriman. Informasi PPDB, berita, ekstrakurikuler, dan profil sekolah.";
+const NAMA = "SMAS Putra Persada Batam";
+const DESKRIPSI = "Website resmi SMAS Putra Persada Batam — unggul, berkarakter, dan beriman. Informasi PPDB, berita, ekstrakurikuler, dan profil sekolah.";
 const LOGO = "/assets/img/logo.jpeg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: NAMA, template: "%s | SMA Putra Persada" },
+  title: { default: NAMA, template: "%s | SMAS Putra Persada" },
   description: DESKRIPSI,
   applicationName: NAMA,
+  /* Penulisan "SMA" tetap didaftarkan sebagai kata kunci karena orang awam
+     lebih sering mengetik itu daripada "SMAS" saat mencari sekolah. */
   keywords: [
+    "SMAS Putra Persada",
+    "SMAS Putra Persada Batam",
     "SMA Putra Persada",
     "SMA Putra Persada Batam",
     "SMA swasta Batam",
