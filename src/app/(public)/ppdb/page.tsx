@@ -16,8 +16,8 @@ export default async function PpdbPage() {
   const open = ppdb.open;
   const deskripsiBanner = open
     ? ppdb.closingLabel
-      ? `Informasi lengkap pendaftaran siswa baru SMA Putra Persada Batam. Pendaftaran dibuka sampai ${ppdb.closingLabel} dan dilakukan secara offline (datang langsung ke sekolah).`
-      : "Informasi lengkap pendaftaran siswa baru SMA Putra Persada Batam. Pendaftaran dilakukan secara offline (datang langsung ke sekolah)."
+      ? `Informasi lengkap pendaftaran siswa baru SMAS Putra Persada Batam. Pendaftaran dibuka sampai ${ppdb.closingLabel} dan dilakukan secara offline (datang langsung ke sekolah).`
+      : "Informasi lengkap pendaftaran siswa baru SMAS Putra Persada Batam. Pendaftaran dilakukan secara offline (datang langsung ke sekolah)."
     : "Informasi PPDB tahun ajaran 2026/2027. Pendaftaran telah ditutup.";
   /* Kalimat sisa waktu untuk spanduk pengingat. */
   const sisaHari = ppdb.daysLeft;
