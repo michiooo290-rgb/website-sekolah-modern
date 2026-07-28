@@ -1,6 +1,6 @@
 import { createServerSupabase } from "./supabase";
 import { fallbackActivities, fallbackNews, fallbackSettings, fallbackTeachers, fallbackVision } from "./fallback-data";
-import type { AboutItem, Activity, News, PpdbItem, SettingMap, Teacher, VisionItem } from "./types";
+import type { AboutItem, Activity, AgendaItem, FaqItem, News, PpdbItem, SettingMap, Teacher, VisionItem } from "./types";
 
 export async function getSettings(): Promise<SettingMap> {
   const supabase = await createServerSupabase();
@@ -59,6 +59,23 @@ export async function getPpdb(): Promise<PpdbItem[]> {
   if (!supabase) return [];
   const { data } = await supabase.from("ppdb_info").select("*").order("urutan");
   return (data ?? []) as PpdbItem[];
+}
+
+/* Agenda dan FAQ baru ada setelah supabase/agenda-faq-sosial.sql dijalankan.
+   Selama tabelnya belum ada, kueri gagal dan hasilnya array kosong; pemanggil
+   yang menyediakan teks cadangan tetap menampilkan isi lamanya. */
+export async function getAgenda(): Promise<AgendaItem[]> {
+  const supabase = await createServerSupabase();
+  if (!supabase) return [];
+  const { data } = await supabase.from("agenda").select("*").order("urutan");
+  return (data ?? []) as AgendaItem[];
+}
+
+export async function getFaq(): Promise<FaqItem[]> {
+  const supabase = await createServerSupabase();
+  if (!supabase) return [];
+  const { data } = await supabase.from("faq").select("*").order("urutan");
+  return (data ?? []) as FaqItem[];
 }
 
 export function imageUrl(path: string | null | undefined, fallback = "/assets/img/placeholder-berita.svg") {
