@@ -71,10 +71,9 @@ function renderFooter(){
     <div class="md:col-span-4">
       <p class="text-brass-light text-xs font-semibold tracking-widest uppercase mb-4">Kontak</p>
       <ul class="space-y-2.5 text-sm text-cream/80">
-        <li>📍 Kota Batam, Kepulauan Riau</li>
-        <li>📞 (0778) XXX-XXXX</li>
-        <li>✉️ info@SMASputrapersada.sch.id</li>
-        <li>🕐 Senin–Jumat, 07.00–15.00 WIB</li>
+          <li>📍 Jl. H. Muhammad No. 80, Nongsa, Kota Batam, Kepulauan Riau 29466</li>
+          <li>📞 0822-8344-9944</li>
+          <li>✉️ smasputrapersada@gmail.com</li>
       </ul>
       <form onsubmit="event.preventDefault(); alert('Terima kasih! (demo)'); this.reset();" class="mt-5 flex gap-2">
         <input required type="email" placeholder="Email Anda" class="flex-1 bg-pine border border-cream/15 rounded-full px-4 py-2.5 text-sm outline-none focus:border-brass placeholder:text-cream/40">
