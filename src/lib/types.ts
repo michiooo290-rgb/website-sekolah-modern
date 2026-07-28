@@ -53,3 +53,20 @@ export type PpdbItem = {
   file_formulir: string | null;
   urutan: number;
 };
+
+/* Tanggal agenda bertipe teks agar bisa memuat rentang tanggal atau
+   keterangan bebas, bukan hanya satu hari. */
+export type AgendaItem = {
+  id: number;
+  tanggal: string;
+  judul: string;
+  deskripsi: string | null;
+  urutan: number;
+};
+
+export type FaqItem = {
+  id: number;
+  pertanyaan: string;
+  jawaban: string;
+  urutan: number;
+};
