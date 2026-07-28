@@ -2,6 +2,7 @@
 const NAV = [
   ['index.php','Beranda'],
   ['tentang.php','Tentang'],
+  ['/guru','Guru'],
   ['visi-misi.php','Visi & Misi'],
   ['ekstrakurikuler.php','Ekstrakurikuler'],
   ['berita.php','Berita'],
