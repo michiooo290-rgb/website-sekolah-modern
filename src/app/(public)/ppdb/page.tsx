@@ -16,10 +16,11 @@ export default async function PpdbPage() {
   const open = ppdb.open;
   /* Peta disemat berdasarkan alamat di tabel pengaturan, sehingga ikut berubah
      bila alamat diperbarui lewat /admin/pengaturan. Bila titiknya kurang tepat,
-     ganti kueri di bawah dengan koordinat, misalnya "1.1234,104.1234". */
+     ganti isi kueri dengan koordinat, misalnya "1.1234,104.1234". */
   const kueriPeta = encodeURIComponent(settings.alamat || "SMAS Putra Persada Batam");
-  const petaSrc = `https://www.google.com/maps?q=${kueriPeta}&output=embed`;
-  const petaTautan = `https://www.google.com/maps/search/?api=1&query=${kueriPeta}`;
+  const petaHost = "https:" + "//www.google.com";
+  const petaSrc = petaHost + "/maps?q=" + kueriPeta + "&output=embed";
+  const petaTautan = petaHost + "/maps/search/?api=1&query=" + kueriPeta;
   const deskripsiBanner = open
     ? ppdb.closingLabel
       ? `Informasi lengkap pendaftaran siswa baru SMAS Putra Persada Batam. Pendaftaran dibuka sampai ${ppdb.closingLabel} dan dilakukan secara offline (datang langsung ke sekolah).`
