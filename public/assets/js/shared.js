@@ -1,19 +1,20 @@
 // Shared chrome (header + footer) — multi-page site
 const NAV = [
-  ['index.php','Beranda'],
-  ['tentang.php','Tentang'],
-  ['visi-misi.php','Visi & Misi'],
-  ['ekstrakurikuler.php','Ekstrakurikuler'],
-  ['berita.php','Berita'],
-  ['ppdb.php','PPDB'],
-  ['kontak.php','Kontak'],
+  ['/','Beranda'],
+  ['/tentang','Tentang'],
+  ['/guru','Guru'],
+  ['/visi-misi','Visi & Misi'],
+  ['/ekstrakurikuler','Ekstrakurikuler'],
+  ['/berita','Berita'],
+  ['/ppdb','PPDB'],
+  ['/kontak','Kontak'],
 ];
 
 function renderHeader(active, ppdbOpen){
   active = active || '';
   if (typeof ppdbOpen === 'undefined') ppdbOpen = true;
-  const marqueeOpen = '<span class="marquee-ribbon-item"><span>✦</span> Penerimaan Peserta Didik Baru TA 2026/2027</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Jalur Prestasi, Reguler & Beasiswa</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Cerdas, Berkarakter, Berakhlak</span><span class="marquee-ribbon-item">•</span>';
-  const marqueeClosed = '<span class="marquee-ribbon-item"><span>✦</span> PPDB 2026/2027 Telah Ditutup</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Informasi Tahun Ajaran Berikutnya Segera Hadir</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi A</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Hubungi Kami untuk Informasi Lebih Lanjut</span><span class="marquee-ribbon-item">•</span>';
+  const marqueeOpen = '<span class="marquee-ribbon-item"><span>✦</span> Penerimaan Peserta Didik Baru TA 2026/2027</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Jalur Prestasi, Reguler & Beasiswa</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi C</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Cerdas, Berkarakter, Berakhlak</span><span class="marquee-ribbon-item">•</span>';
+  const marqueeClosed = '<span class="marquee-ribbon-item"><span>✦</span> PPDB 2026/2027 Telah Ditutup</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Informasi Tahun Ajaran Berikutnya Segera Hadir</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item"><span>✦</span> Akreditasi C</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">SMA Putra Persada Batam</span><span class="marquee-ribbon-item">•</span><span class="marquee-ribbon-item">Hubungi Kami untuk Informasi Lebih Lanjut</span><span class="marquee-ribbon-item">•</span>';
   return `
 <div class="sticky top-0 z-30">
   <div class="bg-pine text-cream/90 text-xs py-2 relative marquee-ribbon">
@@ -23,8 +24,8 @@ function renderHeader(active, ppdbOpen){
   </div>
   <header id="topnav" class="transition-all">
     <div class="max-w-6xl mx-auto px-5 h-[72px] flex items-center justify-between">
-      <a href="index.php" class="flex items-center gap-3">
-        <img src="assets/img/logo.jpeg" class="h-10 w-10 rounded-full object-cover ring-1 ring-brass/60">
+      <a href="/" class="flex items-center gap-3">
+        <img src="/assets/img/logo.jpeg" class="h-10 w-10 rounded-full object-cover ring-1 ring-brass/60">
         <div class="leading-none">
           <p class="font-serif font-semibold text-pine dark:text-cream text-[17px]">Putra Persada</p>
           <p class="text-[10px] tracking-[0.3em] text-leaf dark:text-brass-light mt-1">SMA · BATAM</p>
@@ -38,14 +39,14 @@ function renderHeader(active, ppdbOpen){
           <svg class="dark:hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="hidden dark:block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
-        <a href="ppdb.php" class="highlight-btn header-ppdb-btn hidden md:inline-flex items-center gap-2 text-[13px] font-semibold px-5 py-2.5 rounded-full transition"><span class="hl-label">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</span></a>
+        <a href="/ppdb" class="highlight-btn header-ppdb-btn hidden md:inline-flex items-center gap-2 text-[13px] font-semibold px-5 py-2.5 rounded-full transition"><span class="hl-label">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</span></a>
         <button id="mbtn" class="md:hidden p-2 text-pine dark:text-cream"><svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h18M4 13h18M4 19h18" stroke-linecap="round"/></svg></button>
       </div>
     </div>
     <div id="mnav" class="md:hidden bg-cream dark:bg-pine-deep border-t border-pine/10 dark:border-cream/10">
       <div class="px-5 py-3 flex flex-col gap-1">
         ${NAV.map(([h,l])=>`<a href="${h}" class="mlink py-2.5 border-b border-pine/5 dark:border-cream/5">${l}</a>`).join('')}
-        <a href="ppdb.php" class="mlink header-ppdb-btn mt-2 text-center font-semibold py-2.5 rounded-full">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</a>
+        <a href="/ppdb" class="mlink header-ppdb-btn mt-2 text-center font-semibold py-2.5 rounded-full">${ppdbOpen ? 'Daftar PPDB' : 'Info PPDB'}</a>
       </div>
     </div>
   </header>
@@ -58,7 +59,7 @@ function renderFooter(){
   <div class="max-w-6xl mx-auto px-5 py-16 grid md:grid-cols-12 gap-10">
     <div class="md:col-span-5">
       <div class="flex items-center gap-3 mb-5">
-        <img src="assets/img/logo.jpeg" class="h-12 w-12 rounded-full object-cover ring-1 ring-brass/60">
+        <img src="/assets/img/logo.jpeg" class="h-12 w-12 rounded-full object-cover ring-1 ring-brass/60">
         <div><p class="font-serif text-lg">SMA Putra Persada</p><p class="text-[10px] tracking-[0.3em] text-brass-light">BATAM</p></div>
       </div>
       <p class="text-cream/70 text-sm max-w-xs mb-5">Cerdas, berkarakter, dan berakhlak mulia — membersamai generasi menuju masa depan terbaik.</p>
@@ -92,7 +93,7 @@ function pageBanner(breadcrumb, label, title, desc){
 <section class="relative z-10 bg-gradient-to-br from-pine to-pine-deep text-cream overflow-hidden">
   <div class="absolute -top-10 -right-10 w-52 h-52 rounded-full bg-brass/15 blur-3xl"></div>
   <div class="max-w-6xl mx-auto px-5 py-16 sm:py-24 relative z-10">
-    <nav class="text-xs text-cream/60 mb-5"><a href="index.php" class="hover:text-brass-light">Beranda</a> <span class="mx-1">/</span> <span class="text-brass-light">${breadcrumb}</span></nav>
+    <nav class="text-xs text-cream/60 mb-5"><a href="/" class="hover:text-brass-light">Beranda</a> <span class="mx-1">/</span> <span class="text-brass-light">${breadcrumb}</span></nav>
     <p class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-brass-light uppercase mb-4"><span class="h-px w-8 bg-brass"></span> ${label}</p>
     <h1 class="font-serif text-4xl sm:text-6xl leading-tight max-w-3xl">${title}</h1>
     ${desc ? `<p class="text-cream/80 mt-5 max-w-xl">${desc}</p>` : ''}
@@ -108,7 +109,7 @@ function pageCTA(heading, text, btnLabel){
     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-brass/20 blur-3xl"></div>
     <h2 class="font-serif text-3xl sm:text-5xl leading-tight max-w-2xl mx-auto">${heading}</h2>
     <p class="text-cream/80 mt-5 max-w-lg mx-auto">${text}</p>
-    <a href="ppdb.php" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">${btnLabel}</a>
+    <a href="/ppdb" class="inline-block mt-8 bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition">${btnLabel}</a>
   </div>
 </section>`;
 }

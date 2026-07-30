@@ -6,12 +6,17 @@ const supabaseHost = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://uvxwkkyth
 
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  // 'unsafe-eval' sudah dicabut: Tailwind tidak lagi menyusun CSS di browser.
+  // Jangan kembalikan izin ini tanpa alasan kuat.
+  "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://*.supabase.co",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
   "media-src 'self' https://*.supabase.co",
+  // Hanya untuk sematan peta lokasi sekolah. Dibatasi ke domain peta Google
+  // saja; jangan diperluas menjadi https: agar situs lain tidak bisa dibingkai.
+  "frame-src https://www.google.com https://maps.google.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

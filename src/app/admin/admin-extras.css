@@ -120,7 +120,8 @@
 	color: var(--muted, #5b6b63);
 }
 
-.bulk-bar .button.danger:disabled {
+.bulk-bar .button.danger:disabled,
+.bulk-bar .button.secondary:disabled {
 	opacity: 0.45;
 	cursor: not-allowed;
 	box-shadow: none;
@@ -224,4 +225,106 @@ a.status {
 a.status:hover {
 	transform: translateY(-1px);
 	box-shadow: 0 8px 18px rgba(8, 41, 31, 0.14);
+}
+
+/* ==========================================================
+   Penyempurnaan tata letak dashboard
+   ========================================================== */
+
+/* Dua kolom untuk memanfaatkan layar lebar dan memendekkan gulir. */
+.dash-two {
+	display: grid;
+	grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+	gap: 1.15rem;
+	align-items: start;
+	margin-bottom: 1.15rem;
+}
+
+.dash-two > .card {
+	margin-bottom: 0;
+	height: 100%;
+}
+
+@media (max-width: 1100px) {
+	.dash-two {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Jarak vertikal dipadatkan supaya dashboard tidak terasa panjang. */
+.admin-content .card.mb,
+.admin-content .card.mb-lg {
+	margin-bottom: 1.15rem;
+}
+
+.admin-content .stat-grid {
+	margin-bottom: 1.15rem;
+}
+
+/* Kartu statistik terasa dapat diklik. */
+.card.stat {
+	transition: transform 0.16s ease, box-shadow 0.16s ease,
+		border-color 0.16s ease;
+}
+
+.card.stat:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-lift, 0 18px 40px rgba(8, 41, 31, 0.14));
+}
+
+/* Hanya baris yang benar benar tautan yang disorot saat tetikus lewat. */
+a.list-row {
+	border-radius: 0.7rem;
+	padding-inline: 0.5rem;
+	margin-inline: -0.5rem;
+	transition: background 0.15s ease;
+}
+
+a.list-row:hover {
+	background: var(--soft, rgba(14, 59, 46, 0.06));
+}
+
+/* Keadaan kosong yang menuntun, bukan sekadar kalimat mati. */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.55rem;
+	padding: 1.75rem 1rem;
+	text-align: center;
+	border: 1px dashed var(--ring, rgba(14, 59, 46, 0.18));
+	border-radius: 0.9rem;
+	background: var(--soft, rgba(14, 59, 46, 0.04));
+}
+
+.empty-state .es-ico {
+	display: grid;
+	place-items: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	border: 1px solid var(--ring, rgba(14, 59, 46, 0.12));
+	background: var(--surface, #fff);
+	color: var(--leaf, #2f7d52);
+}
+
+.empty-state p {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--muted, #5b6b63);
+	max-width: 22rem;
+}
+
+.empty-state .es-act {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	font-size: 0.87rem;
+	font-weight: 600;
+	color: var(--leaf, #2f7d52);
+	text-decoration: none;
+}
+
+.empty-state .es-act:hover {
+	text-decoration: underline;
 }

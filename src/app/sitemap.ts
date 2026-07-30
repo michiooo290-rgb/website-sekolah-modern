@@ -12,6 +12,7 @@ const HALAMAN: Array<{ path: string; priority: number; changeFrequency: "daily" 
   { path: "/ppdb", priority: 0.9, changeFrequency: "weekly" },
   { path: "/berita", priority: 0.8, changeFrequency: "daily" },
   { path: "/tentang", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/guru", priority: 0.7, changeFrequency: "monthly" },
   { path: "/visi-misi", priority: 0.6, changeFrequency: "monthly" },
   { path: "/ekstrakurikuler", priority: 0.6, changeFrequency: "monthly" },
   { path: "/kontak", priority: 0.6, changeFrequency: "monthly" },

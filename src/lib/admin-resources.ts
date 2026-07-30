@@ -8,6 +8,8 @@ export const resources:Record<string,ResourceConfig>={
   "visi-misi":{label:"Visi & Misi",table:"visi_misi",order:"urutan",fields:[{name:"tipe",label:"Tipe",type:"select",options:["visi","misi","tujuan","nilai"],required:true},{name:"judul",label:"Judul"},{name:"isi",label:"Isi",type:"textarea",required:true},{name:"urutan",label:"Urutan",type:"number"}]},
   tentang:{label:"Tentang",table:"tentang",order:"id",fields:[{name:"bagian",label:"Bagian",type:"select",options:["sejarah","sambutan","fasilitas"],required:true},{name:"judul",label:"Judul"},{name:"isi",label:"Isi",type:"textarea",required:true}]},
   ppdb:{label:"PPDB",table:"ppdb_info",order:"urutan",fields:[{name:"bagian",label:"Bagian",type:"select",options:["syarat","jadwal","alur","lokasi","faq"],required:true},{name:"judul",label:"Judul"},{name:"isi",label:"Isi",type:"textarea",required:true},{name:"tanggal",label:"Tanggal/Keterangan"},{name:"file_formulir",label:"File",type:"file"},{name:"urutan",label:"Urutan",type:"number"}]},
+  agenda:{label:"Agenda",table:"agenda",order:"urutan",fields:[{name:"tanggal",label:"Tanggal",required:true},{name:"judul",label:"Judul",required:true},{name:"deskripsi",label:"Deskripsi",type:"textarea"},{name:"urutan",label:"Urutan",type:"number"}]},
+  faq:{label:"FAQ",table:"faq",order:"urutan",fields:[{name:"pertanyaan",label:"Pertanyaan",required:true},{name:"jawaban",label:"Jawaban",type:"textarea",required:true},{name:"urutan",label:"Urutan",type:"number"}]},
   pengaturan:{label:"Pengaturan",table:"pengaturan",order:"kunci",fields:[{name:"kunci",label:"Kunci",required:true},{name:"nilai",label:"Nilai",type:"textarea",required:true}]},
 };
 

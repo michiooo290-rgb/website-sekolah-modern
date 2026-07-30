@@ -1,6 +1,6 @@
 import { createServerSupabase } from "./supabase";
 import { fallbackActivities, fallbackNews, fallbackSettings, fallbackTeachers, fallbackVision } from "./fallback-data";
-import type { AboutItem, Activity, News, PpdbItem, SettingMap, Teacher, VisionItem } from "./types";
+import type { AboutItem, Activity, AgendaItem, FaqItem, News, PpdbItem, SettingMap, Teacher, VisionItem } from "./types";
 
 export async function getSettings(): Promise<SettingMap> {
   const supabase = await createServerSupabase();
@@ -10,13 +10,15 @@ export async function getSettings(): Promise<SettingMap> {
   return Object.fromEntries(data.map((row) => [row.kunci, row.nilai]));
 }
 
+/* Daftar kosong dihormati apa adanya, sama seperti getActivities. Berita yang
+   dihapus dari panel admin harus benar-benar hilang dari halaman publik. */
 export async function getNews(limit?: number): Promise<News[]> {
   const supabase = await createServerSupabase();
   if (!supabase) return limit ? fallbackNews.slice(0, limit) : fallbackNews;
   let query = supabase.from("berita").select("*").order("tanggal", { ascending: false });
   if (limit) query = query.limit(limit);
   const { data } = await query;
-  return data?.length ? (data as News[]) : fallbackNews;
+  return (data ?? []) as News[];
 }
 
 export async function getNewsBySlug(slug: string): Promise<News | null> {
@@ -33,11 +35,15 @@ export async function getTeachers(): Promise<Teacher[]> {
   return data?.length ? (data as Teacher[]) : fallbackTeachers;
 }
 
+/* Berbeda dari getter lain: daftar kosong dihormati apa adanya. Ekstrakurikuler
+   memang bisa benar-benar tidak ada, dan menampilkan data contoh di situasi itu
+   membuat halaman publik berbeda dengan isi panel admin. Data contoh hanya
+   dipakai bila Supabase tidak tersambung sama sekali. */
 export async function getActivities(): Promise<Activity[]> {
   const supabase = await createServerSupabase();
   if (!supabase) return fallbackActivities;
   const { data } = await supabase.from("ekstrakurikuler").select("*").order("kategori").order("nama");
-  return data?.length ? (data as Activity[]) : fallbackActivities;
+  return (data ?? []) as Activity[];
 }
 
 export async function getVision(): Promise<VisionItem[]> {
@@ -59,6 +65,23 @@ export async function getPpdb(): Promise<PpdbItem[]> {
   if (!supabase) return [];
   const { data } = await supabase.from("ppdb_info").select("*").order("urutan");
   return (data ?? []) as PpdbItem[];
+}
+
+/* Agenda dan FAQ baru ada setelah supabase/agenda-faq-sosial.sql dijalankan.
+   Selama tabelnya belum ada, kueri gagal dan hasilnya array kosong; pemanggil
+   yang menyediakan teks cadangan tetap menampilkan isi lamanya. */
+export async function getAgenda(): Promise<AgendaItem[]> {
+  const supabase = await createServerSupabase();
+  if (!supabase) return [];
+  const { data } = await supabase.from("agenda").select("*").order("urutan");
+  return (data ?? []) as AgendaItem[];
+}
+
+export async function getFaq(): Promise<FaqItem[]> {
+  const supabase = await createServerSupabase();
+  if (!supabase) return [];
+  const { data } = await supabase.from("faq").select("*").order("urutan");
+  return (data ?? []) as FaqItem[];
 }
 
 export function imageUrl(path: string | null | undefined, fallback = "/assets/img/placeholder-berita.svg") {

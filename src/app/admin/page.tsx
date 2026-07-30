@@ -30,6 +30,37 @@ const tglPendek = (value: string) =>
 		timeZone: "Asia/Jakarta",
 	}).format(new Date(value));
 
+/**
+ * Bagian kosong sebaiknya menuntun ke langkah berikutnya, bukan berhenti pada
+ * satu kalimat. Karena itu setiap keadaan kosong membawa ikon dan tautan.
+ */
+function EmptyState({
+	icon,
+	text,
+	href,
+	action,
+}: {
+	icon: string;
+	text: string;
+	href?: string;
+	action?: string;
+}) {
+	return (
+		<div className="empty-state">
+			<span className="es-ico">
+				<Icon name={icon} />
+			</span>
+			<p>{text}</p>
+			{href && action ? (
+				<Link className="es-act" href={href}>
+					<Icon name="plus" />
+					{action}
+				</Link>
+			) : null}
+		</div>
+	);
+}
+
 export default async function Dashboard() {
 	const { supabase, profile } = await requireAdmin();
 
@@ -290,68 +321,76 @@ export default async function Dashboard() {
 				</div>
 			</div>
 
-			<div className="card mb-lg">
-				<h3 className="section-title">Akses Cepat</h3>
-				<div className="quick">
-					{quick.map((item) => (
-						<Link key={item.href + item.label} href={item.href}>
-							<span className="qi">
-								<Icon name={item.icon} />
+			{/* Peringkat memerlukan ruang lebih lebar, akses cepat cukup sempit. */}
+			<div className="dash-two">
+				<div className="card">
+					<div className="section-head">
+						<h3 className="section-title">
+							<span className="ico">
+								<Icon name="chart" />
 							</span>
-							<span>{item.label}</span>
+							Berita Terpopuler
+						</h3>
+						<Link className="link-more" href="/admin/berita">
+							Kelola &rarr;
 						</Link>
-					))}
-				</div>
-			</div>
-
-			<div className="card mb">
-				<div className="section-head">
-					<h3 className="section-title">
-						<span className="ico">
-							<Icon name="chart" />
-						</span>
-						Berita Terpopuler
-					</h3>
-					<Link className="link-more" href="/admin/berita">
-						Kelola &rarr;
-					</Link>
-				</div>
-				{populer.length === 0 || tayangan === 0 ? (
-					<p className="empty">Belum ada data kunjungan.</p>
-				) : (
-					<div className="rank">
-						{populer.map((row, index) => {
-							const persen = Math.max(
-								6,
-								Math.round(((row.dilihat ?? 0) / maxDilihat) * 100),
-							);
-							return (
-								<div className="rank-row" key={row.judul}>
-									<span className={`rank-no${index === 0 ? " top" : ""}`}>
-										{index + 1}
-									</span>
-									<div className="rank-body">
-										<div className="rank-head">
-											<p className="rank-title">
-												{row.judul} <span>&middot; {row.kategori}</span>
-											</p>
-											<span className="views">
-												<Icon name="eye" />
-												{angka(row.dilihat ?? 0)}
-											</span>
-										</div>
-										<div className="meter">
-											<span
-												className={index === 0 ? "top" : undefined}
-												style={{ width: `${persen}%` }}
-											/>
+					</div>
+					{populer.length === 0 || tayangan === 0 ? (
+						<EmptyState
+							icon="chart"
+							text="Belum ada data kunjungan. Peringkat muncul setelah berita mulai dibaca pengunjung."
+							href="/admin/berita"
+							action="Tulis berita"
+						/>
+					) : (
+						<div className="rank">
+							{populer.map((row, index) => {
+								const persen = Math.max(
+									6,
+									Math.round(((row.dilihat ?? 0) / maxDilihat) * 100),
+								);
+								return (
+									<div className="rank-row" key={row.judul}>
+										<span className={`rank-no${index === 0 ? " top" : ""}`}>
+											{index + 1}
+										</span>
+										<div className="rank-body">
+											<div className="rank-head">
+												<p className="rank-title">
+													{row.judul} <span>&middot; {row.kategori}</span>
+												</p>
+												<span className="views">
+													<Icon name="eye" />
+													{angka(row.dilihat ?? 0)}
+												</span>
+											</div>
+											<div className="meter">
+												<span
+													className={index === 0 ? "top" : undefined}
+													style={{ width: `${persen}%` }}
+												/>
+											</div>
 										</div>
 									</div>
-								</div>
-							);
-						})}
+								);
+							})}
+						</div>
+					)}
+				</div>
+
+				<div className="card">
+					<h3 className="section-title">Akses Cepat</h3>
+					<div className="quick">
+						{quick.map((item) => (
+							<Link key={item.href + item.label} href={item.href}>
+								<span className="qi">
+									<Icon name={item.icon} />
+								</span>
+								<span>{item.label}</span>
+							</Link>
+						))}
 					</div>
-				)}
+				</div>
 			</div>
 
 			<div className="two-col">
@@ -368,7 +407,12 @@ export default async function Dashboard() {
 						</Link>
 					</div>
 					{terbaru.length === 0 ? (
-						<p className="empty">Belum ada berita.</p>
+						<EmptyState
+							icon="news"
+							text="Belum ada berita yang dipublikasikan."
+							href="/admin/berita"
+							action="Tulis berita pertama"
+						/>
 					) : (
 						<div>
 							{terbaru.map((row) => (
@@ -403,7 +447,10 @@ export default async function Dashboard() {
 						</Link>
 					</div>
 					{pesan.length === 0 ? (
-						<p className="empty">Belum ada pesan.</p>
+						<EmptyState
+							icon="mail"
+							text="Belum ada pesan masuk. Pesan dari formulir kontak akan tampil di sini."
+						/>
 					) : (
 						<div>
 							{pesan.map((row) => (
