@@ -1,13 +1,13 @@
 // Shared chrome (header + footer) — multi-page site
 const NAV = [
-  ['index.php','Beranda'],
-  ['tentang.php','Tentang'],
+  ['/','Beranda'],
+  ['/tentang','Tentang'],
   ['/guru','Guru'],
-  ['visi-misi.php','Visi & Misi'],
-  ['ekstrakurikuler.php','Ekstrakurikuler'],
-  ['berita.php','Berita'],
-  ['ppdb.php','PPDB'],
-  ['kontak.php','Kontak'],
+  ['/visi-misi','Visi & Misi'],
+  ['/ekstrakurikuler','Ekstrakurikuler'],
+  ['/berita','Berita'],
+  ['/ppdb','PPDB'],
+  ['/kontak','Kontak'],
 ];
 
 function renderHeader(active, ppdbOpen){
