@@ -10,13 +10,15 @@ export async function getSettings(): Promise<SettingMap> {
   return Object.fromEntries(data.map((row) => [row.kunci, row.nilai]));
 }
 
+/* Daftar kosong dihormati apa adanya, sama seperti getActivities. Berita yang
+   dihapus dari panel admin harus benar-benar hilang dari halaman publik. */
 export async function getNews(limit?: number): Promise<News[]> {
   const supabase = await createServerSupabase();
   if (!supabase) return limit ? fallbackNews.slice(0, limit) : fallbackNews;
   let query = supabase.from("berita").select("*").order("tanggal", { ascending: false });
   if (limit) query = query.limit(limit);
   const { data } = await query;
-  return data?.length ? (data as News[]) : fallbackNews;
+  return (data ?? []) as News[];
 }
 
 export async function getNewsBySlug(slug: string): Promise<News | null> {
