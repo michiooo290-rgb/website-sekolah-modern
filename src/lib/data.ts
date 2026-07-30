@@ -33,11 +33,15 @@ export async function getTeachers(): Promise<Teacher[]> {
   return data?.length ? (data as Teacher[]) : fallbackTeachers;
 }
 
+/* Berbeda dari getter lain: daftar kosong dihormati apa adanya. Ekstrakurikuler
+   memang bisa benar-benar tidak ada, dan menampilkan data contoh di situasi itu
+   membuat halaman publik berbeda dengan isi panel admin. Data contoh hanya
+   dipakai bila Supabase tidak tersambung sama sekali. */
 export async function getActivities(): Promise<Activity[]> {
   const supabase = await createServerSupabase();
   if (!supabase) return fallbackActivities;
   const { data } = await supabase.from("ekstrakurikuler").select("*").order("kategori").order("nama");
-  return data?.length ? (data as Activity[]) : fallbackActivities;
+  return (data ?? []) as Activity[];
 }
 
 export async function getVision(): Promise<VisionItem[]> {
