@@ -5,6 +5,13 @@ import { getPpdb, getSettings } from "@/lib/data";
 import { resolvePpdbStatus } from "@/lib/ppdb-status";
 
 export const metadata = { title: "PPDB" };
+/* Titik peta sekolah dalam format "lat,lng". Dipakai bila kunci pengaturan
+   `peta_koordinat` belum diisi lewat /admin/pengaturan.
+   Teks alamat sengaja tidak dipakai sebagai sumber titik peta: hasil geocoding
+   Google atas alamat sekolah meleset sekitar 75 m ke timur dari gedung yang
+   sebenarnya. Alamat tetap ditampilkan sebagai teks di halaman. */
+const KOORDINAT_BAWAAN = "1.14185,104.13783";
+
 export default async function PpdbPage() {
   const [items, settings] = await Promise.all([getPpdb(), getSettings()]);
   const syarat = items.filter((x) => x.bagian === "syarat"); const jadwal = items.filter((x) => x.bagian === "jadwal"); const alur = items.filter((x) => x.bagian === "alur"); const faq = items.filter((x) => x.bagian === "faq");
@@ -14,17 +21,11 @@ export default async function PpdbPage() {
   const faqs = faq.length ? faq : [{id:1,judul:"Apakah pendaftaran dilakukan secara online?",isi:"Pendaftaran dilakukan secara offline dengan datang langsung ke sekolah."},{id:2,judul:"Apakah tersedia jalur prestasi?",isi:"Ya, tersedia jalur prestasi, reguler, dan beasiswa sesuai ketentuan."}];
   const ppdb = resolvePpdbStatus(settings);
   const open = ppdb.open;
-  /* Titik peta diambil dari kunci pengaturan `peta_koordinat` (format "lat,lng")
-     bila diisi lewat /admin/pengaturan. Teks alamat sering tidak digeocode tepat
-     oleh Google, jadi koordinat dipakai lebih dulu. Bila kosong, peta jatuh
-     kembali ke alamat seperti perilaku sebelumnya. */
-  const koordinat = (settings.peta_koordinat || "").trim();
-  const kueriPeta = encodeURIComponent(koordinat || settings.alamat || "SMAS Putra Persada Batam");
+  const koordinat = (settings.peta_koordinat || KOORDINAT_BAWAAN).trim();
+  const kueriPeta = encodeURIComponent(koordinat);
   const petaHost = "https:" + "//www.google.com";
   const petaSrc = petaHost + "/maps?q=" + kueriPeta + "&output=embed&z=17";
-  const petaTautan = koordinat
-    ? petaHost + "/maps/dir/?api=1&destination=" + kueriPeta
-    : petaHost + "/maps/search/?api=1&query=" + kueriPeta;
+  const petaTautan = petaHost + "/maps/dir/?api=1&destination=" + kueriPeta;
   const deskripsiBanner = open
     ? ppdb.closingLabel
       ? `Informasi lengkap pendaftaran siswa baru SMAS Putra Persada Batam. Pendaftaran dibuka sampai ${ppdb.closingLabel} dan dilakukan secara offline (datang langsung ke sekolah).`
