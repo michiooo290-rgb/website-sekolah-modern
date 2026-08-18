@@ -5,10 +5,17 @@
  * sebenarnya. Alamat tetap ditampilkan sebagai teks di halaman.
  */
 
-/** Koordinat sekolah. Dipakai bila `peta_koordinat` kosong atau tidak valid. */
-export const KOORDINAT_BAWAAN = "1.14185,104.13783";
+/**
+ * Koordinat sekolah. Dipakai bila `peta_koordinat` kosong atau tidak valid.
+ *
+ * Titik ini berada di sisi barat kompleks, berdekatan dengan SMP Putra Persada,
+ * di sebelah timur Jl. Hang Kesturi. Perkiraan akurasi sekitar 10 m. Untuk
+ * angka presisi, isi `peta_koordinat` di tabel pengaturan; nilai itu menimpa
+ * konstanta ini tanpa perlu mengubah kode.
+ */
+export const KOORDINAT_BAWAAN = "1.14183,104.13879";
 
-/** Sepasang angka desimal, misalnya "1.14185,104.13783". */
+/** Sepasang angka desimal, misalnya "1.14183,104.13879". */
 const POLA_KOORDINAT = /^\s*(-?\d{1,3}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
 
 /**
