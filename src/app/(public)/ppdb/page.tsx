@@ -2,15 +2,10 @@ import Link from "next/link";
 import sanitizeHtml from "sanitize-html";
 import { OriginalBanner } from "@/components/original-sections";
 import { getPpdb, getSettings } from "@/lib/data";
+import { titikPeta, urlPeta } from "@/lib/peta";
 import { resolvePpdbStatus } from "@/lib/ppdb-status";
 
 export const metadata = { title: "PPDB" };
-/* Titik peta sekolah dalam format "lat,lng". Dipakai bila kunci pengaturan
-   `peta_koordinat` belum diisi lewat /admin/pengaturan.
-   Teks alamat sengaja tidak dipakai sebagai sumber titik peta: hasil geocoding
-   Google atas alamat sekolah meleset sekitar 75 m ke timur dari gedung yang
-   sebenarnya. Alamat tetap ditampilkan sebagai teks di halaman. */
-const KOORDINAT_BAWAAN = "1.14185,104.13783";
 
 export default async function PpdbPage() {
   const [items, settings] = await Promise.all([getPpdb(), getSettings()]);
@@ -21,11 +16,7 @@ export default async function PpdbPage() {
   const faqs = faq.length ? faq : [{id:1,judul:"Apakah pendaftaran dilakukan secara online?",isi:"Pendaftaran dilakukan secara offline dengan datang langsung ke sekolah."},{id:2,judul:"Apakah tersedia jalur prestasi?",isi:"Ya, tersedia jalur prestasi, reguler, dan beasiswa sesuai ketentuan."}];
   const ppdb = resolvePpdbStatus(settings);
   const open = ppdb.open;
-  const koordinat = (settings.peta_koordinat || KOORDINAT_BAWAAN).trim();
-  const kueriPeta = encodeURIComponent(koordinat);
-  const petaHost = "https:" + "//www.google.com";
-  const petaSrc = petaHost + "/maps?q=" + kueriPeta + "&output=embed&z=17";
-  const petaTautan = petaHost + "/maps/dir/?api=1&destination=" + kueriPeta;
+  const { src: petaSrc, tautan: petaTautan } = urlPeta(titikPeta(settings.peta_koordinat));
   const deskripsiBanner = open
     ? ppdb.closingLabel
       ? `Informasi lengkap pendaftaran siswa baru SMAS Putra Persada Batam. Pendaftaran dibuka sampai ${ppdb.closingLabel} dan dilakukan secara offline (datang langsung ke sekolah).`
