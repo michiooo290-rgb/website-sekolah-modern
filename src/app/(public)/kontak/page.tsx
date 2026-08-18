@@ -8,13 +8,17 @@ const input = "w-full rounded-xl border border-pine/15 dark:border-cream/15 bg-c
 export default async function ContactPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const [settings, params] = await Promise.all([getSettings(), searchParams]);
   const messages: Record<string,string> = { success:"Pesan berhasil dikirim. Terima kasih telah menghubungi kami.", invalid:"Periksa kembali data yang Anda masukkan.", limited:"Terlalu banyak pesan dikirim. Silakan tunggu beberapa menit.", error:"Pesan belum berhasil dikirim. Silakan coba lagi.", demo:"Form aktif setelah Supabase dihubungkan." };
-  /* Peta mengikuti alamat di tabel pengaturan, sehingga ikut berubah bila alamat
-     diperbarui lewat /admin/pengaturan. Bila titiknya kurang tepat, ganti isi
-     kueri dengan koordinat, misalnya "1.1234,104.1234". */
-  const kueriPeta = encodeURIComponent(settings.alamat || "SMAS Putra Persada Batam");
+  /* Titik peta diambil dari kunci pengaturan `peta_koordinat` (format "lat,lng")
+     bila diisi lewat /admin/pengaturan. Teks alamat sering tidak digeocode tepat
+     oleh Google, jadi koordinat dipakai lebih dulu. Bila kosong, peta jatuh
+     kembali ke alamat seperti perilaku sebelumnya. */
+  const koordinat = (settings.peta_koordinat || "").trim();
+  const kueriPeta = encodeURIComponent(koordinat || settings.alamat || "SMAS Putra Persada Batam");
   const petaHost = "https:" + "//www.google.com";
-  const petaSrc = petaHost + "/maps?q=" + kueriPeta + "&output=embed";
-  const petaTautan = petaHost + "/maps/search/?api=1&query=" + kueriPeta;
+  const petaSrc = petaHost + "/maps?q=" + kueriPeta + "&output=embed&z=17";
+  const petaTautan = koordinat
+    ? petaHost + "/maps/dir/?api=1&destination=" + kueriPeta
+    : petaHost + "/maps/search/?api=1&query=" + kueriPeta;
   return <>
     <OriginalBanner breadcrumb="Kontak" label="Hubungi Kami" title="Kami siap mendengar." description="Kunjungi sekolah, hubungi petugas, atau kirim pesan melalui formulir berikut." />
     <section className="relative z-10 max-w-6xl mx-auto px-5 py-20 sm:py-28"><div className="grid lg:grid-cols-12 gap-12"><div className="lg:col-span-5 reveal"><p className="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-4">Informasi Kontak</p><h2 className="font-serif text-3xl sm:text-4xl text-pine dark:text-cream leading-tight mb-8">Mari terhubung dengan kami.</h2><div className="space-y-6">{[["📍","Alamat",settings.alamat],["📞","Telepon",settings.telepon],["✉️","Email",settings.email],["🕐","Jam Operasional",settings.jam_operasional]].map(([icon,title,value]) => <div className="flex items-start gap-4" key={title}><div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-leaf to-pine flex items-center justify-center text-xl">{icon}</div><div><h3 className="font-serif text-lg text-pine dark:text-cream">{title}</h3><p className="text-sm text-pine/65 dark:text-cream/65 mt-1 leading-relaxed whitespace-pre-line">{value}</p></div></div>)}</div></div><div className="lg:col-span-7 reveal"><div className="bg-cream-deep dark:bg-pine rounded-[1.5rem] p-7 sm:p-9 ring-1 ring-pine/10 dark:ring-cream/10"><h2 className="font-serif text-2xl text-pine dark:text-cream mb-6">Kirim pesan</h2>{params.status && <p className="mb-5 rounded-xl bg-leaf/10 border border-leaf/20 text-leaf dark:text-brass-light p-4 text-sm">{messages[params.status]}</p>}<form action={sendMessage} className="space-y-5"><input name="website" tabIndex={-1} autoComplete="off" className="hidden" /><div><label className="block text-sm font-semibold text-pine dark:text-cream mb-2">Nama lengkap</label><input className={input} name="nama" required minLength={2} /></div><div className="grid sm:grid-cols-2 gap-5"><div><label className="block text-sm font-semibold text-pine dark:text-cream mb-2">Email</label><input className={input} name="email" type="email" required /></div><div><label className="block text-sm font-semibold text-pine dark:text-cream mb-2">Telepon</label><input className={input} name="telepon" /></div></div><div><label className="block text-sm font-semibold text-pine dark:text-cream mb-2">Subjek</label><input className={input} name="subjek" /></div><div><label className="block text-sm font-semibold text-pine dark:text-cream mb-2">Pesan</label><textarea className={`${input} min-h-36 resize-y`} name="pesan" required minLength={10} /></div><button className="bg-brass text-pine-deep font-semibold px-8 py-3.5 rounded-full hover:bg-brass-light transition" type="submit">Kirim Pesan</button></form></div></div></div></section>
