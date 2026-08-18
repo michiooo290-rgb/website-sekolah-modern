@@ -2,9 +2,11 @@ import Link from "next/link";
 import sanitizeHtml from "sanitize-html";
 import { OriginalBanner } from "@/components/original-sections";
 import { getPpdb, getSettings } from "@/lib/data";
+import { titikPeta, urlPeta } from "@/lib/peta";
 import { resolvePpdbStatus } from "@/lib/ppdb-status";
 
 export const metadata = { title: "PPDB" };
+
 export default async function PpdbPage() {
   const [items, settings] = await Promise.all([getPpdb(), getSettings()]);
   const syarat = items.filter((x) => x.bagian === "syarat"); const jadwal = items.filter((x) => x.bagian === "jadwal"); const alur = items.filter((x) => x.bagian === "alur"); const faq = items.filter((x) => x.bagian === "faq");
@@ -14,13 +16,7 @@ export default async function PpdbPage() {
   const faqs = faq.length ? faq : [{id:1,judul:"Apakah pendaftaran dilakukan secara online?",isi:"Pendaftaran dilakukan secara offline dengan datang langsung ke sekolah."},{id:2,judul:"Apakah tersedia jalur prestasi?",isi:"Ya, tersedia jalur prestasi, reguler, dan beasiswa sesuai ketentuan."}];
   const ppdb = resolvePpdbStatus(settings);
   const open = ppdb.open;
-  /* Peta disemat berdasarkan alamat di tabel pengaturan, sehingga ikut berubah
-     bila alamat diperbarui lewat /admin/pengaturan. Bila titiknya kurang tepat,
-     ganti isi kueri dengan koordinat, misalnya "1.1234,104.1234". */
-  const kueriPeta = encodeURIComponent(settings.alamat || "SMAS Putra Persada Batam");
-  const petaHost = "https:" + "//www.google.com";
-  const petaSrc = petaHost + "/maps?q=" + kueriPeta + "&output=embed";
-  const petaTautan = petaHost + "/maps/search/?api=1&query=" + kueriPeta;
+  const { src: petaSrc, tautan: petaTautan } = urlPeta(titikPeta(settings.peta_koordinat));
   const deskripsiBanner = open
     ? ppdb.closingLabel
       ? `Informasi lengkap pendaftaran siswa baru SMAS Putra Persada Batam. Pendaftaran dibuka sampai ${ppdb.closingLabel} dan dilakukan secara offline (datang langsung ke sekolah).`
@@ -99,7 +95,7 @@ export default async function PpdbPage() {
         <div className="rounded-[1.75rem] overflow-hidden ring-1 ring-cream/15 shadow-2xl bg-pine-deep aspect-[4/3]">
           <iframe src={petaSrc} title={`Peta lokasi ${settings.nama_sekolah}`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full border-0" />
         </div>
-        <p className="text-cream/45 text-xs mt-3 leading-relaxed">Titik peta mengikuti alamat sekolah. Gunakan tombol di samping untuk membuka rute di aplikasi peta.</p>
+        <p className="text-cream/45 text-xs mt-3 leading-relaxed">Titik peta mengikuti lokasi sekolah. Gunakan tombol di samping untuk membuka rute di aplikasi peta.</p>
       </div>
     </div></section>
     <section className="relative z-10 max-w-3xl mx-auto px-5 py-20 sm:py-28"><div className="reveal text-center mb-12"><p className="text-xs font-semibold tracking-widest text-leaf dark:text-brass-light uppercase mb-3">FAQ PPDB</p><h2 className="font-serif text-3xl sm:text-4xl text-pine dark:text-cream">Pertanyaan seputar pendaftaran.</h2></div><div className="reveal divide-y divide-pine/10 dark:divide-cream/10 border-y border-pine/10 dark:border-cream/10">{faqs.map((x) => <details className="py-5" key={x.id}><summary className="font-serif text-lg text-pine dark:text-cream cursor-pointer">{x.judul}</summary><p className="pt-3 text-pine/70 dark:text-cream/70 text-sm leading-relaxed">{x.isi}</p></details>)}</div></section>
