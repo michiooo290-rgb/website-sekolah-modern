@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
-const supabaseHost = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://uvxwkkythmfedmhnzkax.supabase.co")
+// Diambil dari environment saja. Menanam project ref Supabase langsung di
+// berkas ini membuatnya ikut terbaca siapa pun di repositori publik, dan
+// mempermudah orang menembak REST API database tanpa lewat situs.
+const supabaseHost = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "")
   .replace(/^https?:\/\//, "")
   .replace(/\/$/, "");
 
@@ -45,9 +48,9 @@ const nextConfig: NextConfig = {
   images: {
     // Dibatasi ke project Supabase sendiri saja. Dengan pola *.supabase.co,
     // project milik orang lain bisa ikut dioptimasi lewat domain ini.
-    remotePatterns: [
-      { protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" },
-    ],
+    remotePatterns: supabaseHost
+      ? [{ protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" }]
+      : [],
   },
   async headers() {
     return [
