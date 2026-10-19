@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import sanitizeHtml from "sanitize-html";
+import { sanitizeNewsHtml } from "@/lib/sanitize";
 import { createServerSupabase } from "@/lib/supabase";
 import { loadAdminSession } from "@/lib/admin-guard";
 import { resources, slugify, type FieldConfig } from "@/lib/admin-resources";
@@ -10,7 +10,6 @@ import { resources, slugify, type FieldConfig } from "@/lib/admin-resources";
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const MAX_PDF_SIZE = 10 * 1024 * 1024;
 const MAX_BULK_DELETE = 500;
-const SAFE_HTML_TAGS = ["p", "br", "strong", "b", "em", "i", "ul", "ol", "li", "blockquote", "h2", "h3", "a"];
 
 /**
  * redirect() dan notFound() bekerja dengan cara melempar error khusus yang
@@ -51,12 +50,7 @@ function cleanField(field: FieldConfig, raw: FormDataEntryValue | null) {
     return number;
   }
   if (field.type === "textarea" && field.name === "isi") {
-    return sanitizeHtml(value, {
-      allowedTags: SAFE_HTML_TAGS,
-      allowedAttributes: { a: ["href", "target", "rel"] },
-      allowedSchemes: ["http", "https", "mailto"],
-      transformTags: { a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer" }) },
-    });
+    return sanitizeNewsHtml(value);
   }
   return value || null;
 }
