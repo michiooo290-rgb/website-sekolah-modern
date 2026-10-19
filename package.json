@@ -14,10 +14,10 @@
     "@supabase/supabase-js": "latest",
     "@tailwindcss/postcss": "^4.3.3",
     "lucide-react": "latest",
-    "next": "latest",
+    "next": "^16.4.2",
     "react": "latest",
     "react-dom": "latest",
-    "sanitize-html": "latest",
+    "sanitize-html": "^2.18.1",
     "tailwindcss": "^4.3.3",
     "zod": "latest"
   },
@@ -31,6 +31,6 @@
     "typescript": "latest"
   },
   "overrides": {
-    "postcss": "8.5.10"
+    "postcss": "^8.5.27"
   }
 }
