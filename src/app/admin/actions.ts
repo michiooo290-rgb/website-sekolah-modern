@@ -117,8 +117,20 @@ async function persistResource(resource: string, formData: FormData) {
   }
 
   if (resource === "berita") {
-    payload.slug = slugify(String(payload.slug || payload.judul || "berita")).slice(0, 180);
-    if (!payload.slug) throw new Error("Slug tidak valid");
+    const base = slugify(String(payload.slug || payload.judul || "berita")).slice(0, 170);
+    if (!base) throw new Error("Slug tidak valid");
+
+    // Slug harus unik: tambahkan akhiran -2, -3, ... bila sudah dipakai berita lain.
+    let slug = base;
+    for (let n = 2; n < 50; n++) {
+      let query = supabase.from("berita").select("id").eq("slug", slug);
+      if (id) query = query.neq("id", id); // saat edit, abaikan baris sendiri
+      const { data: dup, error: dupError } = await query.limit(1).maybeSingle();
+      if (dupError) throw new Error(`Gagal memeriksa slug: ${dupError.message}`);
+      if (!dup) break;
+      slug = `${base}-${n}`;
+    }
+    payload.slug = slug;
   }
 
   const mutation = id
